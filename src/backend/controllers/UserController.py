@@ -25,21 +25,3 @@ def get_user():
         return _usrCtx.get_current_user()
     except Exception as e:
         return jsonify({"result": e, "status": 400}), 400
-
-@usr_bp.route('/add/taxable', methods=['GET'])
-@limiter.limit("30 per minute")
-@requires_token
-def add_taxable_account():
-    try:
-        return _usrCtx.add_taxable_account()
-    except Exception as e:
-        return jsonify({"result": e, "status": 400}), 400
-    
-@usr_bp.route('/add/personal', methods=['GET'])
-@limiter.limit("30 per minute")
-@requires_token
-def add_personal_account():
-    try:
-        return _usrCtx.add_personal_account()
-    except Exception as e:
-        return jsonify({"result": e, "status": 400}), 400

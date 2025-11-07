@@ -33,7 +33,7 @@ def run_query(query, params=None, fetch=False):
         connection.commit()
         return True
     except Exception as e:
-        print(f"ERROR: {e}")
+        print(f"ERROR run_query(): {e}")
         return False
     finally:
         if cursor:
@@ -41,6 +41,41 @@ def run_query(query, params=None, fetch=False):
         if connection:
             connection.close()
 
+def insert_into(table, params, values):
+    try:
+        connection = connect_to_db()
+        cursor = connection.cursor(dictionary=True)
+        if len(params) != len(values):
+            return -1
+        
+        sql = f"INSERT INTO {table} ("
+        for i, p in enumerate(params):
+            if i != len(params) - 1:
+                sql += f"{params[i]},"
+            else:
+                sql += f"{params[i]}) "
+                
+        sql += "VALUES ("
+        for i in range(len(values)):
+            if i != len(values) - 1:
+                sql += f"%s,"
+            else:
+                sql += f"%s);"
+        
+        cursor.execute(sql, values)
+        connection.commit()
+        sql = f"SELECT LAST_INSERT_ID(Id) as Id from {table} order by LAST_INSERT_ID(Id) desc limit 1;"
+        cursor.execute(sql)
+        return int(cursor.fetchone()['Id'])
+    except Exception as e:
+        print(f"ERROR insert_into(): {e}")
+        return False
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+            
 def update_value(table, field, value, where_field, where_value):
     try:
         sql = f"UPDATE {table} SET {field}=%s WHERE {where_field}=%s"

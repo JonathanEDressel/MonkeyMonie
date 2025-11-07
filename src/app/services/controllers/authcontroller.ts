@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { Observable } from 'rxjs';
 export class AuthController {
     constructor(private http: HttpClient) {}
 
-    private apiURL = 'http://127.0.0.1:5000/auth'
+    private apiURL = environment.apiUrl + '/auth';
 
     login(username: string, password: string) {
         return this.http.post<{ token: string }>(`${this.apiURL}/login`, { 

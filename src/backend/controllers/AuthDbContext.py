@@ -1,6 +1,5 @@
 from flask import jsonify, request
-from datetime import datetime
-from Extensions import limiter
+from datetime import datetime, timezone
 import helper.Helper as DBHelper
 import helper.Security as Security
 from models.UserModel import data_to_model
@@ -21,16 +20,36 @@ def get_current_user():
             return None
         
         sql = "SELECT Id, Username, FirstName, LastName, Email, PhoneNumber, CreatedDate, "\
-            "ConfirmedEmail, TwoFactor, LastLogin, IsDemo, AdminLevel, IsAdmin FROM UserAcct WHERE Username = %s"
+            "ConfirmedEmail, TwoFactor, LastLogin, IsDemo, AdminLevel, IsAdmin FROM UserAcct WHERE Username = %s or Email = %s"
         token = authorized_user.split(" ")[1]
         decoded_token = jwt.decode(token, SECRET_KEY, ALGO_TO_USE)
         username = str(decoded_token['username'])
-        params = (username,)
+        params = (username,username)
         usr = DBHelper.run_query(sql, params, True)
         res = data_to_model(usr[0])
         if res:
             return res
         return None
+    except Exception as e:
+        print(f"ERROR: {e}")
+        return None
+
+def get_current_user_id():
+    try:
+        authorized_user = request.headers.get("Authorization")
+        if not authorized_user:
+            return None
+        
+        sql = "SELECT Id FROM UserAcct WHERE Username = %s or Email = %s"
+        token = authorized_user.split(" ")[1]
+        decoded_token = jwt.decode(token, SECRET_KEY, ALGO_TO_USE)
+        username = str(decoded_token['username'])
+        params = (username,username)
+        usr = DBHelper.run_query(sql, params, True)
+        res = int(str(usr[0]['Id']))
+        if res:
+            return res
+        return -1
     except Exception as e:
         print(f"ERROR: {e}")
         return None
@@ -48,7 +67,7 @@ def is_admin():
 def has_admin():
     try:
         h = DBHelper.encrypt_password("password")
-        currDte = str(datetime.now())
+        currDte = str(datetime.now(timezone.utc))
         res = DBHelper.run_query("SELECT Username FROM UserAcct Where Username = %s or Email = %s", 
                                 ("Admin", "jonathanedressel@gmail.com"), 
                                 True)
@@ -77,10 +96,9 @@ def user_login(username, password):
         usrPWHash = usr[0]['UserPassword']
         if isinstance(usrPWHash, str):
             usrPWHash = usrPWHash.encode('utf-8')
-
         token = get_user_token(usr[0]['Username'], usr[0]['UUID'])
         if (DBHelper.check_passwords(password, usrPWHash)) and (token is not None):
-            currDte = str(datetime.now())
+            currDte = str(datetime.now(timezone.utc))
             updatedLogin = DBHelper.update_value("UserAcct", "LastLogin", currDte, "Username", username)
             if not updatedLogin:
                 DBHelper.update_value("UserAcct", "LastLogin", currDte, "Email", username)
@@ -103,7 +121,7 @@ def create_account(fname, lname, username, phonenumber, password):
         hashedPassword = DBHelper.encrypt_password(password)
         sql = f"INSERT INTO UserAcct (Username, Email, FirstName, LastName, UserPassword, UUID, PhoneNumber, CreatedDate) " \
             "VALUES(%s, %s, %s, %s, %s, %s, %s, %s);"
-        vars = (username, username, fname, lname, hashedPassword, adm_uuid, phonenumber, datetime.now())
+        vars = (username, username, fname, lname, hashedPassword, adm_uuid, phonenumber, datetime.now(timezone.utc))
         res = DBHelper.run_query(sql, vars, fetch=False)
         token = get_user_token(username, adm_uuid)
         if not res or not token:
@@ -113,5 +131,16 @@ def create_account(fname, lname, username, phonenumber, password):
         print(f"ERROR: {e}")
         return jsonify({"result": e, "status": 400}), 400
     
+def create_new_otp(id, hash):
+    try:
+        sql = f"INSERT INTO OTPTokens (UserId, TokenHash, ExpireTime, HasVerified) " \
+            "Values(%s, %s, %s, %s);"
+        vars = (id, hash, datetime.now(timezone.utc), False)
+        res = DBHelper.run_query(sql, vars, fetch=False)
+        return res
+    except Exception as e:
+        print(f"ERROR: {e}")
+        return jsonify({"result": e, "status": 400}), 400
+
 def update_password():
     print('placeholder')

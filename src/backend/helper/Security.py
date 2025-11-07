@@ -1,9 +1,9 @@
 from flask import jsonify, request, g
 from functools import wraps
 from dotenv import load_dotenv
+from datetime import datetime, timezone, timedelta
 import random
 import jwt
-import datetime
 import os
 
 load_dotenv()
@@ -17,11 +17,11 @@ if not SECRET_KEY:
 def create_jwt(uuid, username):
     if not uuid or not username:
         return None
-    now = datetime.datetime.now(datetime.timezone.utc)
+    now = datetime.now(timezone.utc)
     payload = {
         "user_id": uuid,
         "username": username,
-        "exp": now + datetime.timedelta(minutes=120),
+        "exp": now + timedelta(minutes=120),
         "iat":now
     }
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGO_TO_USE)

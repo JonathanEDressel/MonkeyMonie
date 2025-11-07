@@ -16,7 +16,7 @@
         <label for="password" class="form-label me-3 mb-0"><strong>Password</strong></label>
       </div>
       <div class="col col-10">
-        <input id="password" type="password" class="form-control" [(ngModel)]="UserPassword" >
+        <input id="password" type="password" class="form-control" [(ngModel)]="UserPassword" (keydown.enter)="login()" >
       </div>
     </div>
     <div>
@@ -24,7 +24,7 @@
         <a href="forgotpassword">Forgot Password</a>
       </div>
     </div>
-    <button class="col-4 btn btn-success" (click)="login()">
+    <button class="col-4 btn btn-success" id="user-login-btn" (click)="login()">
       Login
       <i class="fa-solid fa-right-to-bracket"></i> 
     </button>

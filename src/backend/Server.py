@@ -10,7 +10,7 @@ import helper.Helper as DBHelper
 import helper.InitiateConnection as InitiateDB
 
 app = Flask(__name__)
-CORS(app)
+CORS(app)#, origins=["https://monkeymonie.com"])
 
 #add limiting for each user, not whole server...
 def run_db_checks():

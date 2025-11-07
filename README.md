@@ -1,6 +1,6 @@
-# Typescript-Learning
+# MonkeyMonie
 
-Creating a Angular app to learn more about login authentication, web security and many other fields.
+Creating a Angular app to learn more about login authentication, web security and many other areas.
 
 ## Running Back-End:
 1) Navigate to ./Typescript-Learning
@@ -15,6 +15,8 @@ Creating a Angular app to learn more about login authentication, web security an
 ## Running Front-End:
 1) Navigate to root folder
 2) Run "npm start" (assuming node.js is installed. If not, install here https://nodejs.org/en)
+    - run "ng serve" to run development (environment.ts)
+    - run "ng build --prod" to run for production (environment.prod.ts)
 3) Additional packages may need to be installed
 4) Open in the local browser
 
@@ -28,6 +30,8 @@ Creating a Angular app to learn more about login authentication, web security an
 * firebase login
 * npm run build
 * firebase deploy
+* You can preview changes with:
+    - firebase hosting:channel:deploy preview_name
 
 ## To-Do:
 * Create a login page
@@ -39,7 +43,7 @@ Creating a Angular app to learn more about login authentication, web security an
     * <s>Create sign up page</s>
     * Add payment page
     * Add forgot password page
-    * Create email svc with Postmark
+    * <s>Create email svc with Postmark</s>
     * Add email validation
     * Implement SSO
 * Setup the initial user db
@@ -53,14 +57,21 @@ Creating a Angular app to learn more about login authentication, web security an
     * <s>Add sql injection checks</s>
     * <s>Add AccountHistory table</s>
     * Add indexing to some tables (not sure which tables yet)
+* Overview page
+    * Grab currnet user accounts
+* Account page
+    * User can account <s>personal</s>/taxable
+    * User can delete account <s>personal</s>/taxable
+    * User can edit account <s>personal</s>/taxable
 * Error Logging DB:
     * <s>Add error logging table</s>
     * Find way to log errors in the table when exceptions are hit
 * Page routing
     * <s>Route pages on one page</s>
     * <s>Add auth for pages when not logged in</s>
-    * Add auth for admin pages
+    * <s>Add auth for admin pages</s>
 * Misc. 
     * <s>Switch to MySQL</s>
+    * <s>Inject GA4</s>
     * Create admin settings
     * Ability to generate a pdf

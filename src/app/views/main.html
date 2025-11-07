@@ -9,16 +9,19 @@
                     <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#nav3">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-                    <h3>{{user }} i</h3>
-                    <div class="collapse navbar-collapse justify-content-end" id="nav3">
+                    @if(user$ | async; as user)
+                    {
+                        <h3 style="color: white;">Welcome, {{ user.Username }}</h3>
+                    }
+                    <div class="collapse navbar-collapse justify-content-end">
                         <ul class="navbar-nav mb-2 mb-lg-0">
                             @for (pg of portalPages; track pg) {
-                                @if(pg.Visible) {
-                                    <li class="nav-item">
-                                        <a class="nav-link text-white" (click)="setPage(pg)" [routerLink]="pg.Route" [class.active]="selectedPage === pg.Id" >
-                                            {{pg.Title}}
-                                        </a>
-                                    </li>
+                                @if(pg.Visible$ | async) {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" (click)="setPage(pg)" [routerLink]="pg.Route" [class.active]="selectedPage === pg.Id" >
+                                        {{pg.Title}}
+                                    </a>
+                                </li>
                                 }
                             }
                         </ul>

@@ -1,10 +1,10 @@
-import { EmailValidator, FormsModule } from '@angular/forms';
-import { Component, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Component } from '@angular/core';
 import { UserData } from '../services/userdata';
 import { UserModel } from '../models/usermodel';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { RouterLink } from "@angular/router";
-import { NgComponentOutlet } from '@angular/common';
+import { NgComponentOutlet, AsyncPipe } from '@angular/common';
 import { OverviewComponent } from './portal/overview';
 import { HistoryComponent } from './portal/history';
 import { AccountsComponent } from './portal/accounts';
@@ -14,32 +14,40 @@ import { AuthData } from '../services/authdata';
 
 @Component({
   selector: 'main-root',
-  imports: [FormsModule, RouterLink, NgComponentOutlet],
+  imports: [FormsModule, RouterLink, NgComponentOutlet, AsyncPipe],
   templateUrl: '../views/main.html',
   styleUrl: '../styles/main.scss'
 })
 export class MainComponent {
-    constructor(private _usrData: UserData, private _authData: AuthData) {
-    }
-
-    users: UserModel[] = [];
-    numbers$ = 1;
+    portalPages: any[] = [];
     selectedPage: number = 2;
 
-    get user() {
-      // return this._usrData.user();
-      // console.log(this._usrData.user())
-      return "null";
+    user$: Observable<UserModel | null>;
+    isAdmin$: Observable<boolean>;
+
+    constructor(private _usrData: UserData, private _authData: AuthData) {
+      this.user$ = _usrData.user$;
+      this.isAdmin$ = _usrData.isAdmin$;
+      this.portalPages = this.createPages();
+      // this.user2 = this._usrData.currentUser;
     }
 
-    portalPages = [
-      { Id: 1, Title: 'Admin', class: "", Route: '/main', Visible: this.user, isSelected: Observable<false>, View: AdminComponent },
-      { Id: 2, Title: 'Overview', class: "", Route: '/main', Visible: true, isSelected: Observable<false>, View: OverviewComponent },
-      { Id: 3, Title: 'History', class: "", Route: '/main', Visible: true, isSelected: Observable<false>, View: HistoryComponent },
-      { Id: 4, Title: 'Account', class: "", Route: '/main', Visible: true, isSelected: Observable<false>, View: AccountsComponent },
-      { Id: 5, Title: 'Profile', class: "", Route: '/main', Visible: true, isSelected: Observable<false>, View: ProfileComponent },
-      { Id: 6, Title: '', class: "fa-solid fa-gear", Route: '/main', Visible: true, isSelected: Observable<false>, View: ProfileComponent }
-    ];
+    createPages() {
+      return [
+        { Id: 1, Title: 'Admin', class: "", Route: '/admin', Visible$: this.isAdmin$, isSelected: Observable<false>, View: AdminComponent },
+        { Id: 2, Title: 'Overview', class: "", Route: '/main', Visible$: this.setDefBool(true), isSelected: Observable<false>, View: OverviewComponent },
+        { Id: 3, Title: 'History', class: "", Route: '/main', Visible$: this.setDefBool(true), isSelected: Observable<false>, View: HistoryComponent },
+        { Id: 4, Title: 'Account', class: "", Route: '/main', Visible$: this.setDefBool(true), isSelected: Observable<false>, View: AccountsComponent },
+        { Id: 5, Title: 'Profile', class: "", Route: '/main', Visible$: this.setDefBool(true), isSelected: Observable<false>, View: ProfileComponent }
+      ];
+    }
+
+    setDefBool(data: boolean): Observable<boolean> {
+      return new Observable(obs => {
+        obs.next(data);
+        obs.complete();
+      })
+    }
 
     get getPage() {
       var page = this.portalPages.find(pg => this.selectedPage === pg.Id);
@@ -52,11 +60,9 @@ export class MainComponent {
 
     ngOnInit(): void {
       this._usrData.getUser();
-      console.log('numbers$ - ', this.numbers$)
     }
 
     activate(): void {
-
     }
 
     logout(): void {

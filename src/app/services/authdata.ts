@@ -1,5 +1,4 @@
 import { Injectable, Signal, signal } from "@angular/core";
-import { UserModel } from "../models/usermodel";
 import { Observable, of } from "rxjs";
 import { map } from 'rxjs/operators';
 import { AuthController } from "./controllers/authcontroller";
@@ -12,7 +11,6 @@ export class AuthData {
 
     constructor(private router: Router,private _authController: AuthController) {}
 
-    users: UserModel[] = [];
     isAdminUser = signal(false);
     ErrorMsg = signal("");
 

@@ -1,12 +1,13 @@
 <h3 class="text-start mt-2">Net Worth</h3>
 <div class="row mt-4 d-flex justify-content-center">
     <div class="col col-4">
-        <canvas id="networthchart" class="larger-canvas" style="height: 400px;" baseChart [data]="netWorthOverviewChart.data" [plugins]="netWorthOverviewChart.plugins!" [options]="netWorthOverviewChart.options" [type]="netWorthOverviewChart.type"> </canvas>
+        <!-- <canvas id="networthchart" class="larger-canvas" style="height: 400px;" baseChart [data]="netWorthOverviewChart.data" [plugins]="netWorthOverviewChart.plugins!" [options]="netWorthOverviewChart.options" [type]="netWorthOverviewChart.type"> </canvas> -->
+         <ag-charts-angular [options]="netWorthChartOptions"></ag-charts-angular>
     </div>
 </div>
 <hr />
 
-<h3 class="text-start">Retirement Accounts</h3>
+<!-- <h3 class="text-start">Retirement Accounts</h3>
 <div class="row mt-4 d-flex justify-content-center">
     <div class="col col-3">
         <canvas class="larger-canvas" style="height: 400px;" baseChart [data]="accountChart.data" [options]="accountChart.options" [type]="accountChart.type"> </canvas>
@@ -20,4 +21,4 @@
     <div class="col col-3">
         <canvas class="larger-canvas" style="height: 400px;" baseChart [data]="accountChart.data" [options]="accountChart.options!" [type]="accountChart.type"> </canvas>
     </div>
-</div>
+</div> -->

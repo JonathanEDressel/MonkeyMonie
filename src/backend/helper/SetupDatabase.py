@@ -61,7 +61,7 @@ def validate_db():
         "CreatedTime DATETIME, " \
         "Duration INTEGER, " \
         "Details VARCHAR(255), " \
-        "FOREIGN KEY (UserId) References UserAcct(Id))")
+        "FOREIGN KEY (UserId) References UserAcct(Id) ON DELETE CASCADE)")
     
     DBHelper.create_table("ReferralLog", "" \
         "(Id INTEGER PRIMARY KEY AUTO_INCREMENT, " \
@@ -70,48 +70,59 @@ def validate_db():
         "UsersReferred LONGBLOB, " \
         "MonthsDiscounted INTEGER, " \
         "UsedReferralCode TINYINT DEFAULT 0, "\
-        "FOREIGN KEY (UserId) References UserAcct(Id))")
+        "FOREIGN KEY (UserId) References UserAcct(Id) ON DELETE CASCADE)")
     
     DBHelper.create_table("PersonalAccounts", "" \
-        "(Id INTEGER PRIMARY KEY AUTO_INCREMENT, " \
+        "(Id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, " \
         "UserId INTEGER NOT NULL, " \
+        "IsActive TINYINT DEFAULT 1," \
         "Name VARCHAR(100), " \
         "Type VARCHAR(100), " \
+        "Balance FLOAT, " \
         "CreatedDate DATETIME, " \
-        "FOREIGN KEY (UserId) References UserAcct(Id))")
+        "FOREIGN KEY (UserId) References UserAcct(Id) ON DELETE CASCADE)")
     
     DBHelper.create_table("InvestmentAccounts", "" \
         "(Id INTEGER PRIMARY KEY AUTO_INCREMENT, " \
         "UserId INTEGER NOT NULL, " \
+        "IsActive TINYINT DEFAULT 1," \
         "Name VARCHAR(100), " \
         "Type VARCHAR(100), " \
+        "Balance FLOAT, " \
         "CreatedDate DATETIME, " \
         "Holdings LONGBLOB, " \
-        "FOREIGN KEY (UserId) References UserAcct(Id))")
+        "FOREIGN KEY (UserId) References UserAcct(Id) ON DELETE CASCADE)")
     
     DBHelper.create_table("AccountHoldings", "" \
         "(Id INTEGER PRIMARY KEY AUTO_INCREMENT, " \
         "InvestmentId INTEGER NOT NULL, " \
         "TickerSymbol VARCHAR(100), " \
         "Shares FLOAT, " \
-        "FOREIGN KEY (InvestmentId) References InvestmentAccounts(Id))")
+        "FOREIGN KEY (InvestmentId) References InvestmentAccounts(Id) ON DELETE CASCADE)")
     
     DBHelper.create_table("InvestmentAccountHistory", "" \
         "(Id INTEGER PRIMARY KEY AUTO_INCREMENT, " \
         "AccountId INTEGER NOT NULL, " \
         "RecordedDate DATETIME, " \
         "Balance FLOAT, " \
-        "FOREIGN KEY (AccountId) References InvestmentAccounts(Id))")
+        "FOREIGN KEY (AccountId) References InvestmentAccounts(Id) ON DELETE CASCADE)")
     
     DBHelper.create_table("PersonalAccountHistory", "" \
         "(Id INTEGER PRIMARY KEY AUTO_INCREMENT, " \
         "AccountId INTEGER NOT NULL, " \
         "RecordedDate DATETIME, " \
         "Balance FLOAT, " \
-        "FOREIGN KEY (AccountId) References PersonalAccounts(Id))")
+        "FOREIGN KEY (AccountId) References PersonalAccounts(Id) ON DELETE CASCADE)")
     
     DBHelper.create_table("ReleaseNotes", "" \
         "(Id INTEGER PRIMARY KEY AUTO_INCREMENT, " \
         "Version VARCHAR(100), " \
         "Notes VARCHAR(255), " \
         "DateAdded DATETIME)")
+    
+    DBHelper.create_table("OTPTokens", "" \
+        "(Id INTEGER PRIMARY KEY AUTO_INCREMENT, " \
+        "UserId INTEGER NOT NULL, " \
+        "TokenHash VARCHAR(255), " \
+        "ExpireTime DATETIME," \
+        "FOREIGN KEY (UserId) References UserAcct(Id))")

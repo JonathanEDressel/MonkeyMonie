@@ -39,7 +39,7 @@ def create_account():
         return jsonify({"result": e, "status": 400}), 400
     
 @auth_bp.route("/forgotPassword", methods=['POST'])
-@limiter.limit("1 per minute")
+@limiter.limit("100 per minute") #revert back after testing
 def forgot_password():
     try:
         req = request.json
@@ -49,7 +49,7 @@ def forgot_password():
             return jsonify({"result": "Email successfully sent!", "status": 200}), 200 
         
         params = (useremail, useremail)
-        usr = DBHelper.run_query("SELECT Email FROM UserAcct Where Username = %s or Email = %s", params, True)
+        usr = DBHelper.run_query("SELECT Id, Email FROM UserAcct Where Username = %s or Email = %s", params, True)
         if not usr:
             return jsonify({"result": "Please enter in a valid email", "status": 400}), 400
         
@@ -64,7 +64,6 @@ def forgot_password():
 @requires_token
 def is_admin():
     try:
-        # decoded = g.decoded_token
         res = _authCtx.is_admin()
         return jsonify({"result": res, "status": 200}), 200
     except Exception as e:

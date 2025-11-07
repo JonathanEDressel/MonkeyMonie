@@ -1,11 +1,10 @@
-# models.py
 from dataclasses import dataclass
 from datetime import datetime
 
 @dataclass
 class User:
     Id: int
-    Username: slice
+    Username: slice #Optional[str]
     FirstName: slice
     LastName: slice
     Email: slice
@@ -22,17 +21,17 @@ def data_to_model(data):
     if not data:
         return None
     return User(
-        Id=data['Id'],
-        Username=data['Username'],
-        FirstName=data['FirstName'],
-        LastName=data['LastName'],
-        Email=data['Email'],
-        PhoneNumber=data['PhoneNumber'],
-        CreatedDate=data['CreatedDate'],
-        ConfirmedEmail=bool(data['ConfirmedEmail']),
-        TwoFactor=bool(data['TwoFactor']),
-        LastLogin=data['LastLogin'],
-        IsDemo=bool(data['IsDemo']),
-        AdminLevel=data['AdminLevel'],
-        IsAdmin=bool(data['IsAdmin'])
+        Id=data.get('Id'),
+        Username=data.get('Username'),
+        FirstName=data.get('FirstName'),
+        LastName=data.get('LastName'),
+        Email=data.get('Email'),
+        PhoneNumber=data.get('PhoneNumber'),
+        CreatedDate=data.get('CreatedDate'),
+        ConfirmedEmail=bool(data.get('ConfirmedEmail')),
+        TwoFactor=bool(data.get('TwoFactor')),
+        LastLogin=data.get('LastLogin'),
+        IsDemo=bool(data.get('IsDemo')),
+        AdminLevel=data.get('AdminLevel'),
+        IsAdmin=bool(data.get('IsAdmin'))
     )

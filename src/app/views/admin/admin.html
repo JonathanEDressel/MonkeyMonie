@@ -1,1 +1,38 @@
-<h3> Admin page</h3>
+<div class="container main">
+    <div class="row header">
+        <div class="col col-12 text-center">
+            <nav class="navbar navbar-expand-lg">
+                <div class="container">
+                    <a class="navbar-brand fw-bold" routerLink="/main">
+                        <img class="logo-img" src="assets/images/monkeymonielogo.png" alt="MonkeyMonie Logo" height="70"/>
+                    </a>
+                    <a class="fa fa-home" style="font-size: xx-large; color: whitesmoke; cursor: pointer;" href="/main"></a>
+                    <div class="collapse navbar-collapse justify-content-end me-2">
+                        <ul class="navbar-nav mb-2 mb-lg-0">
+                            @for (pg of portalPages; track pg) {
+                                @if(pg.Visible$ | async) {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" (click)="setPage(pg)" [routerLink]="pg.Route" [class.active]="selectedPage === pg.Id" >
+                                        {{pg.Title}}
+                                    </a>
+                                </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                    <span class="logout-logo" (click)="logout()">
+                        <a>
+                            Logout
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </a>
+                    </span>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <div class="row" >
+        @if (getPage) {
+            <ng-conainer [ngComponentOutlet]="getPage"></ng-conainer>
+        }
+    </div>
+</div>

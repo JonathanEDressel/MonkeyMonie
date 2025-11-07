@@ -1,5 +1,4 @@
 from flask import jsonify
-from Extensions import limiter
 import helper.Helper as DBHelper
 import controllers.AuthDbContext as _authDbCtx
 
@@ -21,9 +20,3 @@ def get_current_user():
         return jsonify({"result": usr, "status": 200}), 200
     except Exception as e:
         return jsonify({"result": e, "status": 400}), 400
-
-def add_taxable_account():
-    return jsonify({"result": "success", "status": 200}), 200
-    
-def add_personal_account():
-    return jsonify({"result": "success", "status": 200}), 200

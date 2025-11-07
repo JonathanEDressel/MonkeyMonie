@@ -1,1 +1,107 @@
-<h2>Accounts</h2>
+
+@if (!showModal()) {
+    <div>
+        <h3 class="mt-4 text-start">Add Account</h3>
+        <div class="row d-flex align-items-center justify-content-center">
+            <div class="col col-3">
+                <span>Name</span>
+                <input class="form-control" placeholder="Account Nickname" [(ngModel)]="acctName"/>
+            </div>
+
+            <div class="col col-3">
+                <span>Balance</span>
+                <input class="form-control" placeholder="Balance" [(ngModel)]="acctBalance" />
+            </div>
+
+            <div class="col col-3">
+                <span>Type</span>
+                <input class="form-control" placeholder="Savings, checking, etc." [(ngModel)]="acctType" (keydown.enter)="addAccount()" />
+            </div>
+
+            <div class="col col-1 pt-4">
+                <span> </span>
+                <button class="btn btn-success" (click)="addAccount()">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+        </div>
+
+
+        <h3 class="mt-4 text-start">Added Accounts</h3>
+        <div class="container mt-4">
+            <table class="table table-bordered table-hover mt-4">
+                <thead class="thead-dark">
+                    <th>Name</th>
+                    <th>Balance</th>
+                    <th>Type</th>
+                    <th>Date Added</th>
+                    <th></th>
+                </thead>   
+                <tbody>
+                    @for (acct of personalAccts$ | async; track acct)
+                    {
+                        <tr class="clickable-row" (click)="selectAccount(acct)">
+                            <td>{{acct.Name}}</td>
+                            <td class="currency">{{acct.Balance}}</td>
+                            <td>{{acct.Type}}</td>
+                            <td>{{acct.DateAdded}}</td>
+                            <td>
+                                <button class="btn btn-sm btn-danger" (click)="removeAccount(acct.Id);  $event.stopPropagation()">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+@else {
+    <div class="d-flex align-items-center justify-content-center" style="height: 600px;">
+        <div class="card shadow p-4" style="width: 75%; height: 80%;">
+            <h4 class="text-center mb-3">Edit <span style="font-style: italic;">{{selectedAccount().Name}}</span></h4>
+            <h6 class="mb-4">Edit selected account details here</h6>
+            
+            <div class="d-flex align-items-center mb-3">
+                <div class="col col-4 text-end align-items-center">
+                    <label for="email" class="form-label me-5 mb-0"><strong>Account Name</strong></label>
+                </div>
+                <div class="col col-4">
+                    <input id="email" type="email" class="form-control" placeholder="name" [(ngModel)]="selectedAccount().Name" />
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center mb-3">
+                <div class="col col-4 text-end align-items-center">
+                    <label for="email" class="form-label me-5 mb-0"><strong>Account Type</strong></label>
+                </div>
+                <div class="col col-4">
+                    <input id="email" type="email" class="form-control" placeholder="name" [(ngModel)]="selectedAccount().Type" />
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center mb-3">
+                <div class="col col-4 text-end align-items-center">
+                    <label for="balance" class="form-label me-5 mb-0"><strong>Balance ($)</strong></label>
+                </div>
+                <div class="col col-4">
+                    <input id="balance" type="number" class="form-control" placeholder="$0.00" [(ngModel)]="selectedAccount().Balance" />
+                </div>
+            </div>
+
+            <div class="row d-flex justify-content-center mb-3">
+                <div class="col col-auto">
+                    <button class="btn btn-danger" (click)="closeModal()">
+                        <i class="fa-solid fa-ban" style="font-size: x-large;"></i>
+                    </button>
+                </div>
+                <div class="col col-auto">
+                    <button class="btn btn-success" (click)="updateAccount(selectedAccount())">
+                        <i class="fas fa-save" style="font-size: x-large;"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

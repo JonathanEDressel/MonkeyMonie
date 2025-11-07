@@ -1,6 +1,7 @@
 import { Injectable, signal } from "@angular/core";
 import { UserModel } from "../models/usermodel";
 import { UserController } from "./controllers/usercontroller";
+import { BehaviorSubject, Observable, map } from "rxjs";
 
 @Injectable({
     providedIn: 'root'
@@ -10,7 +11,9 @@ export class UserData {
     constructor(private _userController: UserController) {}
 
     users: UserModel[] = [];
-    user = signal(new UserModel()); //= new UserModel();
+
+    private userSubject = new BehaviorSubject<UserModel | null>(null);
+    user$: Observable<UserModel | null> = this.userSubject.asObservable();
 
     getUsers(): void {
       this._userController.getUsers().subscribe({
@@ -29,19 +32,26 @@ export class UserData {
         error: (err) => console.error(err)
       });
     }
+
     getUser(): void {
       this._userController.getUser().subscribe({
         next: (res: any) => {
-          this.user.set(new UserModel());
           if(res.status === 200) {
             var data = res.result;
             var tmp = new UserModel();
             tmp.assignData(data);
-            this.user.set(tmp);
+            this.userSubject.next(tmp);
           }
-          console.log('User - ', this.user())
         },
         error: (err: any) => console.error(err)
-      })
+      });
+    }
+
+    get currentUser(): UserModel {
+      return this.userSubject?.value ?? new UserModel();
+    }
+
+    get isAdmin$(): Observable<boolean> {
+      return this.user$.pipe(map(usr => usr?.IsAdmin ?? false));
     }
 }

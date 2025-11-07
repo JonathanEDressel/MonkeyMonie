@@ -1,4 +1,5 @@
 export class UserModel {
+    Id = <number>(0);
     Username = <string>("");
     FirstName = <string>("");
     LastName = <string>("");
@@ -13,6 +14,7 @@ export class UserModel {
     TwoFactor = <boolean>(false);
 
     constructor() {
+        this.Id = 0;
         this.Username = "";
         this.FirstName = "";
         this.LastName = "";
@@ -32,6 +34,7 @@ export class UserModel {
     }
 
     assignData(data: UserModel) {
+        this.Id = data.Id;
         this.Username = data.Username;
         this.FirstName = data.FirstName;
         this.LastName = data.LastName;
@@ -48,6 +51,7 @@ export class UserModel {
 
     getData() {
         return {
+            Id: this.Id,
             Username: this.Username,
             FirstName: this.FirstName,
             LastName: this.LastName,

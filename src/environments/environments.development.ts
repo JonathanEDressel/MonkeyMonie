@@ -1,5 +1,5 @@
-//For local development
+//For production
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:5000'
+  apiUrl: 'https://www.monkeymonie.com'
 };
