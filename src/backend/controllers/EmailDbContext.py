@@ -16,7 +16,7 @@ def send_usr_email(toAddress, subject, body):
         client = PostmarkClient(server_token=POSTMARK_TOKEN)
         res = client.emails.send(
             From=EMAIL_SENDER,
-            To="support@monkeymonie.com", #toAddress, #update this once Postmark approves the account
+            To=toAddress, #toAddress, #update this once Postmark approves the account
             Subject=subject,
             TextBody=body
         )
