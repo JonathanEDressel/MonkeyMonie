@@ -1,22 +1,45 @@
 import { FormsModule } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { UserData } from '../../services/userdata';
+import { Observable } from 'rxjs';
+import { UserModel } from '../../models/usermodel';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'overview-root',
-  imports: [FormsModule],
+  imports: [FormsModule, AsyncPipe],
   templateUrl: '../../views/portal/profile.html',
   styleUrl: '../../styles/portal/profile.scss'
 })
 
 export class ProfileComponent implements OnInit {
-    constructor(private _usrDta: UserData) {}
+
+    user$: Observable<UserModel | null>;
+    
+    newPassword: string = "";
+    confirmPassword: string = "";
+
+    constructor(private _usrData: UserData) {
+        this.user$ = _usrData.user$;
+    }
+
+    clearPasswords(): void {
+        this.newPassword = "";
+        this.confirmPassword = "";
+    }
+
+    resetPassword(): void {
+        //call to reset password
+        this.clearPasswords();
+    }
+
+    saveChanges(user: UserModel): void {
+        //call to save changes
+        console.log('user - ', user)
+    }
 
     ngOnInit(): void {
-        // this.activate();
-        //this is just for test purposes
-        // this._usrDta.getUsers()
-        // this._authSvc.isAdmin()
+        this._usrData.getUser();
     }
 
     activate(): void {

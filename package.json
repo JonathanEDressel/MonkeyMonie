@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "start-backend": "call .\\venv\\Scripts\\activate && cd .\\src\\backend && python Server.py"
   },
   "prettier": {
     "printWidth": 100,
