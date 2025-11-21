@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from Extensions import limiter
 from helper.Security import requires_token
 import controllers.UserDbContext as _usrCtx
+from models.UserModel import data_to_model, User
 
 usr_bp = Blueprint("user", __name__)
 
@@ -35,5 +36,16 @@ def update_password():
         newPassword = req.get('newpassword', '').strip()
         _usrCtx.update_password(newPassword)
         return jsonify({"result": "Successfully updated password", "status": 200}), 200
+    except Exception as e:
+        return jsonify({"result": e, "status": 400}), 400
+    
+@usr_bp.route('/user/update', methods=['PUT'])
+@limiter.limit("15 per minute")
+@requires_token
+def update_user():
+    try:
+        req = request.json
+        usr = data_to_model(req.get('user', User))
+        return jsonify({"result": "Successfully updated user", "status": 200}), 200
     except Exception as e:
         return jsonify({"result": e, "status": 400}), 400

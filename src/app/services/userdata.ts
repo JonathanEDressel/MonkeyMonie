@@ -57,6 +57,17 @@ export class UserData {
       })
     }
 
+    updateUser(user: UserModel): void {
+      this._userController.updateUser(user).subscribe({
+        next: (res: any) => {
+          if(res.status === 200) {
+
+          }
+          alert(res.result);
+        }
+      })
+    }
+
     get currentUser(): UserModel {
       return this.userSubject?.value ?? new UserModel();
     }
