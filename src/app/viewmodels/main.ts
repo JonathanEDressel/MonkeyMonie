@@ -37,7 +37,7 @@ export class MainComponent {
         { Id: 1, Title: 'Admin', class: "", Route: '/admin', Visible$: this.isAdmin$, isSelected: Observable<false>, View: AdminComponent },
         { Id: 2, Title: 'Overview', class: "", Route: '/main', Visible$: this.setDefBool(true), isSelected: Observable<false>, View: OverviewComponent },
         { Id: 3, Title: 'History', class: "", Route: '/main', Visible$: this.setDefBool(true), isSelected: Observable<false>, View: HistoryComponent },
-        { Id: 4, Title: 'Account', class: "", Route: '/main', Visible$: this.setDefBool(true), isSelected: Observable<false>, View: AccountsComponent },
+        { Id: 4, Title: 'Accounts', class: "", Route: '/main', Visible$: this.setDefBool(true), isSelected: Observable<false>, View: AccountsComponent },
         { Id: 5, Title: 'Profile', class: "", Route: '/main', Visible$: this.setDefBool(true), isSelected: Observable<false>, View: ProfileComponent }
       ];
     }

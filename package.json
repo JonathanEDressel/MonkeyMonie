@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "start-backend": "call .\\venv\\Scripts\\activate && cd .\\src\\backend && python Server.py"
+    "backend": "call .\\venv\\Scripts\\activate && cd .\\src\\backend && python Server.py",
+    "setup-python": "python -m venv .venv && .venv/Scripts/activate && pip install -r .\\src\\backend\\requirements.txt"
   },
   "prettier": {
     "printWidth": 100,
