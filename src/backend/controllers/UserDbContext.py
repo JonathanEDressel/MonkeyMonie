@@ -20,3 +20,15 @@ def get_current_user():
         return jsonify({"result": usr, "status": 200}), 200
     except Exception as e:
         return jsonify({"result": e, "status": 400}), 400
+    
+def update_password(newPassword):
+    try:
+        hashedPassword = DBHelper.encrypt_password(newPassword)
+        usr = _authDbCtx.get_current_user()
+        if not usr:
+            return jsonify({"result": "Unauthorized", "status": 401}), 401
+        sql = "UPDATE UserAcct SET UserPassword = %s WHERE Id = %s"
+        params = (hashedPassword, usr.Id)
+        return DBHelper.run_query(sql, params, False)
+    except Exception as e:
+        return jsonify({"result": e, "status": 400}), 400

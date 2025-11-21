@@ -33,6 +33,7 @@ def update_password():
     try:
         req = request.json
         newPassword = req.get('newpassword', '').strip()
+        _usrCtx.update_password(newPassword)
         return jsonify({"result": "Successfully updated password", "status": 200}), 200
     except Exception as e:
         return jsonify({"result": e, "status": 400}), 400
