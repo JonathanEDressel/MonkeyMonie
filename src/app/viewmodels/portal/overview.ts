@@ -30,15 +30,23 @@ export class OverviewComponent {
                 sectorLabelKey: 'value',
                 sectorLabel: {
                     formatter: params => 
-                        new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0}).format(params.datum.value)
+                        this.formatCurrency(params.datum.value)
                 },
                 innerLabels: [
                     {
-                        text: 'Net Worth',
+                        text: '$14,000',
                         fontSize: 14,
                         fontWeight: 'bold',
                     }
-                ]
+                ],
+                tooltip: {
+                    renderer: (params) => {
+                        var val = this.formatCurrency(params.datum.value, 2);
+                        return {
+                            title: `${params.datum.name}: ${val}`,
+                        }
+                    }
+                }
             },
         ],
         title: {
@@ -55,20 +63,20 @@ export class OverviewComponent {
             if (!accts || accts.length === 0)
                 return;
 
-            const formatted = accts.map(act => ({
+            const formatedActs = accts.map(act => ({
                 name: act.Name,
                 value: act.Balance
             }));
 
-            const total = formatted.reduce((sum, x) => sum + x.value, 0);
+            const total = formatedActs.reduce((sum, x) => sum + x.value, 0);
 
             this.netWorthChartOptions = {
                 ...this.netWorthChartOptions,
-                data: formatted,
+                data: formatedActs,
                 subtitle: {
                     fontSize: 24,
                     fontWeight: 'bold',
-                    text: `Total ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(total)}`
+                    text: `Total ${this.formatCurrency(total)}`
                 }
             }
         });
@@ -86,8 +94,13 @@ export class OverviewComponent {
     //     })
     // }
 
+    formatCurrency(val: number,dec: number = 0): string {
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: dec}).format(val);
+    }
+
     constructor(private _acctData: AcctData) {
         this.personalAccts$ = _acctData.personalAccounts$;
+        console.log(this.personalAccts$)
     }
 
     ngOnInit(): void {
