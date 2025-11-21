@@ -30,6 +30,7 @@ export class ProfileComponent implements OnInit {
 
     resetPassword(): void {
         //call to reset password
+        this._usrData.updatePassword(this.newPassword); 
         this.clearPasswords();
     }
 

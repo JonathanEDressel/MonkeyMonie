@@ -18,4 +18,10 @@ export class UserController {
     getUser() {
       return this.http.get<{token: string}>(`${this.apiURL}/user`);
     }
+
+    updatePassword(newPassword: string) {
+      return this.http.patch<{token: string}>(`${this.apiURL}/user/updatePassword`, {
+        newpassword: newPassword
+      });
+    }
 }

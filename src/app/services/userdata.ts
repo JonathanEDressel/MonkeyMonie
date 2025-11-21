@@ -47,6 +47,16 @@ export class UserData {
       });
     }
 
+    updatePassword(newPassword: string): void {
+      this._userController.updatePassword(newPassword).subscribe({
+        next: (res: any) => {
+          if(res.status === 200) {
+          }
+          alert(res.result);
+        }
+      })
+    }
+
     get currentUser(): UserModel {
       return this.userSubject?.value ?? new UserModel();
     }
