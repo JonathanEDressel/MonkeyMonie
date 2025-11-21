@@ -23,7 +23,7 @@ def add_personal_account(userid, name, type, balance):
         res.DateAdded = dte
         res.Name = name
         res.Type = type
-        res.Balance = 2300
+        res.Balance = balance
         return res
     except Exception as e:
         print(f"ERROR: {e}")

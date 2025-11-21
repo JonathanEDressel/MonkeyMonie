@@ -32,7 +32,6 @@ export class AdminComponent  {
             { Id: 2, Title: 'Site Statistics', class: "", Route: '/admin', Visible$: this.isAdmin$, isSelected: Observable<false>, View: UsersComponent },
             { Id: 3, Title: 'Payment Details', class: "", Route: '/admin', Visible$: this.isAdmin$, isSelected: Observable<false>, View: UsersComponent },
             { Id: 4, Title: 'Settings', class: "", Route: '/admin', Visible$: this.isAdmin$, isSelected: Observable<false>, View: UsersComponent },
-            // { Id: 2, Title: 'Overview', class: "", Route: '/admin', Visible$: this.setDefBool(true), isSelected: Observable<false>, View: OverviewComponent },
         ];
     }
 

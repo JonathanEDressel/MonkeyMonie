@@ -63,6 +63,12 @@ Creating a Angular app to learn more about login authentication, web security an
     * User can account <s>personal</s>/taxable
     * User can delete account <s>personal</s>/taxable
     * User can edit account <s>personal</s>/taxable
+* Admin page
+    * Shows all users 
+        * Ability to select account and edit
+    * Configure website settings
+    * Show site stats
+    * Show payment details
 * Error Logging DB:
     * <s>Add error logging table</s>
     * Find way to log errors in the table when exceptions are hit
