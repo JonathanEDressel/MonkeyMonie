@@ -1,6 +1,8 @@
-<div class="container main">
-    <div class="row header">
-        <div class="col col-12 text-center">
+<!-- Wrapper to keep header and body connected -->
+<div class="container-fluid p-0">
+    <!-- Navbar / Header -->
+    <div class="row header m-0">
+        <div class="col col-12 text-center p-0">
             <nav class="navbar navbar-expand-lg">
                 <div class="container">
                     <a class="navbar-brand fw-bold" routerLink="/main">
@@ -13,7 +15,7 @@
                     {
                         <h3 style="color: white;">Welcome, {{ user.Username }}</h3>
                     }
-                    <div class="collapse navbar-collapse justify-content-end">
+                    <div class="collapse navbar-collapse justify-content-end me-4">
                         <ul class="navbar-nav mb-2 mb-lg-0">
                             @for (pg of portalPages; track pg) {
                                 @if(pg.Visible$ | async) {
@@ -26,9 +28,6 @@
                             }
                         </ul>
                     </div>
-                    <a class="settings navbar-brand text-white fw-bold" href="/main">
-                        <i class="fa-solid fa-gear"></i>
-                    </a>
                     <span class="logout-logo" (click)="logout()">
                         <a>
                             Logout
@@ -39,9 +38,13 @@
             </nav>
         </div>
     </div>
-    <div class="row" >
-        @if(getPage) {
-            <ng-container [ngComponentOutlet]="getPage"></ng-container>
-        }
+
+    <!-- Main content / body -->
+    <div class="row main-body m-0">
+        <div class="col p-3">
+            @if(getPage) {
+                <ng-container [ngComponentOutlet]="getPage"></ng-container>
+            }
+        </div>
     </div>
 </div>
