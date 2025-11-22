@@ -46,6 +46,7 @@ def update_user():
     try:
         req = request.json
         usr = data_to_model(req.get('user', User))
+        _usrCtx.update_user(usr)
         return jsonify({"result": "Successfully updated user", "status": 200}), 200
     except Exception as e:
         return jsonify({"result": e, "status": 400}), 400

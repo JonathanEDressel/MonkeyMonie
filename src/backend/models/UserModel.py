@@ -14,8 +14,17 @@ class User:
     TwoFactor: bool
     LastLogin: datetime
     IsDemo: bool
-    AdminLevel: int
+    AdminLevel: slice
     IsAdmin: bool
+
+    def is_site_admin(self) -> bool:
+        return self.IsAdmin and str(self.AdminLevel).casefold() == "site"
+    
+    def is_demo(self) -> bool:
+        return self.IsDemo
+    
+    def full_name(self) -> str:
+        return self.FirstName + " " + self.LastName
 
 def data_to_model(data):
     if not data:
