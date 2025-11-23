@@ -89,7 +89,6 @@ def requires_token(f):
 
         usr = _usrDbContext.get_user_by_username(username)
         if not usr:
-            print("HERE UNAUTH", usr)
             return jsonify({"error": "User not found"}), 404
         
         #add a isActive attr. to UserModel and check if the account is active
