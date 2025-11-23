@@ -11,7 +11,16 @@ def get_users():
         return jsonify({"result": usrs, "status": 200}), 200
     except Exception as e:
         return jsonify({"result": e, "status": 400}), 400
-    
+
+def get_user_by_id(id):
+    try:
+        authusr = _authDbCtx.get_current_user()
+        if not authusr:        
+            return jsonify({"result": "Unauthorized", "status": 401}), 401
+        return jsonify({"result": authusr, "status": 200}), 200
+    except Exception as e:
+        return jsonify({"result": e, "status": 400}), 400
+
 def get_current_user():
     try:
         authusr = _authDbCtx.get_current_user()

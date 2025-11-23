@@ -126,3 +126,11 @@ def validate_db():
         "TokenHash VARCHAR(255), " \
         "ExpireTime DATETIME," \
         "FOREIGN KEY (UserId) References UserAcct(Id))")
+    
+    DBHelper.create_table("RevokedTokens", "" \
+        "(Id INTEGER PRIMARY KEY AUTO_INCREMENT, " \
+        "JTI VARCHAR(255), " \
+        "Revoked DATETIME)")
+    
+def add_user_isactive_column():
+    print('create')

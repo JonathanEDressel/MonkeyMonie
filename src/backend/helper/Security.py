@@ -2,6 +2,7 @@ from flask import jsonify, request, g
 from functools import wraps
 from dotenv import load_dotenv
 from datetime import datetime, timezone, timedelta
+import Helper as DBHelper
 import random
 import jwt
 import os
@@ -10,19 +11,28 @@ load_dotenv()
 
 SECRET_KEY=os.getenv("SECRET_KEY")
 ALGO_TO_USE=os.getenv("ALGO_TO_USE", "HS256")
+JWT_ISSUER=os.getenv("JWT_ISSUER")
+JWT_AUDIENCE=os.getenv("JWT_AUDIENCE")
+TOKEN_LIFETIME = 15
+MAX_TOKEN_LENGTH = 2000
 
 if not SECRET_KEY:
     raise ValueError("SECRET_KEY environment variable is not set.")
 
-def create_jwt(uuid, username):
+def create_jwt(uuid, username, extra_claims=None, kid=None):
     if not uuid or not username:
         return None
     now = datetime.now(timezone.utc)
+    expiration = now + timedelta(minutes=TOKEN_LIFETIME)
     payload = {
         "user_id": uuid,
         "username": username,
-        "exp": now + timedelta(minutes=120),
-        "iat":now
+        "exp": expiration,
+        "iat": now, #iat - time it was issued
+        "nbf": now, #nbf - cannot be issued befre x time to be valid
+        "iss": JWT_ISSUER, #iss - identifies the org. that created and signed the token. shows where the token originated
+        "aud": JWT_AUDIENCE, #aud - identifies the recipients for whom the token is intended. Prevents a token to be used for another system
+        "jti": str(uuid) + "-" + now.isoformat()
     }
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGO_TO_USE)
     if isinstance(token, bytes):
@@ -34,21 +44,59 @@ def create_jwt(uuid, username):
 def requires_token(f):
     @wraps(f)
     def decorator(*args, **kwargs):
-        token = None
-        if 'Authorization' in request.headers:
-            token = request.headers['Authorization'].split(" ")[1]
+        auth_header = request.headers.get("Authorization", "")
+        if not auth_header:
+            return jsonify({"error": "Missing Authorization header"}), 401
 
-        if not token:
-            return jsonify({'error': 'Token is missing'}), 401
+        parts = auth_header.split()
+        if len(parts) != 2 or parts[0].lower() != "bearer":
+            return jsonify({"error": "Invalid Authorization header format"}), 401
+
+        token = parts[1]
+
         try:
-            decoded = jwt.decode(token, SECRET_KEY, algorithms=[ALGO_TO_USE])
+            decoded = jwt.decode(
+                token,
+                SECRET_KEY,
+                ALGO_TO_USE,
+                JWT_ISSUER,
+                JWT_AUDIENCE,
+                options={"require": ["exp", "iat", "nbf", "jti", "iss", "aud"]}
+            )
         except jwt.ExpiredSignatureError:
-            return jsonify({'error': 'Token expired'}), 401
+            return jsonify({"error": "Token expired"}), 401
+        except jwt.InvalidAudienceError:
+            return jsonify({"error": "Invlaid token audience"}), 401
+        except jwt.InvalidIssuerError:
+            return jsonify({"error": "Invalid token issuer"}), 401
         except jwt.InvalidTokenError:
-            return jsonify({'error': 'Invalid token'}), 401
+            return jsonify({"error": "Invalid token"}), 401
+        
+        jti = decoded.get("jti")
+        if not jti:
+            return jsonify({"error": "Token is missing jti"}), 401
+        if token_is_revoked(jti):
+            return jsonify({"error": "Token is revoked"}), 401
+        usr_id = decoded.get("user_id")
+        if not usr_id:
+            return jsonify({"error": "Token is missing user_id"}), 401
+
+        
         g.decoded_token = decoded
         return f(*args, **kwargs)
     return decorator
+
+def token_is_revoked(dec_jwt):
+    try:
+        jti = dec_jwt.get('jti')
+        if not jti:
+            return True
+        sql = "SELET 1 FROM RevokedTokens WHERE jti = %s LIMIT 1"
+        params = (jti,)
+        res = DBHelper.run_query(sql, params, True)
+        return res is not None
+    except Exception as e:
+        return False
 
 def generate_otp(otp_len=6):
     try:
