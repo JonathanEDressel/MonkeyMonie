@@ -25,6 +25,7 @@ def create_jwt(uuid, username, extra_claims=None, kid=None):
         return None
     now = datetime.now(timezone.utc)
     expiration = now + timedelta(minutes=TOKEN_LIFETIME)
+    print(JWT_AUDIENCE)
     payload = {
         "user_id": uuid,
         "username": username,
@@ -32,7 +33,7 @@ def create_jwt(uuid, username, extra_claims=None, kid=None):
         "iat": now, #iat - time it was issued
         "nbf": now, #nbf - cannot be issued befre x time to be valid
         "iss": JWT_ISSUER, #iss - identifies the org. that created and signed the token. shows where the token originated
-        "aud": JWT_AUDIENCE, #aud - identifies the recipients for whom the token is intended. Prevents a token to be used for another system
+        # "aud": JWT_AUDIENCE, #aud - identifies the recipients for whom the token is intended. Prevents a token to be used for another system
         "jti": str(uuid) + "-" + now.isoformat()
     }
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGO_TO_USE)
@@ -61,18 +62,18 @@ def requires_token(f):
                 key=SECRET_KEY,
                 algorithms=[ALGO_TO_USE],
                 issuer=JWT_ISSUER,
-                audience=JWT_AUDIENCE,
+                # audience=JWT_AUDIENCE,
                 options={
-                    "require": ["exp", "iat", "jti", "iss", "aud"],
+                    "require": ["exp", "iat", "jti", "iss"], #aud
                     "verify_exp": True,
                     "verify_iss": True,
-                    "verify_aud": True,
+                    # "verify_aud": True
                 }
             )
         except jwt.ExpiredSignatureError:
             return jsonify({"error": "Token expired"}), 401
         except jwt.InvalidAudienceError:
-            return jsonify({"error": "Invlaid token audience"}), 401
+            return jsonify({"error": "Invalid token audience"}), 401
         except jwt.InvalidIssuerError:
             return jsonify({"error": "Invalid token issuer"}), 401
         except jwt.InvalidTokenError:
