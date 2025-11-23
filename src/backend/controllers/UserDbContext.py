@@ -1,5 +1,6 @@
 from flask import jsonify
 import helper.Helper as DBHelper
+import models.UserModel as UserModel
 import controllers.AuthDbContext as _authDbCtx
 
 def get_users():
@@ -14,10 +15,27 @@ def get_users():
 
 def get_user_by_id(id):
     try:
-        authusr = _authDbCtx.get_current_user()
-        if not authusr:        
-            return jsonify({"result": "Unauthorized", "status": 401}), 401
-        return jsonify({"result": authusr, "status": 200}), 200
+        sql = "SELECT * FROM UserAcct WHERE Id = %s LIMIT 1;"
+        params = (id,)
+        usr = DBHelper.run_query(sql, params, fetch=True)
+        res = UserModel.data_to_model(usr[0])
+
+        if usr:        
+            return res
+        return None
+    except Exception as e:
+        return jsonify({"result": e, "status": 400}), 400
+    
+def get_user_by_username(username):
+    try:
+        sql = "SELECT * FROM UserAcct WHERE Username = %s LIMIT 1;"
+        params = (username,)
+        usr = DBHelper.run_query(sql, params, fetch=True)
+        res = UserModel.data_to_model(usr[0])
+
+        if res:        
+            return res
+        return None
     except Exception as e:
         return jsonify({"result": e, "status": 400}), 400
 

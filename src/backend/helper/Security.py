@@ -2,7 +2,8 @@ from flask import jsonify, request, g
 from functools import wraps
 from dotenv import load_dotenv
 from datetime import datetime, timezone, timedelta
-import Helper as DBHelper
+import controllers.UserDbContext as _usrDbContext
+import helper.Helper as DBHelper
 import random
 import jwt
 import os
@@ -56,12 +57,17 @@ def requires_token(f):
 
         try:
             decoded = jwt.decode(
-                token,
-                SECRET_KEY,
-                ALGO_TO_USE,
-                JWT_ISSUER,
-                JWT_AUDIENCE,
-                options={"require": ["exp", "iat", "nbf", "jti", "iss", "aud"]}
+                jwt=token,
+                key=SECRET_KEY,
+                algorithms=[ALGO_TO_USE],
+                issuer=JWT_ISSUER,
+                audience=JWT_AUDIENCE,
+                options={
+                    "require": ["exp", "iat", "jti", "iss", "aud"],
+                    "verify_exp": True,
+                    "verify_iss": True,
+                    "verify_aud": True,
+                }
             )
         except jwt.ExpiredSignatureError:
             return jsonify({"error": "Token expired"}), 401
@@ -77,12 +83,19 @@ def requires_token(f):
             return jsonify({"error": "Token is missing jti"}), 401
         if token_is_revoked(jti):
             return jsonify({"error": "Token is revoked"}), 401
-        usr_id = decoded.get("user_id")
-        if not usr_id:
-            return jsonify({"error": "Token is missing user_id"}), 401
+        username = decoded.get("username")
+        if not username:
+            return jsonify({"error": "Token is missing username"}), 401
 
+        usr = _usrDbContext.get_user_by_username(username)
+        if not usr:
+            print("HERE UNAUTH", usr)
+            return jsonify({"error": "User not found"}), 404
         
+        #add a isActive attr. to UserModel and check if the account is active
+
         g.decoded_token = decoded
+        g.current_user = usr
         return f(*args, **kwargs)
     return decorator
 
