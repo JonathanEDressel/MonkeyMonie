@@ -132,5 +132,9 @@ def validate_db():
         "JTI VARCHAR(255), " \
         "Revoked DATETIME)")
     
+def add_columns():
+    add_user_isactive_column()
+    
 def add_user_isactive_column():
-    print('create')
+    DBHelper.add_column("UserAcct", "IsActive", "TINYINT", 0)
+    DBHelper.add_column("UserAcct", "ExpireDate", "DATETIME", None)

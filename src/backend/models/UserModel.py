@@ -14,6 +14,8 @@ class User:
     TwoFactor: bool
     LastLogin: datetime
     IsDemo: bool
+    ExpireDate: datetime
+    IsActive: bool
     AdminLevel: slice
     IsAdmin: bool
 
@@ -23,8 +25,14 @@ class User:
     def is_demo(self) -> bool:
         return self.IsDemo
     
+    def is_active(self) -> bool:
+        return self.IsActive
+    
     def full_name(self) -> str:
         return self.FirstName + " " + self.LastName
+    
+    def has_expired(self) -> bool:
+        return not self.is_site_admin() and self.is_demo() and self.ExpireDate() < datetime.now()
 
 def data_to_model(data):
     if not data:
@@ -41,6 +49,8 @@ def data_to_model(data):
         TwoFactor=bool(data.get('TwoFactor')),
         LastLogin=data.get('LastLogin'),
         IsDemo=bool(data.get('IsDemo')),
+        ExpireDate=data.get('ExpireDate'),
+        IsActive=bool(data.get('IsActive')),
         AdminLevel=data.get('AdminLevel'),
         IsAdmin=bool(data.get('IsAdmin'))
     )

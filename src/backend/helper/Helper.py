@@ -108,6 +108,35 @@ def create_table(table, fields):
     except Exception as e:
         print(f"ERROR create_table(): {e}")
         return False
+  
+def add_column(table, column, type, defColumnValue):
+    try:
+        print(f"Checking if {column} exists in {table}.")
+        if not table.isidentifier() or not column.isidentifier():
+            print("Invalid table to column name")
+            return False
+        
+        sql = f"SELECT COLUMN_NAME " \
+            "FROM INFORMATION_SCHEMA.COLUMNS " \
+            "WHERE TABLE_SCHEMA = DATABASE() " \
+            "AND TABLE_NAME = %s " \
+            "AND COLUMN_NAME = %s;"
+        params = (table, column)
+        res = run_query(sql, params, fetch=True)
+        
+        if res:
+            print(f"Column {column} in {table} already exists.")
+            return True
+        
+        print(f"Column {column} does not exist in {table}.")
+        
+        sql = f"ALTER TABLE {table} ADD COLUMN {column} {type} DEFAULT %s;"
+        run_query(sql, (defColumnValue,))
+        return True
+        
+    except Exception as e:
+        print(f"ERROR add_column(): {e}")
+        return False
     
 def encrypt_password(password: str | bytes):
     try:

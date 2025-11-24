@@ -9,6 +9,8 @@ export class UserModel {
     CreatedDate = <string>("");
     IsDemo = <boolean>(false);
     IsAdmin = <boolean>(false);
+    ExpireDate = <string>("");
+    IsActive = <boolean>(false);
     AdminLevel = <string>("");
     ConfirmedEmail = <boolean>(false);
     TwoFactor = <boolean>(false);
@@ -24,6 +26,8 @@ export class UserModel {
         this.CreatedDate = "";
         this.IsDemo = false;
         this.IsAdmin = false;
+        this.ExpireDate = "";
+        this.IsActive = false;
         this.AdminLevel = "";
         this.ConfirmedEmail = false;
         this.TwoFactor = false;
@@ -44,6 +48,8 @@ export class UserModel {
         this.CreatedDate = (new Date(data.CreatedDate)).toLocaleDateString();
         this.IsDemo = data.IsDemo;
         this.IsAdmin = data.IsAdmin;
+        this.ExpireDate = (data.ExpireDate ? new Date(data.ExpireDate).toLocaleDateString() : "N/A");
+        this.IsActive = data.IsActive;
         this.AdminLevel = data.AdminLevel;
         this.ConfirmedEmail = data.ConfirmedEmail;
         this.TwoFactor = data.TwoFactor;
@@ -61,6 +67,8 @@ export class UserModel {
             CreatedDate: this.CreatedDate,
             IsDemo: this.IsDemo,
             IsAdmin: this.IsAdmin,
+            ExpireDate: this.ExpireDate,
+            IsActive: this.IsActive,
             AdminLevel: this.AdminLevel,
             ConfirmedEmail: this.ConfirmedEmail,
             TwoFactor: this.TwoFactor,

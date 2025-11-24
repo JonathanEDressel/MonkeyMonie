@@ -37,6 +37,18 @@
     <input class="form-check-input switch-big" type="checkbox" id="twoFactor" [(ngModel)]="user.TwoFactor">
   </div>
 
+  <div class="form-check form-switch mb-3" style="width: 25%;">
+    <strong class="form-check-label" for="twoFactor">Account Active</strong>
+    <input class="form-check-input switch-big" type="checkbox" id="twoFactor" [(ngModel)]="user.IsActive">
+  </div>
+
+  <div class="mb-3 d-flex flex-column" style="width: 25%;">
+    <label class="form-label mb-1"><strong>Expiration Date</strong></label>
+    <div class="p-2 border rounded bg-light text-muted">
+      <strong>{{ user.ExpireDate || '—' }}</strong>
+    </div>
+  </div>
+
   <div class="mb-3 d-flex flex-column" style="width: 25%;">
     <label class="form-label mb-1"><strong>Created Date</strong></label>
     <div class="p-2 border rounded bg-light text-muted">
