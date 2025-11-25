@@ -1,5 +1,4 @@
 from dotenv import load_dotenv
-# import InitiateConnection
 import mysql.connector
 import bcrypt
 import uuid

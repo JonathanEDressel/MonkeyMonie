@@ -27,9 +27,8 @@ def validate_db():
     DBHelper.create_table("ErrorLog", "" \
         "(Id INTEGER PRIMARY KEY AUTO_INCREMENT, " \
         "EventTimeStamp DATETIME, " \
-        "EventText VARCHAR(100), " \
-        "Detail LONGBLOB, " \
-        "Parameters LONGBLOB, " \
+        "StackTrace TEXT, " \
+        "Detail TEXT, " \
         "Username VARCHAR(100))")
     
     DBHelper.create_table("EventLog", "" \

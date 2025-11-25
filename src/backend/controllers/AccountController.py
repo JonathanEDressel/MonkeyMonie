@@ -3,6 +3,7 @@ from helper.Security import requires_token
 from Extensions import limiter
 import controllers.AuthDbContext as _authCtx
 import controllers.AccountDbContext as _actCtx
+from .ErrorController import log_error_to_db
 
 act_bp = Blueprint("act", __name__)
 
@@ -27,7 +28,7 @@ def add_personal():
         _actCtx.add_personal_record(act.Id, balance)
         return jsonify({"result": act, "status": 200}), 200
     except Exception as e:
-        print(f"ERROR: {e}")
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
 @act_bp.route('/update/personal/<int:AcctId>', methods=['PATCH'])
@@ -47,7 +48,7 @@ def update_personal(AcctId):
         _actCtx.update_personal_account(AcctId, name, type, balance)
         return jsonify({"result": AcctId, "status": 200}), 200
     except Exception as e:
-        print(f"ERROR: {e}")
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
 @act_bp.route('/remove/personal/<int:AcctId>', methods=['DELETE'])
@@ -63,7 +64,7 @@ def remove_personal(AcctId):
         _actCtx.remove_personal_account(AcctId, usr.Id)
         return jsonify({"result": "account removed", "status": 200}), 200 
     except Exception as e:
-        print(f"ERROR: {e}")
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
 @act_bp.route('/personal', methods=['Get'])
@@ -77,5 +78,5 @@ def get_personal_accounts():
         acts = _actCtx.get_personal_accounts(userid)
         return jsonify({"result": acts, "status": 200}), 200
     except Exception as e:
-        print(f"ERROR: {e}")
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400

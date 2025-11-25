@@ -1,6 +1,7 @@
 from email.mimie.text import MIMEText
 from flask import jsonify
 import EmailDbContext as _emailDbCtx
+from .ErrorController import log_error_to_db
 import smtplib
 
 def send_usr_email(toAddress, fromAddress, subject, body):
@@ -8,5 +9,5 @@ def send_usr_email(toAddress, fromAddress, subject, body):
         print("Sending OTP")
         return _emailDbCtx.send_usr_email(toAddress, fromAddress, subject, body)
     except Exception as e:
-        print(f"ERROR: {e}")
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400

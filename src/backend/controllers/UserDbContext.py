@@ -1,4 +1,5 @@
 from flask import jsonify
+from .ErrorController import log_error_to_db
 import helper.Helper as DBHelper
 import models.UserModel as UserModel
 import controllers.AuthDbContext as _authDbCtx
@@ -11,6 +12,7 @@ def get_users():
         usrs = DBHelper.run_query(sql, None, fetch=True)
         return jsonify({"result": usrs, "status": 200}), 200
     except Exception as e:
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
 
 def get_user_by_id(id):
@@ -24,6 +26,7 @@ def get_user_by_id(id):
             return res
         return None
     except Exception as e:
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
 def get_user_by_username(username):
@@ -37,6 +40,7 @@ def get_user_by_username(username):
             return res
         return None
     except Exception as e:
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
 
 def get_current_user():
@@ -46,6 +50,7 @@ def get_current_user():
             return jsonify({"result": "Unauthorized", "status": 401}), 401
         return jsonify({"result": authusr, "status": 200}), 200
     except Exception as e:
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
 def update_password(newPassword):
@@ -58,6 +63,7 @@ def update_password(newPassword):
         params = (hashedPassword, authusr.Id)
         return DBHelper.run_query(sql, params, False)
     except Exception as e:
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
 def update_user(user):
@@ -104,4 +110,5 @@ def update_user(user):
         
         return DBHelper.run_query(sql, tuple(params), False)
     except Exception as e:
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400

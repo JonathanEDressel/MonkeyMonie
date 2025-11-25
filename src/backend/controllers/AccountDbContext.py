@@ -1,5 +1,6 @@
 from flask import jsonify
 from datetime import datetime, timezone
+from .ErrorController import log_error_to_db
 import helper.Helper as DBHelper
 import models.PersonalAccountModel as PersonalAccount
 
@@ -26,7 +27,7 @@ def add_personal_account(userid, name, type, balance):
         res.Balance = balance
         return res
     except Exception as e:
-        print(f"ERROR: {e}")
+        log_error_to_db(e)
         return -1
    
 def update_personal_account(acctid, name, type, balance):
@@ -36,7 +37,7 @@ def update_personal_account(acctid, name, type, balance):
         print(f"Updating personal account {acctid}")
         return DBHelper.run_query(sql, params, False)
     except Exception as e:
-        print(f"ERROR: {e}")
+        log_error_to_db(e)
         return False
    
 def remove_personal_account(acctid, userid):
@@ -46,7 +47,7 @@ def remove_personal_account(acctid, userid):
         print(f"Removing personal account {acctid} for user {userid}")
         return DBHelper.run_query(sql, params, False)
     except Exception as e:
-        print(f"ERROR: {e}")
+        log_error_to_db(e)
         return False
     
 def get_personal_accounts(userid):
@@ -65,7 +66,7 @@ def get_personal_accounts(userid):
             res.append(tmp)
         return res
     except Exception as e:
-        print(f"ERROR: {e}")
+        log_error_to_db(e)
         return -1
     
 #PersonalAccountHistory
@@ -78,7 +79,7 @@ def add_personal_record(accountid, balance):
             print(f"Account ({accountid}) record added successfully")
         return id
     except Exception as e:
-        print(f"ERROR: {e}")
+        log_error_to_db(e)
         return False
     
 def personal_acct_is_users(acctid, userid):
@@ -91,5 +92,5 @@ def personal_acct_is_users(acctid, userid):
                 break
         return hasAccount
     except Exception as e:
-        print(f"ERROR: {e}")
+        log_error_to_db(e)
         return False

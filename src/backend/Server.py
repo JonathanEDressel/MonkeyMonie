@@ -1,13 +1,10 @@
-from flask import Flask, jsonify, request, abort
-# from dotenv import load_dotenv
+from flask import Flask
 from Extensions import limiter
 from flask_limiter.util import get_remote_address
 from flask_cors import CORS
 from Routes import register_routes
 from datetime import datetime
 import helper.SetupDatabase as SetupDB
-import helper.Helper as DBHelper
-import helper.InitiateConnection as InitiateDB
 
 app = Flask(__name__)
 CORS(app)#, origins=["https://monkeymonie.com"])

@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from Extensions import limiter
 from helper.Security import requires_token
+from .ErrorController import log_error_to_db
 import controllers.UserDbContext as _usrCtx
 from models.UserModel import data_to_model, User
 
@@ -16,6 +17,7 @@ def get_users():
     try:
         return _usrCtx.get_users()
     except Exception as e:
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
 @usr_bp.route('/user', methods=['GET'])
@@ -25,6 +27,7 @@ def get_user():
     try:
         return _usrCtx.get_current_user()
     except Exception as e:
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
 @usr_bp.route('/user/updatePassword', methods=['PATCH'])
@@ -37,6 +40,7 @@ def update_password():
         _usrCtx.update_password(newPassword)
         return jsonify({"result": "Successfully updated password", "status": 200}), 200
     except Exception as e:
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
 @usr_bp.route('/user/update', methods=['PUT'])
@@ -49,4 +53,5 @@ def update_user():
         _usrCtx.update_user(usr)
         return jsonify({"result": "Successfully updated user", "status": 200}), 200
     except Exception as e:
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400

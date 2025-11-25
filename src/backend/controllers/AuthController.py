@@ -6,6 +6,7 @@ import controllers.AuthDbContext as _authCtx
 import controllers.EmailDbContext as _emailCtx
 import helper.Helper as DBHelper
 import helper.Security as Security
+from .ErrorController import log_error_to_db
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -18,7 +19,7 @@ def user_login():
         password = req.get('userpassword', '').strip()
         return _authCtx.user_login(username, password)
     except Exception as e:
-        print(f"ERROR: {e}")
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
 @auth_bp.route('/signup',methods=['POST'])
@@ -35,7 +36,7 @@ def create_account():
             return jsonify({"result": "Please enter a valid username and password", "status": 400}), 400
         return _authCtx.create_account(fname, lname, username, phonenumber, password)
     except Exception as e:
-        print(f"ERROR: {e}")
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
 @auth_bp.route("/forgotPassword", methods=['POST'])
@@ -56,7 +57,7 @@ def forgot_password():
         otp = Security.generate_otp(6)
         return _emailCtx.send_usr_email(useremail, "Two FA Passcode", f"Your one-time passcode: {otp}")
     except Exception as e:
-        print(f"ERROR: {e}")
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
 @auth_bp.route('/isAdmin', methods=['GET'])
@@ -67,4 +68,5 @@ def is_admin():
         res = _authCtx.is_admin()
         return jsonify({"result": res, "status": 200}), 200
     except Exception as e:
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400

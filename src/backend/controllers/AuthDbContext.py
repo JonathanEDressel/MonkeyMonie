@@ -2,6 +2,7 @@ from flask import jsonify, request
 from datetime import datetime, timezone
 import helper.Helper as DBHelper
 import helper.Security as Security
+from .ErrorController import log_error_to_db
 from models.UserModel import data_to_model
 import jwt
 import os
@@ -31,7 +32,7 @@ def get_current_user():
             return res
         return None
     except Exception as e:
-        print(f"ERROR: {e}")
+        log_error_to_db(e)
         return None
 
 def get_current_user_id():
@@ -51,7 +52,7 @@ def get_current_user_id():
             return res
         return -1
     except Exception as e:
-        print(f"ERROR: {e}")
+        log_error_to_db(e)
         return None
 
 def is_admin():
@@ -61,7 +62,7 @@ def is_admin():
             return False
         return auth_usr.IsAdmin
     except Exception as e:
-        print(f"ERROR: {e}")
+        log_error_to_db(e)
         return False    
 
 def has_admin():
@@ -83,8 +84,7 @@ def has_admin():
                     1, 0, "Site", 1, 0)
             DBHelper.run_query(sql, params)
     except Exception as e:
-        print(f"ERROR: {e}")
-        
+        log_error_to_db(e)
 
 def user_login(username, password):
     try:
@@ -113,7 +113,7 @@ def user_login(username, password):
         return jsonify({"result": "Invalid login credentials", "status": 409}), 409
         
     except Exception as e:
-        print(f"ERROR: {e}")
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
 def create_account(fname, lname, username, phonenumber, password):
@@ -135,7 +135,7 @@ def create_account(fname, lname, username, phonenumber, password):
             return jsonify({"result": "Failed to create user account", "status": 400}), 400
         return jsonify({"token": token}), 200
     except Exception as e:
-        print(f"ERROR: {e}")
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
 def create_new_otp(id, hash):
@@ -146,7 +146,7 @@ def create_new_otp(id, hash):
         res = DBHelper.run_query(sql, vars, fetch=False)
         return res
     except Exception as e:
-        print(f"ERROR: {e}")
+        log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
 
 def update_password():
