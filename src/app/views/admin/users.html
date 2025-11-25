@@ -32,89 +32,83 @@
       </table>
     }
     @else {
-      <div class="card shadow-sm mt-4 p-4">
-        <h3 class="mb-3">Edit User</h3>
+    <div class="container mt-4">
 
-        <form #editForm="ngForm">
-
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label>Username</label>
-              <input type="text" class="form-control"
-                     [(ngModel)]="selectedUser().Username"
-                     name="Username">
-            </div>
-
-            <div class="col-md-6 mb-3">
-              <label>Email</label>
-              <input type="email" class="form-control"
-                     [(ngModel)]="selectedUser().Email"
-                     name="Email">
-            </div>
-
-            <div class="col-md-6 mb-3">
-              <label>First Name</label>
-              <input type="text" class="form-control"
-                     [(ngModel)]="selectedUser().FirstName"
-                     name="FirstName">
-            </div>
-
-            <div class="col-md-6 mb-3">
-              <label>Last Name</label>
-              <input type="text" class="form-control"
-                     [(ngModel)]="selectedUser().LastName"
-                     name="LastName">
-            </div>
-
-            <div class="col-md-6 mb-3">
-              <label>Phone Number</label>
-              <input type="text" class="form-control"
-                     [(ngModel)]="selectedUser().PhoneNumber"
-                     name="PhoneNumber">
-            </div>
-
-            <div class="col-md-6 mb-3">
-              <label>Expire Date</label>
-              <input type="date" class="form-control"
-                     [(ngModel)]="selectedUser().ExpireDate"
-                     name="ExpireDate">
-            </div>
-
-            <div class="col-12 mb-3 form-check">
-              <input type="checkbox" class="form-check-input"
-                     [(ngModel)]="selectedUser().IsActive"
-                     name="IsActive">
-              <label class="form-check-label">Is Active</label>
-            </div>
-
-            <div class="col-12 mb-3 form-check">
-              <input type="checkbox" class="form-check-input"
-                     [(ngModel)]="selectedUser().IsAdmin"
-                     name="IsAdmin">
-              <label class="form-check-label">Is Admin</label>
-            </div>
-
-            <div class="col-12 mb-3 form-check">
-              <input type="checkbox" class="form-check-input"
-                     [(ngModel)]="selectedUser().ConfirmedEmail"
-                     name="ConfirmedEmail">
-              <label class="form-check-label">Confirmed Email</label>
-            </div>
-          </div>
-
-          <div class="mt-4 d-flex gap-3">
-            <button class="btn btn-primary" (click)="saveUser(selectedUser())">
-              Save
-            </button>
-
-            <button class="btn btn-secondary"
-                    (click)="clearAccount()">
-              Back
-            </button>
-          </div>
-
-        </form>
+      <div class="d-flex justify-content-end mb-3">
+        <button type="button" class="btn btn-success" (click)="saveUser(selectedUser())">
+          Save Changes
+        </button>
       </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="form-floating">
+            <input type="text" id="username" class="form-control" [(ngModel)]="selectedUser().Username" name="Username">
+            <label for="username">Username</label>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-floating">
+            <input type="email" id="email" class="form-control" [(ngModel)]="selectedUser().Email" name="Email">
+            <label for="email">Email</label>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-floating">
+            <input type="tel" id="phone" class="form-control" [(ngModel)]="selectedUser().PhoneNumber" name="PhoneNumber">
+            <label for="phone">Phone Number</label>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-floating">
+            <input type="text" id="firstName" class="form-control" [(ngModel)]="selectedUser().FirstName" name="FirstName">
+            <label for="firstName">First Name</label>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-floating">
+            <input type="text" id="lastName" class="form-control" [(ngModel)]="selectedUser().LastName" name="LastName">
+            <label for="lastName">Last Name</label>
+          </div>
+        </div>
+
+        <div class="col-md-4 d-flex flex-column">
+          <label class="form-label mb-1"><strong>Expiration Date</strong></label>
+          <input type="date" class="form-control" [(ngModel)]="selectedUser().ExpireDate" name="ExpireDate">
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-check form-switch mt-2">
+            <label class="form-check-label fw-bold" for="isActive">Is Active</label>
+            <input class="form-check-input switch-big" type="checkbox" id="isActive" [(ngModel)]="selectedUser().IsActive" name="IsActive">
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-check form-switch mt-2">
+            <label class="form-check-label fw-bold" for="isAdmin">Is Admin</label>
+            <input class="form-check-input switch-big" type="checkbox" id="isAdmin" [(ngModel)]="selectedUser().IsAdmin" name="IsAdmin">
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-check form-switch mt-2">
+            <label class="form-check-label fw-bold" for="confirmedEmail">Confirmed Email</label>
+            <input class="form-check-input switch-big" type="checkbox" id="confirmedEmail" [(ngModel)]="selectedUser().ConfirmedEmail" name="ConfirmedEmail">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="d-flex gap-3 mt-4">
+        <button class="btn btn-secondary" (click)="clearAccount()">Back</button>
+        <button class="btn btn-primary" (click)="saveUser(selectedUser())">Save</button>
+      </div>
+
+    </div>
     }
   </div>
 </div>
