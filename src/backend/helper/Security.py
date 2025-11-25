@@ -25,7 +25,6 @@ def create_jwt(uuid, username, extra_claims=None, kid=None):
         return None
     now = datetime.now(timezone.utc)
     expiration = now + timedelta(minutes=TOKEN_LIFETIME)
-    print(JWT_AUDIENCE)
     payload = {
         "user_id": uuid,
         "username": username,

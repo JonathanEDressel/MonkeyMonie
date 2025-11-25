@@ -74,6 +74,8 @@ def update_user(user):
         if authusr.is_site_admin():
             fields_to_update.append("IsDemo")
             fields_to_update.append("IsAdmin")
+            fields_to_update.append("IsActive")
+            fields_to_update.append("ExpireDate")
             fields_to_update.append("ConfirmedEmail")
             fields_to_update.append("AdminLevel")
         set_clause = ", ".join([f"{field} = %s" for field in fields_to_update])

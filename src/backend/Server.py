@@ -15,6 +15,7 @@ CORS(app)#, origins=["https://monkeymonie.com"])
 #add limiting for each user, not whole server...
 def run_db_checks():
     SetupDB.validate_db()
+    SetupDB.add_columns()
 
 @app.route('/')
 def home():

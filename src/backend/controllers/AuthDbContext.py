@@ -90,13 +90,16 @@ def user_login(username, password):
     try:
         sql = f"SELECT UserPassword, Username, UUID FROM UserAcct WHERE Username=%s or Email=%s"
         vars = (username, username)
-        usr = DBHelper.run_query(sql, vars, True)
-        if not usr:
+        jsonusr = DBHelper.run_query(sql, vars, True)
+        usr = data_to_model(jsonusr)
+        print("BEFORE")
+        print(usr.IsActive)
+        if not jsonusr or not usr.IsActive:
             return jsonify({"result": "Invalid login credentials", "status": 400}), 400
-        usrPWHash = usr[0]['UserPassword']
+        usrPWHash = jsonusr[0]['UserPassword']
         if isinstance(usrPWHash, str):
             usrPWHash = usrPWHash.encode('utf-8')
-        token = get_user_token(usr[0]['Username'], usr[0]['UUID'])
+        token = get_user_token(jsonusr[0]['Username'], jsonusr[0]['UUID'])
         if (DBHelper.check_passwords(password, usrPWHash)) and (token is not None):
             currDte = str(datetime.now(timezone.utc))
             updatedLogin = DBHelper.update_value("UserAcct", "LastLogin", currDte, "Username", username)
