@@ -31,6 +31,7 @@ export class UsersComponent  {
 
     saveUser(usr: UserModel) {
         console.log('save user - ', usr)
+        this._usrData.updateUser(usr);
     }
 
     clearAccount() {

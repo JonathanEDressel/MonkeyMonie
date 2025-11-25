@@ -8,7 +8,7 @@ def get_users():
     try:
         if not _authDbCtx.is_admin():        
             return jsonify({"result": "Unauthorized", "status": 401}), 401
-        sql = "SELECT Id, Username, FirstName, LastName, Email, IsActive, ExpireDate, PhoneNumber, CreatedDate, LastLogin FROM UserAcct;"
+        sql = "SELECT Id, Username, FirstName, LastName, Email, IsActive, IsAdmin, ExpireDate, PhoneNumber, CreatedDate, LastLogin FROM UserAcct;"
         usrs = DBHelper.run_query(sql, None, fetch=True)
         return jsonify({"result": usrs, "status": 200}), 200
     except Exception as e:
