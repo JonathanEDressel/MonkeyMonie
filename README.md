@@ -60,22 +60,33 @@ Creating a Angular app to learn more about login authentication, web security an
 * Overview page
     * Grab currnet user accounts
 * Profile page
-    * User can save changes to their account
+    * <s>User can save changes to their account</s>
     * Show payment history and details
     * Show account stats 
         * Number of accounts (personal and taxable)
-        * 
     * <s>User can change password for account</s>
 * Account page
     * User can account <s>personal</s>/taxable
     * User can delete account <s>personal</s>/taxable
     * User can edit account <s>personal</s>/taxable
 * Admin page
-    * Shows all users 
-        * Ability to select account and edit
+    * Users Page 
+        * <s>Ability to select account and edit</s>
+        * Search users
+        * Filter users shown
+        * Delete users
     * Configure website settings
-    * Show site stats
-    * Show payment details
+    * Site Stats Page
+        * Show user login activity
+    * Payment Details Page
+        * Show payment details by user
+        * Show total income
+        * Show monthly income
+        * Show annual income
+        * Show avg. monthly profit per user 
+    * Error Log Page
+        * Show errors
+        * Allow filtering by day
 * Error Logging DB:
     * <s>Add error logging table</s>
     * Find way to log errors in the table when exceptions are hit
