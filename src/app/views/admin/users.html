@@ -7,11 +7,10 @@
             <th style="width: 40px;"></th>
             <th>Username</th>
             <th>Email</th>
-            <th>Created Date</th>
-            <th>Expire Date</th>
+            <th>Creation Date</th>
+            <th>Expiration Date</th>
           </tr>
         </thead>
-
         <tbody>
           @for (usr of users$ | async; track usr) {
             <tr class="clickable-row" (click)="selectAccount(usr)">

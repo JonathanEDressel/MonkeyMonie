@@ -32,6 +32,7 @@ export class AdminComponent  {
             { Id: 2, Title: 'Site Statistics', class: "", Route: '/admin', Visible$: this.isAdmin$, isSelected: Observable<false>, View: UsersComponent },
             { Id: 3, Title: 'Payment Details', class: "", Route: '/admin', Visible$: this.isAdmin$, isSelected: Observable<false>, View: UsersComponent },
             { Id: 4, Title: 'Settings', class: "", Route: '/admin', Visible$: this.isAdmin$, isSelected: Observable<false>, View: UsersComponent },
+            { Id: 5, Title: 'Error Log', class: "", Route: '/admin', Visible$: this.isAdmin$, isSelected: Observable<false>, View: UsersComponent },
         ];
     }
 
