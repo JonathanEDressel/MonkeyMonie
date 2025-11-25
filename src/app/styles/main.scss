@@ -17,3 +17,31 @@
     max-height: 60rem; 
     overflow-y: auto;
 }
+
+.giving-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1050;
+  border-radius: 50%;
+  padding: 15px 18px;
+  font-size: 42px;
+  background-color: #ff6f3c;
+  border: none;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.25);
+}
+
+.giving-btn:hover {
+  background-color: #ff5722;
+}
+
+.centered-title {
+    max-width: 530px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.centered-title ul li {
+    font-size: 1.05rem;
+}
+

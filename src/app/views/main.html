@@ -1,6 +1,4 @@
-<!-- Wrapper to keep header and body connected -->
 <div class="container-fluid p-0">
-    <!-- Navbar / Header -->
     <div class="row header m-0">
         <div class="col col-12 text-center p-0">
             <nav class="navbar navbar-expand-lg">
@@ -39,12 +37,51 @@
         </div>
     </div>
 
-    <!-- Main content / body -->
     <div class="row main-body m-0">
         <div class="col p-3">
             @if(getPage) {
                 <ng-container [ngComponentOutlet]="getPage"></ng-container>
             }
+        </div>
+    </div>
+
+    <button class="btn btn-primary giving-btn" data-bs-toggle="modal" data-bs-target="#givingModal">
+        <i class="fa-solid fa-hand-holding-heart"></i>
+    </button>
+
+    <div class="modal fade" id="givingModal" tabindex="-1" aria-labelledby="givingModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="givingModalLabel">Ways to Give</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-title centered-title text-center px-3">
+                    <p class="fw-semibold mb-3">
+                        MonkeyMonie is built with love and is completely self-funded.  
+                        Your support helps us build more features, improve performance, and keep the platform growing.
+                    </p>
+                    <p class="fs-5">
+                        Even a small gift makes a huge difference.  
+                        <strong class="text-success">Donating just $1 gives you a lifetime MonkeyMonie membership.</strong>
+                    </p>
+                    <hr class="my-4">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">✔ Share MonkeyMonie with friends</li>
+                        <li class="mb-2">✔ Venmo — <span class="text-muted">yourHandleHere</span></li>
+                        <li class="mb-2">✔ PayPal — <span class="text-muted">yourLinkHere</span></li>
+                        <li class="mb-2">✔ BTC — <span class="text-muted">yourBTCAddress</span></li>
+                        <li class="mb-2">✔ SOL — <span class="text-muted">yourSOLAddress</span></li>
+                        <li class="mb-2">✔ SHIB — <span class="text-muted">yourSHIBAddress</span></li>
+                        <li class="mb-2">✔ XMR — <span class="text-muted">yourXMRAddress</span></li>
+                        <li class="mb-2">✔ XLM — <span class="text-muted">yourXLMAddress</span></li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
