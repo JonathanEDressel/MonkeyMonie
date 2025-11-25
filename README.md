@@ -59,6 +59,13 @@ Creating a Angular app to learn more about login authentication, web security an
     * Add indexing to some tables (not sure which tables yet)
 * Overview page
     * Grab currnet user accounts
+* Profile page
+    * User can save changes to their account
+    * Show payment history and details
+    * Show account stats 
+        * Number of accounts (personal and taxable)
+        * 
+    * <s>User can change password for account</s>
 * Account page
     * User can account <s>personal</s>/taxable
     * User can delete account <s>personal</s>/taxable

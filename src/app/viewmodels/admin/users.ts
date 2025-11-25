@@ -29,6 +29,14 @@ export class UsersComponent  {
         this.users$ = _usrData.userList$;
     }
 
+    saveUser(usr: UserModel) {
+        console.log('save user - ', usr)
+    }
+
+    clearAccount() {
+        this.selectedUser.set(new UserModel());
+    }
+
     selectAccount(usr: UserModel) {
         this.selectedUser.set(usr);
     }

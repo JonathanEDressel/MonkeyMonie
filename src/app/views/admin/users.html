@@ -1,36 +1,120 @@
-
 <div class="d-flex justify-content-center" style="min-height: 600px;">
-  <div class="container mt-4 table-responsive">
-    @if(selectedUser().Username === '') {
-    <table class="table table-hover table-striped table-bordered shadow-sm rounded custom-table mt-4">
-      <thead class="table-dark custom-header">
-        <tr>
-          <th style="width: 40px;"></th>
-          <th>Username</th>
-          <th>Email</th>
-          <th>Created Date</th>
-          <th>Expire Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (usr of users$ | async; track usr)
-        {
-          <tr class="clickable-row" (click)="selectAccount(usr)">
-            <td class="text-center align-middle">
-              <i class="fa-solid fa-circle status-icon" 
-                 [style.color]="usr.IsActive ? 'green' : 'red'"></i>
-            </td>
-            <td class="align-middle">{{usr.Username}}</td>
-            <td class="align-middle">{{usr.Email}}</td>
-            <td class="align-middle">{{usr.CreatedDate | date:'short'}}</td>
-            <td class="align-middle">{{usr.hasExpired() ? (usr.ExpireDate | date:'short') : ''}}</td>
+  <div class="container mt-4">
+    @if (selectedUser().Username.length === 0) {
+      <table class="table table-hover table-striped table-bordered shadow-sm rounded custom-table mt-4">
+        <thead class="table-dark custom-header">
+          <tr>
+            <th style="width: 40px;"></th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Created Date</th>
+            <th>Expire Date</th>
           </tr>
-        }
-      </tbody>
-    </table>
+        </thead>
+
+        <tbody>
+          @for (usr of users$ | async; track usr) {
+            <tr class="clickable-row" (click)="selectAccount(usr)">
+              <td class="text-center align-middle">
+                <i class="fa-solid fa-circle status-icon"
+                  [style.color]="usr.IsActive ? 'green' : 'red'"></i>
+              </td>
+
+              <td class="align-middle">{{ usr.Username }}</td>
+              <td class="align-middle">{{ usr.Email }}</td>
+              <td class="align-middle">{{ usr.CreatedDate | date:'short' }}</td>
+              <td class="align-middle">
+                {{ usr.hasExpired() ? (usr.ExpireDate | date:'short') : '' }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
     }
     @else {
-        
+      <div class="card shadow-sm mt-4 p-4">
+        <h3 class="mb-3">Edit User</h3>
+
+        <form #editForm="ngForm">
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label>Username</label>
+              <input type="text" class="form-control"
+                     [(ngModel)]="selectedUser().Username"
+                     name="Username">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Email</label>
+              <input type="email" class="form-control"
+                     [(ngModel)]="selectedUser().Email"
+                     name="Email">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>First Name</label>
+              <input type="text" class="form-control"
+                     [(ngModel)]="selectedUser().FirstName"
+                     name="FirstName">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Last Name</label>
+              <input type="text" class="form-control"
+                     [(ngModel)]="selectedUser().LastName"
+                     name="LastName">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Phone Number</label>
+              <input type="text" class="form-control"
+                     [(ngModel)]="selectedUser().PhoneNumber"
+                     name="PhoneNumber">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label>Expire Date</label>
+              <input type="date" class="form-control"
+                     [(ngModel)]="selectedUser().ExpireDate"
+                     name="ExpireDate">
+            </div>
+
+            <div class="col-12 mb-3 form-check">
+              <input type="checkbox" class="form-check-input"
+                     [(ngModel)]="selectedUser().IsActive"
+                     name="IsActive">
+              <label class="form-check-label">Is Active</label>
+            </div>
+
+            <div class="col-12 mb-3 form-check">
+              <input type="checkbox" class="form-check-input"
+                     [(ngModel)]="selectedUser().IsAdmin"
+                     name="IsAdmin">
+              <label class="form-check-label">Is Admin</label>
+            </div>
+
+            <div class="col-12 mb-3 form-check">
+              <input type="checkbox" class="form-check-input"
+                     [(ngModel)]="selectedUser().ConfirmedEmail"
+                     name="ConfirmedEmail">
+              <label class="form-check-label">Confirmed Email</label>
+            </div>
+          </div>
+
+          <div class="mt-4 d-flex gap-3">
+            <button class="btn btn-primary" (click)="saveUser(selectedUser())">
+              Save
+            </button>
+
+            <button class="btn btn-secondary"
+                    (click)="clearAccount()">
+              Back
+            </button>
+          </div>
+
+        </form>
+      </div>
     }
   </div>
 </div>
