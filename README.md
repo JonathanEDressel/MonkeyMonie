@@ -59,6 +59,15 @@ Creating a Angular app to learn more about login authentication, web security an
     * Add indexing to some tables (not sure which tables yet)
 * Overview page
     * Grab currnet user accounts
+* Donation Options
+    * Allow user to donate 
+        * Via Venmo
+        * Via Paypal
+        * Via BTC
+        * Via SOL
+        * Via SHIB
+        * Via XRP
+        * Via XLM
 * Profile page
     * <s>User can save changes to their account</s>
     * Show payment history and details
