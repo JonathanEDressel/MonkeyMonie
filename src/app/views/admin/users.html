@@ -1,5 +1,7 @@
+
 <div class="d-flex justify-content-center" style="min-height: 600px;">
   <div class="container mt-4 table-responsive">
+    @if(selectedUser().Username === '') {
     <table class="table table-hover table-striped table-bordered shadow-sm rounded custom-table mt-4">
       <thead class="table-dark custom-header">
         <tr>
@@ -26,5 +28,9 @@
         }
       </tbody>
     </table>
+    }
+    @else {
+        
+    }
   </div>
 </div>

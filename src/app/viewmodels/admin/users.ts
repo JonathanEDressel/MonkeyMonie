@@ -1,5 +1,5 @@
 import { FormsModule } from '@angular/forms';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { UserController } from '../../services/controllers/usercontroller';
 import { AuthData } from '../../services/authdata';
 import { UserData } from '../../services/userdata';
@@ -10,12 +10,14 @@ import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'users-root',
+  standalone: true,
   imports: [FormsModule, AsyncPipe, DatePipe],
   templateUrl: '../../views/admin/users.html',
   styleUrl: '../../styles/admin/users.scss'
 })
 
 export class UsersComponent  {
+    selectedUser = signal(new UserModel);
     portalPages: any[] = [];
     selectedPage: number = 1;
 
@@ -28,7 +30,7 @@ export class UsersComponent  {
     }
 
     selectAccount(usr: UserModel) {
-        console.log('usr - ', usr)
+        this.selectedUser.set(usr);
     }
 
     ngOnInit(): void {
