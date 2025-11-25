@@ -48,7 +48,7 @@ export class UserModel {
         this.CreatedDate = (new Date(data.CreatedDate)).toLocaleDateString();
         this.IsDemo = data.IsDemo;
         this.IsAdmin = data.IsAdmin;
-        this.ExpireDate = (data.ExpireDate ? new Date(data.ExpireDate).toLocaleDateString() : "N/A");
+        this.ExpireDate = (data.ExpireDate ? new Date(data.ExpireDate).toLocaleDateString() : "");
         this.IsActive = data.IsActive;
         this.AdminLevel = data.AdminLevel;
         this.ConfirmedEmail = data.ConfirmedEmail;

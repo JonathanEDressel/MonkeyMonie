@@ -49,7 +49,7 @@ def data_to_model(data):
         TwoFactor=bool(data.get('TwoFactor')),
         LastLogin=data.get('LastLogin'),
         IsDemo=bool(data.get('IsDemo')),
-        ExpireDate=data.get('ExpireDate'),
+        ExpireDate=data.get('ExpireDate') or None,
         IsActive=bool(data.get('IsActive')),
         AdminLevel=data.get('AdminLevel'),
         IsAdmin=bool(data.get('IsAdmin'))

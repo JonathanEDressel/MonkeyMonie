@@ -64,11 +64,25 @@ def update_user(user):
     try:
         print(f"Updating user {user.Username}")
         authusr = _authDbCtx.get_current_user()
-
         if not authusr:
             return jsonify({"result": "Unauthorized", "status": 401}), 401
             
-        #make sure email, phone number, and username are not in use apart from current user
+        sql = f"SELECT Username, Email, PhoneNumber FROM UserAcct WHERE Id <> %s " \
+            " AND (Lower(username) = LOWER (%s) " \
+            "OR LOWER(EMAIL) = LOWER(%s) " \
+            "OR LOWER(PhoneNumber) = LOWER(%s));"
+        params = (user.Id,user.Username, user.Email, user.PhoneNumber)
+        conflict = DBHelper.run_query(sql, params, fetch=True)
+        
+        conflicts = []
+        if conflict:
+            row = conflict[0]
+            if row["username"].lower() == user.Username.lower():
+                conflicts.append("Username")
+            if row["email"].lower() == user.Email.lower():
+                conflicts.append("Email")
+            if row["phonenumber"].lower() == user.PhoneNumber.lower():
+                conflicts.append("PhoneNumber")
 
         fields_to_update = ["Username", "FirstName", "LastName", "Email", "PhoneNumber","TwoFactor"]
         if authusr.is_site_admin():
@@ -78,6 +92,10 @@ def update_user(user):
             fields_to_update.append("ExpireDate")
             fields_to_update.append("ConfirmedEmail")
             fields_to_update.append("AdminLevel")
+
+        fields_to_update = [f for f in fields_to_update if f not in conflicts]
+        if not fields_to_update:
+            return jsonify({ "result": "No fields were updated because all conflict with other users.", "status": 409 }), 409
         set_clause = ", ".join([f"{field} = %s" for field in fields_to_update])
 
         sql = f"UPDATE UserAcct SET {set_clause} WHERE Id = %s"

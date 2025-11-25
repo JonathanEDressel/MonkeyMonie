@@ -19,8 +19,8 @@ def get_current_user():
         if not authorized_user:
             return None
         
-        sql = "SELECT Id, Username, FirstName, LastName, Email, PhoneNumber, CreatedDate, "\
-            "ConfirmedEmail, TwoFactor, LastLogin, IsDemo, AdminLevel, IsAdmin FROM UserAcct WHERE Username = %s or Email = %s"
+        sql = "SELECT Id, Username, FirstName, LastName, ExpireDate, Email, PhoneNumber, CreatedDate, "\
+            "ConfirmedEmail, TwoFactor, LastLogin, IsDemo, AdminLevel, IsActive, IsAdmin FROM UserAcct WHERE Username = %s or Email = %s"
         token = authorized_user.split(" ")[1]
         decoded_token = jwt.decode(token, SECRET_KEY, ALGO_TO_USE)
         username = str(decoded_token['username'])
@@ -92,8 +92,14 @@ def user_login(username, password):
         vars = (username, username)
         jsusr = DBHelper.run_query(sql, vars, True)
         usr = jsusr[0]
-        if not usr or (usr['IsActive'] == 0) or (usr['ExpireDate'] and not usr['ExpireDate'] < datetime.now()):
+        usrexpdte = usr['ExpireDate']
+        if (not usr):
             return jsonify({"result": "Invalid login credentials", "status": 400}), 400
+        if (usr['IsActive'] == 0):
+            return jsonify({"result": "Account is no longer active", "status": 400}), 400
+        if (usrexpdte and usrexpdte < datetime.now()):
+            return jsonify({"result": "Account has expired", "status": 400}), 400
+
         usrPWHash = usr['UserPassword']
         if isinstance(usrPWHash, str):
             usrPWHash = usrPWHash.encode('utf-8')
