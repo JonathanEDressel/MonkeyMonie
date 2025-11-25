@@ -1,0 +1,49 @@
+.custom-table {
+  border-collapse: separate;
+  border-spacing: 0 8px; 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa; 
+}
+
+.custom-header th {
+  font-size: 1.3rem;       
+  font-weight: 700;       
+  color: #ffffff;
+  background-color: #343a40; 
+  vertical-align: middle;
+  padding: 12px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.table tbody tr {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.table tbody tr:hover {
+  background-color: #e9ecef;
+  transform: translateY(-2px);
+}
+
+.table tbody td {
+  vertical-align: middle;
+  padding: 10px;
+  font-size: 1rem;
+}
+
+.status-icon {
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .custom-header th,
+  .table tbody td {
+    font-size: 0.9rem;
+    padding: 6px;
+  }
+
+  .status-icon {
+    font-size: 0.7rem;
+  }
+}

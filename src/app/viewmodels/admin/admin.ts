@@ -50,7 +50,6 @@ export class AdminComponent  {
     }
 
     activate(): void {
-        console.log('account tab called');
         this._usrData.getUsers();
     }
 

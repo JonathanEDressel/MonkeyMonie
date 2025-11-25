@@ -15,18 +15,22 @@ export class UserData {
     private userSubject = new BehaviorSubject<UserModel | null>(null);
     user$: Observable<UserModel | null> = this.userSubject.asObservable();
 
+    private usersSubject = new BehaviorSubject<UserModel[]>([]);
+    userList$: Observable<UserModel[]> = this.usersSubject.asObservable();
+
     getUsers(): void {
       this._userController.getUsers().subscribe({
         next: (res: any) => {
           this.users.length = 0;
           if(res.status === 200) {
+            const usrAccts: UserModel[] = [];
             var data = res.result;
             for(var i = 0; i < data.length; i++) {
               var usr = new UserModel();
               usr.assignData(data[i]);
-              this.users.push(usr);
+              usrAccts.push(usr);
             }
-            console.log('Users:', this.users)
+            this.usersSubject.next(usrAccts);
           }
         },
         error: (err) => console.error(err)

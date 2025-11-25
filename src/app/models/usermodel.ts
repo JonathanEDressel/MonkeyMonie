@@ -37,6 +37,14 @@ export class UserModel {
         return this.FirstName + " " + this.LastName;
     }
 
+    hasExpired() {
+        if(!this.ExpireDate || this.ExpireDate.length === 0)
+            return false;
+        var expdte = new Date(this.ExpireDate);
+        var now = new Date();
+        return expdte < now;
+    }
+
     assignData(data: UserModel) {
         this.Id = data.Id;
         this.Username = data.Username;

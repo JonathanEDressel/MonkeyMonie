@@ -13,7 +13,7 @@ export class AcctData {
     userPersonalAccounts: PersonalAccountModel[] = [];
 
     private personalActSubject = new BehaviorSubject<PersonalAccountModel[]>([]);
-    personalAccounts$: Observable<PersonalAccountModel[]>  = this.personalActSubject.asObservable();
+    personalAccounts$: Observable<PersonalAccountModel[]> = this.personalActSubject.asObservable();
 
     constructor(private _acctController: AcctController) {}
 
