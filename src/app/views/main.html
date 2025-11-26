@@ -98,6 +98,35 @@
                             ✔ ETH — <span class="text-muted">0x07747728921D18Fb3440dB3c753672b7B042766E</span>
                         </li>
                     </ul>
+                    <hr>
+                    <div class="text-center mb-4">
+                        <h4 class="fw-semibold mb-3">Sent a donation? Let us know!</h4>
+
+                        <form (ngSubmit)="submitDonation()" class="row g-3 justify-content-center">
+                            <div class="col-12 col-md-8">
+                            <label for="amount" class="form-label"><strong>Payment Amount (ex. $, ETH, SOL, etc.)</strong></label>
+                            <input id="amount" type="text" class="form-control" placeholder="Enter amount" [(ngModel)]="donationAmount" name="amount" required>
+                            </div>
+
+                            <div class="col-12 col-md-8">
+                                <label for="method" class="form-label"><strong>Payment Method</strong></label>
+                                <select id="method" class="form-select" [(ngModel)]="selectedDonationMethodId" name="method" required>
+                                    @for (opt of donationOptions; track opt) {
+                                        <option [ngValue]="opt.Id">{{opt.Title}}</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="col-12 col-md-8">
+                                <label for="notes" class="form-label"><strong>Comments or Additonal Ideas</strong></label>
+                                <textarea  (keydown.enter)="submitDonation()" id="notes" type="text" class="form-control notes-input" placeholder="Your comments" [(ngModel)]="donationNotes" name="notes"></textarea>
+                            </div>
+
+                            <div class="col-12 text-center mt-3">
+                            <button type="submit" class="btn btn-success">Submit Donation</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
                 <div class="modal-footer justify-content-center">
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

@@ -17,12 +17,12 @@ def add_donation():
         method = str(req.get('method', 'n/a').strip())
         amount = str(req.get('amount', 'n/a').strip())
         notes = str(req.get('notes', '').strip())
-        
+        notes = notes[:250]
         authusr = _authDbCtx.get_current_user()
         if not authusr:
             return jsonify({"result": "Unauthorized", "status": 401}), 401
         _payDbCtx.add_donation(authusr.Username, method, amount, notes, str(datetime.now(timezone.utc)))
-        return jsonify({"result": "Successfully updated donation", "status": 200}), 200
+        return jsonify({"result": "Successfully added donation", "status": 200}), 200
     except Exception as e:
         log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
