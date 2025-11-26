@@ -6,7 +6,8 @@ def log_error(exc: Exception, username = "n/a"):
     try:
         message = str(exc)
         stack = traceback.format_exc()
-
+        stack = stack[:250]
+        message = message[:250]
         sql = "INSERT INTO ErrorLog (Detail, StackTrace, EventTimeStamp, Username) "\
             "VALUES (%s, %s, %s, %s);"
         params = (message, stack, datetime.utcnow(), username)

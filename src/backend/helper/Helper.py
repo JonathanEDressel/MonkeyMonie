@@ -145,13 +145,29 @@ def encrypt_password(password: str | bytes):
     except Exception as e:
         print(f"ERROR encrypt_password(): {e}")
 
-def check_passwords(plain_pass: str, hashed_pass: bytes):
+def check_passwords(plain_pass: str, hashed_pass: bytes) -> bool:
     try:
-        if (bcrypt.checkpw(plain_pass.encode('utf-8'), hashed_pass)):
-            return True
-        return False
+        return bcrypt.checkpw(plain_pass.encode("utf-8"), hashed_pass)
     except Exception as e:
         print(f"ERROR check_passwords(): {e}")
+        return False
+        
+def encrypt_otp_token(otp: str | bytes):
+    try:
+        if isinstance(otp, str):
+            return  bcrypt.hashpw(otp.encode('utf-8'), bcrypt.gensalt())
+        return bcrypt.hashpw(otp, bcrypt.gensalt())
+    except Exception as e:
+        print(f"ERROR encrypt_otp_token(): {e}")
+        
+def check_otp_tokens(plain_pass: str, hashed_pass: bytes) -> bool:
+    try:
+        if isinstance(plain_pass, int):
+            plain_pass = str(plain_pass)
+        return bcrypt.checkpw(plain_pass.encode("utf-8"), hashed_pass)
+    except Exception as e:
+        print(f"ERROR check_otp_tokens(): {e}")
+        return False
         
 def create_uuid():
     new_uuid = str(uuid.uuid4())

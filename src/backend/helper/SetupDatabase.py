@@ -27,8 +27,8 @@ def validate_db():
     DBHelper.create_table("ErrorLog", "" \
         "(Id INTEGER PRIMARY KEY AUTO_INCREMENT, " \
         "EventTimeStamp DATETIME, " \
-        "StackTrace TEXT, " \
-        "Detail TEXT, " \
+        "StackTrace VARCHAR(255), " \
+        "Detail VARCHAR(255), " \
         "Username VARCHAR(100))")
     
     DBHelper.create_table("EventLog", "" \
@@ -121,10 +121,11 @@ def validate_db():
     
     DBHelper.create_table("OTPTokens", "" \
         "(Id INTEGER PRIMARY KEY AUTO_INCREMENT, " \
-        "UserId INTEGER NOT NULL, " \
+        "Username VARCHAR(255), " \
         "TokenHash VARCHAR(255), " \
+        "HasUsed TINYINT DEFAULT 0, " \
         "ExpireTime DATETIME," \
-        "FOREIGN KEY (UserId) References UserAcct(Id))")
+        "FOREIGN KEY (Username) References UserAcct(Username))")
     
     DBHelper.create_table("RevokedTokens", "" \
         "(Id INTEGER PRIMARY KEY AUTO_INCREMENT, " \

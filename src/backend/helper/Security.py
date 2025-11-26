@@ -122,7 +122,13 @@ def generate_otp(otp_len=6):
     except Exception as e:
         print(f"ERROR: {e}")
 
-# @app.route("/protected", methods=["GET"])
-# @token_required
-# def protected(decoded):
-    # return jsonify({"message": f"Welcome {decoded['username']}!"})
+def add_otp_token(otp_password, username):
+    try:
+        otp_hash = DBHelper.encrypt_otp_token(str(otp_password)).decode("utf-8")
+        sql = "INSERT INTO OTPTokens (Username, TokenHash, HasUsed, ExpireTime) " \
+            "VALUES (%s, %s, %s, %s);"
+        exp_time = datetime.now(timezone.utc) + timedelta(minutes=10)
+        params = (username, otp_hash, 0, exp_time)
+        return DBHelper.run_query(sql, params, fetch=False)
+    except Exception as e:
+        print(f"ERROR: {e}")

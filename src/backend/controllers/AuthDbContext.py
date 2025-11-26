@@ -1,10 +1,12 @@
 from flask import jsonify, request
 from datetime import datetime, timezone
-import helper.Helper as DBHelper
-import helper.Security as Security
 from .ErrorController import log_error_to_db
 from models.UserModel import data_to_model
+import helper.Helper as DBHelper
+import helper.Security as Security
+import models.OTPTokenModel as OTPModel
 import jwt
+import bcrypt
 import os
 
 SECRET_KEY=os.getenv("SECRET_KEY")
@@ -138,16 +140,40 @@ def create_account(fname, lname, username, phonenumber, password):
         log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
-def create_new_otp(id, hash):
+# def create_new_otp(id, hash):
+#     try:
+#         sql = f"INSERT INTO OTPTokens (UserId, TokenHash, ExpireTime, HasVerified) " \
+#             "Values(%s, %s, %s, %s);"
+#         vars = (id, hash, datetime.now(timezone.utc), False)
+#         res = DBHelper.run_query(sql, vars, fetch=False)
+#         return res
+#     except Exception as e:
+#         log_error_to_db(e)
+#         return jsonify({"result": e, "status": 400}), 400
+
+def valid_otp(otp, username):
     try:
-        sql = f"INSERT INTO OTPTokens (UserId, TokenHash, ExpireTime, HasVerified) " \
-            "Values(%s, %s, %s, %s);"
-        vars = (id, hash, datetime.now(timezone.utc), False)
-        res = DBHelper.run_query(sql, vars, fetch=False)
-        return res
+        sql = f"SELECT Email, Username FROM UserAcct WHERE Username = %s Or Email = %s"
+        params = (username, username)
+        jsonusr = DBHelper.run_query(sql, params, fetch=True)
+        if not jsonusr:
+            return False
+        usr = data_to_model(jsonusr[0])
+        sql = f"SELECT Id, Username, TokenHash, HasUsed FROM OTPTokens WHERE (Username = %s or Username = %s) and HasUsed = 0"
+        params = (usr.Email, usr.Username)
+        res = DBHelper.run_query(sql, params, fetch=True)
+        if not res or len(res) == 0:
+            return False
+        for row in res:
+            token_row = OTPModel.data_to_model(row)
+            stored_hash_bytes = token_row.TokenHash.encode("utf-8")
+            print(str(otp), stored_hash_bytes)
+            if DBHelper.check_otp_tokens(otp, stored_hash_bytes):
+                if token_row.ExpireTime > datetime.now(timezone.utc):
+                    return True
+                else:
+                    print("OTP found but expired")
+        return False
     except Exception as e:
         log_error_to_db(e)
-        return jsonify({"result": e, "status": 400}), 400
-
-def update_password():
-    print('placeholder')
+        return False
