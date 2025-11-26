@@ -60,7 +60,7 @@ def is_admin():
         auth_usr = get_current_user()
         if not auth_usr:
             return False
-        return auth_usr.IsAdmin
+        return auth_usr.is_site_admin()
     except Exception as e:
         log_error_to_db(e)
         return False    

@@ -60,6 +60,8 @@ Creating a Angular app to learn more about login authentication, web security an
 * Overview page
     * Grab currnet user accounts
 * Donation Options
+    * Add table to track giving
+        * Amount and username
     * Allow user to donate 
         * <s>Via Venmo</s>
         * <s>Via Paypal</s>

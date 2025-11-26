@@ -131,6 +131,14 @@ def validate_db():
         "JTI VARCHAR(255), " \
         "Revoked DATETIME)")
     
+    DBHelper.create_table("DonationHistory", "" \
+        "(Id INTEGER PRIMARY KEY AUTO_INCREMENT, " \
+        "Username VARCHAR(100), " \
+        "Amount VARCHAR(100), " \
+        "Notes VARCHAR(255), " \
+        "DateAdded DATETIME, " \
+        "Method VARCHAR(100))")
+    
 def add_columns():
     add_user_isactive_column()
     

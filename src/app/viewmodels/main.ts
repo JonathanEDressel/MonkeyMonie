@@ -25,11 +25,14 @@ export class MainComponent {
     user$: Observable<UserModel | null>;
     isAdmin$: Observable<boolean>;
 
+    donationAmount: string = "";
+    method: string = "";
+    notes: string = "";
+
     constructor(private _usrData: UserData, private _authData: AuthData) {
       this.user$ = _usrData.user$;
       this.isAdmin$ = _usrData.isAdmin$;
       this.portalPages = this.createPages();
-      // this.user2 = this._usrData.currentUser;
     }
 
     createPages() {
