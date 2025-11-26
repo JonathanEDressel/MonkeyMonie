@@ -61,11 +61,12 @@ Creating a Angular app to learn more about login authentication, web security an
     * Grab currnet user accounts
 * Donation Options
     * Allow user to donate 
-        * Via Venmo
-        * Via Paypal
-        * Via BTC
-        * Via SOL
-        * Via SHIB
+        * <s>Via Venmo</s>
+        * <s>Via Paypal</s>
+        * <s>Via BTC</s>
+        * <s>Via SOL</s>
+        * <s>Via SHIB</s>
+        * <s>Via ETH</s>
         * Via XRP
         * Via XLM
 * Profile page
