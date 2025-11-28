@@ -42,7 +42,7 @@ Creating a Angular app to learn more about login authentication, web security an
         * <s>Create field to store UUID for user_id</s>
     * <s>Create sign up page</s>
     * Add payment page
-    * Add forgot password page
+    * <s>Add forgot password page</s>
     * <s>Create email svc with Postmark</s>
     * Add email validation
     * Implement SSO
@@ -101,7 +101,7 @@ Creating a Angular app to learn more about login authentication, web security an
         * Allow filtering by day
 * Error Logging DB:
     * <s>Add error logging table</s>
-    * Find way to log errors in the table when exceptions are hit
+    * <s>Find way to log errors in the table when exceptions are hit</s>
 * Page routing
     * <s>Route pages on one page</s>
     * <s>Add auth for pages when not logged in</s>
