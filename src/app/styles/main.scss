@@ -84,4 +84,16 @@
     height: 150px;
 }
 
+.table-custom {
+    border-radius: 12px;
+    overflow: hidden;
+}
 
+.table-custom thead {
+    background: linear-gradient(90deg, #343a40, #495057);
+    color: #fff;
+}
+
+.table-custom tbody tr:hover {
+    background-color: #f1f3f5 !important;
+}
