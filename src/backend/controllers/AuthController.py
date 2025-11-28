@@ -1,6 +1,5 @@
 from flask import Blueprint, jsonify, request, g
 from helper.Security import requires_token
-from datetime import datetime
 from Extensions import limiter
 import controllers.AuthDbContext as _authCtx
 import controllers.EmailDbContext as _emailCtx
@@ -58,22 +57,20 @@ def forgot_password():
         otp = Security.generate_otp(6)
         _emailCtx.send_usr_email(usr.Email, "Two FA Passcode", f"Your one-time passcode: {otp}")
         Security.add_otp_token(otp, usr.Username)
-        print(otp)
         return jsonify({"result": "Email successfully sent!", "status": 200}), 200
     except Exception as e:
         log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
 
-@auth_bp.route('/verifyToken', methods=['GET'])
+@auth_bp.route('/verifyToken', methods=['POST'])
 @limiter.limit("5 per minute")
 def verify_token():
     try:
         req = request.json
-        username = str(req.get('username', '').strip())
+        username = str(req.get('username', '')).strip()
         otp = str(req.get('otptoken', '')).strip()
         if _authCtx.valid_otp(otp, username):
-            #update value if successful
-            return jsonify({"result": "Valid token", "status": 200}), 200
+            return _authCtx.get_token_data(username)
         return jsonify({"result": "Could not verify token", "status": 400}), 400
     except Exception as e:
         log_error_to_db(e)

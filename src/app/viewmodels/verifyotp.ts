@@ -4,29 +4,27 @@ import { Router } from '@angular/router';
 import { AuthData } from '../services/authdata';
 
 @Component({
-  selector: 'app-forgotpassword',
+  selector: 'app-verifyotp',
   standalone: true,
   imports: [FormsModule],
-  templateUrl: '../views/forgotpassword.html',
-  styleUrl: '../styles/forgotpassword.scss'
+  templateUrl: '../views/verifyotp.html',
+  styleUrl: '../styles/verifyotp.scss'
 })
 
-export class ForgotPassword implements OnInit {
+export class VerifyOTP implements OnInit {
 
-  userEmail: string = "";
+  otpCode = signal("");
 
   constructor(private router: Router, private _authData: AuthData) {}
   
   ngOnInit(): void {
-    this.userEmail = "";
   }
 
   returnToLogin(): void {
     this.router.navigate(['/login']);
   }
 
-  sendVerificationCode(): void {
-     sessionStorage.setItem('username', this.userEmail);
-    this._authData.forgotPassword(this.userEmail);
+  checkVerificationCode(): void {
+    this._authData.checkVerificationCode(this.otpCode());
   }
 }

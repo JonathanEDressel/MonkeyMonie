@@ -33,4 +33,12 @@ export class AuthController {
             email: email
         });
     }
+
+    checkVerificationCode(username: string, otptoken: string) {
+        console.log(username, otptoken)
+        return this.http.post<{ token: string}>(`${this.apiURL}/verifyToken`, {
+            username: username,
+            otptoken: otptoken
+        });
+    }
 }

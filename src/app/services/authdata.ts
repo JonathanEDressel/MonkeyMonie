@@ -96,11 +96,26 @@ export class AuthData {
     forgotPassword(email: string): any {
         this._authController.forgotPassword(email).subscribe({
             next: (res: any) => {
-                alert(res.result);
+                this.router.navigate(['verifyotp']);
             },
             error: (err) => {
                 alert(err);
                 console.error("ERROR: " + err)
+            }
+        })
+    }
+
+    checkVerificationCode(otptoken: string): any {
+        const username = (String) (sessionStorage.getItem('username'));
+        this._authController.checkVerificationCode(username, otptoken).subscribe({
+             next: (res: any) => {
+                console.log('User logged in');
+                localStorage.setItem('jwt', res.token);
+                this.router.navigate(['/main']);
+            },
+            error: (err: any) => {
+                this.ErrorMsg.set("Invalid credentials");
+                console.error("ERROR: " + err, this.ErrorMsg)
             }
         })
     }

@@ -172,9 +172,11 @@ def valid_otp(otp, username):
                 if expire_time.tzinfo is None:
                     expire_time = expire_time.replace(tzinfo=timezone.utc)
                 if expire_time > datetime.now(timezone.utc):
-                    sql = f"UPDATE OtpTokens SET HasUsed = 1 WHERE Id = %s"
-                    params = (token_row.Id,)
-                    DBHelper.run_query(sql, params)
+                    DBHelper.update_value("OtpTokens", "HasUsed", 1, "Id", token_row.Id)
+                    currDte = str(datetime.now(timezone.utc))
+                    updatedLogin = DBHelper.update_value("UserAcct", "LastLogin", currDte, "Username", username)
+                    if not updatedLogin:
+                        DBHelper.update_value("UserAcct", "LastLogin", currDte, "Email", username)
                     return True
                 else:
                     print("OTP found but expired")
@@ -182,3 +184,17 @@ def valid_otp(otp, username):
     except Exception as e:
         log_error_to_db(e)
         return False
+    
+def get_token_data(username):
+    try:
+        sql = f"SELECT UserPassword, Username, UUID, IsActive, ExpireDate FROM UserAcct WHERE Username=%s or Email=%s"
+        vars = (username, username)
+        jsusr = DBHelper.run_query(sql, vars, True)
+        usr = jsusr[0]
+        token = get_user_token(usr['Username'], usr['UUID'])
+        if token is not None:
+            return jsonify({"token": token}), 200
+        return jsonify({"token": None}), 400
+    except Exception as e:
+        log_error_to_db(e)
+        return None

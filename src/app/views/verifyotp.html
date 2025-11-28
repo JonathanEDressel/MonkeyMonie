@@ -1,11 +1,11 @@
 <main class="container d-flex justify-content-center align-items-center min-vh-100">
     <div class="col-10 col-md-6 text-center bg-light p-4 rounded shadow">
         <img class="logo-img mb-4" src="assets/images/monkeymonielogo.png" alt="MonkeyMonie Logo" height="140" style="border: 3px black solid;"/>
-        <h2 class="mb-4">Forgot Password</h2>
+        <h2 class="mb-4">Passcode</h2>
 
         <div class="d-flex justify-content-center mb-3">
             <div class="col col-10">
-                <input id="email" type="email" name="email" class="form-control" placeholder="Email or username" (keydown.enter)="sendVerificationCode()" ngModel email [(ngModel)]="userEmail"/>
+                <input id="code" type="code" name="code" class="form-control" placeholder="One-Time Passcode" (keydown.enter)="checkVerificationCode()" ngModel email [(ngModel)]="otpCode"/>
             </div>
         </div>
         <div class="d-flex justify-content-center">
@@ -13,7 +13,7 @@
                 <i class="fa-solid fa-arrow-left"></i>
                 Return
             </button>
-            <button class="col-4 btn btn-success" (click)="sendVerificationCode()">
+            <button class="col-4 btn btn-success" (click)="checkVerificationCode()">
                 Send Code
                 <i class="fa-solid fa-paper-plane"></i>
             </button>
