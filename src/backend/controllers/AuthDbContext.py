@@ -159,7 +159,7 @@ def valid_otp(otp, username):
         if not jsonusr:
             return False
         usr = data_to_model(jsonusr[0])
-        sql = f"SELECT Id, Username, TokenHash, HasUsed FROM OTPTokens WHERE (Username = %s or Username = %s) and HasUsed = 0"
+        sql = f"SELECT Id, Username, TokenHash, ExpireTime FROM OTPTokens WHERE (Username = %s or Username = %s) and HasUsed = 0"
         params = (usr.Email, usr.Username)
         res = DBHelper.run_query(sql, params, fetch=True)
         if not res or len(res) == 0:
@@ -167,9 +167,14 @@ def valid_otp(otp, username):
         for row in res:
             token_row = OTPModel.data_to_model(row)
             stored_hash_bytes = token_row.TokenHash.encode("utf-8")
-            print(str(otp), stored_hash_bytes)
             if DBHelper.check_otp_tokens(otp, stored_hash_bytes):
-                if token_row.ExpireTime > datetime.now(timezone.utc):
+                expire_time = token_row.ExpireTime
+                if expire_time.tzinfo is None:
+                    expire_time = expire_time.replace(tzinfo=timezone.utc)
+                if expire_time > datetime.now(timezone.utc):
+                    sql = f"UPDATE OtpTokens SET HasUsed = 1 WHERE Id = %s"
+                    params = (token_row.Id,)
+                    DBHelper.run_query(sql, params)
                     return True
                 else:
                     print("OTP found but expired")

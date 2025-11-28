@@ -103,7 +103,7 @@ def token_is_revoked(dec_jwt):
         jti = dec_jwt.get('jti')
         if not jti:
             return True
-        sql = "SELET 1 FROM RevokedTokens WHERE jti = %s LIMIT 1"
+        sql = "SELECT 1 FROM RevokedTokens WHERE jti = %s LIMIT 1"
         params = (jti,)
         res = DBHelper.run_query(sql, params, True)
         return res is not None
@@ -129,6 +129,7 @@ def add_otp_token(otp_password, username):
             "VALUES (%s, %s, %s, %s);"
         exp_time = datetime.now(timezone.utc) + timedelta(minutes=10)
         params = (username, otp_hash, 0, exp_time)
+        print(otp_hash, otp_password)
         return DBHelper.run_query(sql, params, fetch=False)
     except Exception as e:
         print(f"ERROR: {e}")

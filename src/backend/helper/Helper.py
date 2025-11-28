@@ -140,7 +140,7 @@ def add_column(table, column, type, defColumnValue):
 def encrypt_password(password: str | bytes):
     try:
         if isinstance(password, str):
-            return  bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+            return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         return bcrypt.hashpw(password, bcrypt.gensalt())
     except Exception as e:
         print(f"ERROR encrypt_password(): {e}")
@@ -155,7 +155,7 @@ def check_passwords(plain_pass: str, hashed_pass: bytes) -> bool:
 def encrypt_otp_token(otp: str | bytes):
     try:
         if isinstance(otp, str):
-            return  bcrypt.hashpw(otp.encode('utf-8'), bcrypt.gensalt())
+            return bcrypt.hashpw(otp.encode('utf-8'), bcrypt.gensalt())
         return bcrypt.hashpw(otp, bcrypt.gensalt())
     except Exception as e:
         print(f"ERROR encrypt_otp_token(): {e}")
@@ -164,7 +164,8 @@ def check_otp_tokens(plain_pass: str, hashed_pass: bytes) -> bool:
     try:
         if isinstance(plain_pass, int):
             plain_pass = str(plain_pass)
-        return bcrypt.checkpw(plain_pass.encode("utf-8"), hashed_pass)
+        res = bcrypt.checkpw(plain_pass.encode("utf-8"), hashed_pass)
+        return res
     except Exception as e:
         print(f"ERROR check_otp_tokens(): {e}")
         return False
