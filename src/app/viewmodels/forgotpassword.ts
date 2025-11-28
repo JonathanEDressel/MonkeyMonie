@@ -1,6 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthData } from '../services/authdata';
 
 @Component({
   selector: 'app-forgotpassword',
@@ -12,15 +13,11 @@ import { Router } from '@angular/router';
 
 export class ForgotPassword implements OnInit {
 
-  // codeForm: FormGroup | undefined;
   userEmail: string = "";
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private _authData: AuthData) {}
   
   ngOnInit(): void {
-    // this.codeForm = new FormGroup({
-    //   email: new FormControl('', [Validators.required, Validators.email]),
-    // });
   }
 
   returnToLogin(): void {
@@ -28,6 +25,7 @@ export class ForgotPassword implements OnInit {
   }
 
   sendVerificationCode(): void {
-    console.log(this.userEmail);
+    this._authData.forgotPassword(this.userEmail);
+    this.userEmail = "";
   }
 }

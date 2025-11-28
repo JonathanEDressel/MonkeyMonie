@@ -7,6 +7,7 @@ import controllers.EmailDbContext as _emailCtx
 import helper.Helper as DBHelper
 import helper.Security as Security
 from .ErrorController import log_error_to_db
+from models.UserModel import data_to_model
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -40,26 +41,44 @@ def create_account():
         return jsonify({"result": e, "status": 400}), 400
     
 @auth_bp.route("/forgotPassword", methods=['POST'])
-@limiter.limit("100 per minute") #revert back after testing
+@limiter.limit("10 per minute") #revert back after testing
 def forgot_password():
     try:
         req = request.json
         useremail = str(req.get('email', '').strip())
         if not useremail:
-            #tell them the email was sent even if they don't have an account. We don't want people to fish for user's emails
             return jsonify({"result": "Email successfully sent!", "status": 200}), 200 
         
         params = (useremail, useremail)
-        usr = DBHelper.run_query("SELECT Id, Email FROM UserAcct Where Username = %s or Email = %s", params, True)
+        jsonusr = DBHelper.run_query("SELECT Id, Username, Email FROM UserAcct Where Username = %s or Email = %s", params, True)
+        usr = data_to_model(jsonusr[0])
         if not usr:
-            return jsonify({"result": "Please enter in a valid email", "status": 400}), 400
+            return jsonify({"result": "Email successfully sent!", "status": 200}), 200
         
         otp = Security.generate_otp(6)
-        return _emailCtx.send_usr_email(useremail, "Two FA Passcode", f"Your one-time passcode: {otp}")
+        _emailCtx.send_usr_email(usr.Email, "Two FA Passcode", f"Your one-time passcode: {otp}")
+        Security.add_otp_token(otp, usr.Username)
+        print(otp)
+        return jsonify({"result": "Email successfully sent!", "status": 200}), 200
     except Exception as e:
         log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
-    
+
+@auth_bp.route('/verifyToken', methods=['GET'])
+@limiter.limit("5 per minute")
+def verify_token():
+    try:
+        req = request.json
+        username = str(req.get('username', '').strip())
+        otp = str(req.get('otptoken', '')).strip()
+        if _authCtx.valid_otp(otp, username):
+            #update value if successful
+            return jsonify({"result": "Valid token", "status": 200}), 200
+        return jsonify({"result": "Could not verify token", "status": 400}), 400
+    except Exception as e:
+        log_error_to_db(e)
+        return jsonify({"result": e, "status": 400}), 400
+   
 @auth_bp.route('/isAdmin', methods=['GET'])
 @limiter.limit("100 per minute")
 @requires_token

@@ -11,6 +11,12 @@ import { AccountsComponent } from './portal/accounts';
 import { ProfileComponent } from './portal/profile';
 import { AdminComponent } from './admin/admin';
 import { AuthData } from '../services/authdata';
+import { PaymentData } from '../services/paymentdata';
+
+interface DonationOption {
+  Id: number,
+  Title: string
+}
 
 @Component({
   selector: 'main-root',
@@ -18,6 +24,7 @@ import { AuthData } from '../services/authdata';
   templateUrl: '../views/main.html',
   styleUrl: '../styles/main.scss'
 })
+
 export class MainComponent {
     portalPages: any[] = [];
     selectedPage: number = 2;
@@ -25,11 +32,28 @@ export class MainComponent {
     user$: Observable<UserModel | null>;
     isAdmin$: Observable<boolean>;
 
-    constructor(private _usrData: UserData, private _authData: AuthData) {
+    donationOptions: DonationOption[] = [];
+    donationAmount: string = "";
+    selectedDonationMethodId: number = 1;
+    donationNotes: string = "";
+
+
+    constructor(private _usrData: UserData, private _authData: AuthData, private _payData: PaymentData) {
       this.user$ = _usrData.user$;
       this.isAdmin$ = _usrData.isAdmin$;
       this.portalPages = this.createPages();
-      // this.user2 = this._usrData.currentUser;
+      this.donationOptions = this.createDonationOptions();
+    }
+
+    createDonationOptions() {
+      return [
+        { Id: 1, Title: 'Venmo' },
+        { Id: 2, Title: 'PayPal' },
+        { Id: 3, Title: 'BTC' },
+        { Id: 4, Title: 'SOL' },
+        { Id: 5, Title: 'SHIB' },
+        { Id: 6, Title: 'ETH' }
+      ];
     }
 
     createPages() {
@@ -47,6 +71,14 @@ export class MainComponent {
         obs.next(data);
         obs.complete();
       })
+    }
+
+    submitDonation(): void {
+      const method = this.donationOptions.find(x => x.Id === this.selectedDonationMethodId)?.Title ?? "N/A";
+      this._payData.addDonation(this.donationAmount, method, this.donationNotes);
+      this.donationAmount = "";
+      this.donationNotes = "";
+      this.selectedDonationMethodId = 1;
     }
 
     get getPage() {

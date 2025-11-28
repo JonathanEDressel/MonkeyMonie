@@ -21,13 +21,13 @@ export class UserController {
     }
 
     updatePassword(newPassword: string) {
-      return this.http.patch<{token: string}>(`${this.apiURL}/user/updatePassword`, {
+      return this.http.patch<{token: string}>(`${this.apiURL}/updatePassword`, {
         newpassword: newPassword
       });
     }
 
     updateUser(user: UserModel) {
-      return this.http.put<{token: string}>(`${this.apiURL}/user/update`, {
+      return this.http.put<{token: string}>(`${this.apiURL}/update`, {
         user: user
       });
     }

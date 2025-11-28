@@ -27,4 +27,10 @@ export class AuthController {
     isAdmin(): Observable<any> {
         return this.http.get<{token: string}>(`${this.apiURL}/isAdmin`);
     }
+
+    forgotPassword(email: string) {
+        return this.http.post<{ token: string}>(`${this.apiURL}/forgotPassword`, {
+            email: email
+        });
+    }
 }

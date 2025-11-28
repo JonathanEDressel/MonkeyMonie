@@ -71,7 +71,7 @@ export class AuthData {
             },
             error: (err: any) => {
                 this.ErrorMsg.set("Invalid credentials");
-                console.log("ERROR: " + err, this.ErrorMsg)
+                console.error("ERROR: " + err, this.ErrorMsg)
             }
       });
     }
@@ -88,8 +88,20 @@ export class AuthData {
         },
         error: (err) => {
           this.ErrorMsg.set("Invalid credentials");
-          console.log("ERROR: " + err)
+          console.error("ERROR: " + err)
         }
       });
+    }
+
+    forgotPassword(email: string): any {
+        this._authController.forgotPassword(email).subscribe({
+            next: (res: any) => {
+                alert(res.result);
+            },
+            error: (err) => {
+                alert(err);
+                console.error("ERROR: " + err)
+            }
+        })
     }
 }

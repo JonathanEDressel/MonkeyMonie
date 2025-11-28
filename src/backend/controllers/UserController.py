@@ -30,7 +30,7 @@ def get_user():
         log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
-@usr_bp.route('/user/updatePassword', methods=['PATCH'])
+@usr_bp.route('/updatePassword', methods=['PATCH'])
 @limiter.limit("15 per minute")
 @requires_token
 def update_password():
@@ -43,7 +43,7 @@ def update_password():
         log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
-@usr_bp.route('/user/update', methods=['PUT'])
+@usr_bp.route('/update', methods=['PUT'])
 @limiter.limit("15 per minute")
 @requires_token
 def update_user():

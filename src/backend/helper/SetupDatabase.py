@@ -27,8 +27,8 @@ def validate_db():
     DBHelper.create_table("ErrorLog", "" \
         "(Id INTEGER PRIMARY KEY AUTO_INCREMENT, " \
         "EventTimeStamp DATETIME, " \
-        "StackTrace TEXT, " \
-        "Detail TEXT, " \
+        "StackTrace VARCHAR(255), " \
+        "Detail VARCHAR(255), " \
         "Username VARCHAR(100))")
     
     DBHelper.create_table("EventLog", "" \
@@ -121,15 +121,24 @@ def validate_db():
     
     DBHelper.create_table("OTPTokens", "" \
         "(Id INTEGER PRIMARY KEY AUTO_INCREMENT, " \
-        "UserId INTEGER NOT NULL, " \
+        "Username VARCHAR(255), " \
         "TokenHash VARCHAR(255), " \
+        "HasUsed TINYINT DEFAULT 0, " \
         "ExpireTime DATETIME," \
-        "FOREIGN KEY (UserId) References UserAcct(Id))")
+        "FOREIGN KEY (Username) References UserAcct(Username))")
     
     DBHelper.create_table("RevokedTokens", "" \
         "(Id INTEGER PRIMARY KEY AUTO_INCREMENT, " \
         "JTI VARCHAR(255), " \
         "Revoked DATETIME)")
+    
+    DBHelper.create_table("DonationHistory", "" \
+        "(Id INTEGER PRIMARY KEY AUTO_INCREMENT, " \
+        "Username VARCHAR(100), " \
+        "Amount VARCHAR(100), " \
+        "Notes VARCHAR(255), " \
+        "DateAdded DATETIME, " \
+        "Method VARCHAR(100))")
     
 def add_columns():
     add_user_isactive_column()

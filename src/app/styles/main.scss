@@ -66,4 +66,22 @@
     font-size: 1.1rem;
 }
 
+.flash-ambient {
+    animation: bgFlash 1.8s ease-in-out infinite;
+}
+
+@keyframes bgFlash {
+    0%   { background-color: #ff6f3c; }      
+    50%  { background-color: #ff8a63; }     
+    100% { background-color: #ff6f3c; }
+}
+
+.submit-donation-button {
+    background-color: #ff6f3c;
+}
+
+.notes-input {
+    height: 150px;
+}
+
 
