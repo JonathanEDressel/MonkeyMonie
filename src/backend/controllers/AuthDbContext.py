@@ -5,6 +5,7 @@ from models.UserModel import data_to_model
 import helper.Helper as DBHelper
 import helper.Security as Security
 import models.OTPTokenModel as OTPModel
+import controllers.EventDbContext as _eventCtx
 import jwt
 import bcrypt
 import os
@@ -111,6 +112,7 @@ def user_login(username, password):
             updatedLogin = DBHelper.update_value("UserAcct", "LastLogin", currDte, "Username", username)
             if not updatedLogin:
                 DBHelper.update_value("UserAcct", "LastLogin", currDte, "Email", username)
+            _eventCtx.add_event(username, 'User Login', 'Login')
             return jsonify({"token": token}), 200
         return jsonify({"result": "Invalid login credentials", "status": 409}), 409
         

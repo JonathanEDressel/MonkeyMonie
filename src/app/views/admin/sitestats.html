@@ -1,0 +1,24 @@
+<div class="d-flex justify-content-center" style="min-height: 600px;">
+  <div class="container-fluid p-0">
+    <table class="table table-hover table-striped table-bordered shadow-sm rounded custom-table mt-4">
+        <thead class="table-dark custom-header">
+          <tr>
+            <th>User</th>
+            <th>Timestamp</th>
+            <th>Type</th>
+            <th>Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (evnt of userEvents$ | async; track evnt) {
+            <tr>
+              <td class="align-middle">{{ evnt.EventUser }}</td>
+              <td class="align-middle">{{ evnt.EventTimeStamp | date: 'short' }}</td>
+              <td class="align-middle">{{ evnt.EventType }}</td>
+              <td class="align-middle">{{ evnt.Source }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+  </div>
+</div>
