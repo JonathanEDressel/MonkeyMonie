@@ -1,5 +1,5 @@
-import { Injectable, Signal, signal } from "@angular/core";
-import { BehaviorSubject, Observable, of } from "rxjs";
+import { Injectable, signal } from "@angular/core";
+import { BehaviorSubject, Observable } from "rxjs";
 import { EventModel } from "../models/eventmodel";
 import { AdminController } from "./controllers/admincontroller";
 
@@ -15,8 +15,8 @@ export class AdminData {
 
     ErrorMsg = signal("");
 
-    getUserEvents(): any {
-        this._adminController.getUserEvents().subscribe({
+    getUserEvents(dte: string): any {
+        this._adminController.getUserEvents(dte).subscribe({
             next: (res: any) => {
                 if(res.status === 200) {
                     const events: EventModel[] = [];

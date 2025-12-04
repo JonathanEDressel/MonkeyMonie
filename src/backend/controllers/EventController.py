@@ -14,11 +14,12 @@ evnt_bp = Blueprint("event", __name__)
 def get_all_events():
     try:
         authUser = _authCtx.get_current_user()
-        
         if not authUser.is_site_admin():
             return jsonify({"result": "Unauthorized", "status": 401}), 401
         req = request.json
-        dte = req.get('date', datetime.now(timezone.utc)).strip()
+        defaultdte = datetime.now(timezone.utc).strftime("%m/%Y")
+        dtestr = str(req.get('date', defaultdte))
+        dte = datetime.strptime(dtestr, "%m/%Y")
         res = _eventCtx.get_all_events(dte)
         return jsonify({"result": res, "status": 200}), 200
     except Exception as e:

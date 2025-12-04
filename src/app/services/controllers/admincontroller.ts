@@ -11,9 +11,9 @@ export class AdminController {
 
     private apiURL = environment.apiUrl + '/event';
 
-    getUserEvents(): any {
+    getUserEvents(dte: string): any {
         return this.http.post<{token: string}>(`${this.apiURL}/events`, {
-          date: new Date()
+          date: dte
         });
     }
 }

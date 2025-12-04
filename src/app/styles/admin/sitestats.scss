@@ -31,3 +31,8 @@
   padding: 10px;
   font-size: 1rem;
 }
+
+.table-scroll {
+  max-height: 400px;
+  overflow-y: auto;
+}

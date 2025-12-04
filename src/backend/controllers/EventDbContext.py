@@ -6,9 +6,9 @@ import helper.Helper as DBHelper
 
 def get_all_events(dte):
     try:
-        sql = f"SELECT * FROM EventLog WHERE DATE(EventTimeStamp) = Date(%s)"
-        params = (dte,)
-        
+        sql = f"SELECT * FROM EventLog WHERE MONTH(EventTimeStamp) = %s " \
+            "AND YEAR(EventTimeStamp) = %s ORDER BY EventTimeStamp Desc"
+        params = (dte.month, dte.year)
         data = DBHelper.run_query(sql, params, True)
         res = []
         for d in data:
