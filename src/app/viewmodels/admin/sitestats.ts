@@ -1,3 +1,7 @@
+import { CalendarMonthViewComponent, CalendarEvent, CalendarView } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { provideCalendar } from 'angular-calendar';
+import { DateAdapter } from 'angular-calendar';
 import { FormsModule } from '@angular/forms';
 import { Component, signal } from '@angular/core';
 import { UserData } from '../../services/userdata';
@@ -10,9 +14,15 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'users-root',
   standalone: true,
-  imports: [FormsModule, AsyncPipe, DatePipe],
+  imports: [FormsModule, AsyncPipe, DatePipe, CalendarMonthViewComponent],
   templateUrl: '../../views/admin/sitestats.html',
-  styleUrl: '../../styles/admin/sitestats.scss'
+  styleUrl: '../../styles/admin/sitestats.scss',
+  providers: [
+    provideCalendar({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    }),
+  ],
 })
 
 export class SiteStatsComponent  {
@@ -26,29 +36,41 @@ export class SiteStatsComponent  {
         month: '2-digit',
     };
 
+    calendarViewDate!: Date;
+    events: CalendarEvent[] = [
+        {
+          start: new Date(),
+          title: 'My Event',
+        },
+    ];
+
     set actvitiyMonthDate(val: string) {
-    if (val !== this._actvitiyMonthDate) {
-        this._actvitiyMonthDate = val;
-        this.onMonthYearChange();
+        if (val !== this._actvitiyMonthDate) {
+            this._actvitiyMonthDate = val;
+            this.calendarViewDate = this.convertMonthStringToDate(val);
+            this.onMonthYearChange();
+        }
     }
-}
 
     get actvitiyMonthDate(): string {
         return this._actvitiyMonthDate;
     }
 
     onMonthYearChange() {
-    setTimeout(() => {
         const [year, month] = this._actvitiyMonthDate.split('-');
-
         const formatted = `${month}/${year}`;
 
         this._admData.getUserEvents(formatted);
-    }, 200);
-}
+    }
+
+    convertMonthStringToDate(monthYearString: string): Date {
+        const fullDateString = `${monthYearString}-01T00:00:00`;
+        return new Date(fullDateString);
+    }
 
     constructor(private _admData: AdminData) {
         this.userEvents$ = _admData.userEvents$;
+        this.calendarViewDate = this.convertMonthStringToDate(this._actvitiyMonthDate)
     }
 
     ngOnInit(): void {

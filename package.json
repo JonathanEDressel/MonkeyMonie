@@ -36,16 +36,19 @@
     "@fortawesome/free-solid-svg-icons": "^7.0.1",
     "ag-charts-angular": "^12.3.1",
     "ag-charts-community": "^12.3.1",
+    "angular-calendar": "^0.32.0",
     "bootstrap": "^5.3.8",
     "chart.js": "^4.5.1",
     "chartjs-plugin-datalabels": "^2.2.0",
+    "date-fns": "^4.1.0",
     "firebase": "^12.4.0",
     "jquery": "^3.7.1",
     "ng2-charts": "^8.0.0",
     "ng2-currency-mask": "^13.0.3",
     "react-currency-input-field": "^4.0.3",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "vite": "^7.2.6"
   },
   "devDependencies": {
     "@angular/build": "^20.2.2",
