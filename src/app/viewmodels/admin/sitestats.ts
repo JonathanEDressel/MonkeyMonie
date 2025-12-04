@@ -1,4 +1,4 @@
-import { CalendarMonthViewComponent, CalendarEvent, CalendarView } from 'angular-calendar';
+import { CalendarMonthViewComponent, CalendarEvent } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { provideCalendar } from 'angular-calendar';
 import { DateAdapter } from 'angular-calendar';
@@ -37,7 +37,30 @@ export class SiteStatsComponent  {
     };
 
     calendarViewDate!: Date;
+
+    // actions: EventAction[] = [
+    //     {
+    //         label: '<i class="fa fa-pencil"></i>',  // HTML icon
+    //         a11yLabel: 'Edit',
+    //         onClick: ({ event }: { event: CalendarEvent }): void => {
+    //         console.log('Edit event', event);
+    //         },
+    //     },
+    //     {
+    //         label: '<i class="fa fa-trash"></i>',
+    //         a11yLabel: 'Delete',
+    //         onClick: ({ event }: { event: CalendarEvent }): void => {
+    //         console.log('Delete event', event);
+    //         },
+    //     },
+    // ];
+
     events: CalendarEvent[] = [
+        {
+          start: new Date("12/1/2025"),
+          title: '',
+          cssClass: "fa-solid fa-eye-slash"
+        },
         {
           start: new Date(),
           title: 'My Event',
