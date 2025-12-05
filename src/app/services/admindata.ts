@@ -2,6 +2,7 @@ import { Injectable, signal } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 import { EventModel } from "../models/eventmodel";
 import { AdminController } from "./controllers/admincontroller";
+import { CalendarEvent } from "angular-calendar";
 
 @Injectable({
     providedIn: 'root'
@@ -15,8 +16,17 @@ export class AdminData {
 
     ErrorMsg = signal("");
 
+    getDayEvents(events: EventModel[]): CalendarEvent[] {
+        var res: CalendarEvent[] = [];
+        for (var i = 0; i < events.length; i++) {
+            
+        }
+
+        return res;
+    }
+
     getUserEvents(dte: string): any {
-        this._adminController.getUserEvents(dte).subscribe({
+        return this._adminController.getUserEvents(dte).subscribe({
             next: (res: any) => {
                 if(res.status === 200) {
                     const events: EventModel[] = [];

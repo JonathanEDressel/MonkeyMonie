@@ -1,11 +1,11 @@
-import { CalendarMonthViewComponent, CalendarEvent } from 'angular-calendar';
+import { CalendarMonthViewComponent, CalendarEvent, CalendarEventAction } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { provideCalendar } from 'angular-calendar';
 import { DateAdapter } from 'angular-calendar';
 import { FormsModule } from '@angular/forms';
 import { Component, signal } from '@angular/core';
 import { UserData } from '../../services/userdata';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { DatePipe } from '@angular/common';
 import { AdminData } from '../../services/admindata';
 import { EventModel } from '../../models/eventmodel';
@@ -14,7 +14,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'users-root',
   standalone: true,
-  imports: [FormsModule, AsyncPipe, DatePipe, CalendarMonthViewComponent],
+  imports: [FormsModule, AsyncPipe, DatePipe, CalendarMonthViewComponent, NgIf],
   templateUrl: '../../views/admin/sitestats.html',
   styleUrl: '../../styles/admin/sitestats.scss',
   providers: [
@@ -38,33 +38,11 @@ export class SiteStatsComponent  {
 
     calendarViewDate!: Date;
 
-    // actions: EventAction[] = [
-    //     {
-    //         label: '<i class="fa fa-pencil"></i>',  // HTML icon
-    //         a11yLabel: 'Edit',
-    //         onClick: ({ event }: { event: CalendarEvent }): void => {
-    //         console.log('Edit event', event);
-    //         },
-    //     },
-    //     {
-    //         label: '<i class="fa fa-trash"></i>',
-    //         a11yLabel: 'Delete',
-    //         onClick: ({ event }: { event: CalendarEvent }): void => {
-    //         console.log('Delete event', event);
-    //         },
-    //     },
-    // ];
-
-    events: CalendarEvent[] = [
+    monthEvents: CalendarEvent[] = [
         {
-          start: new Date("12/1/2025"),
-          title: '',
-          cssClass: "fa-solid fa-eye-slash"
-        },
-        {
-          start: new Date(),
-          title: 'My Event',
-        },
+            start: new Date(),
+            title: ''
+        }
     ];
 
     set actvitiyMonthDate(val: string) {
