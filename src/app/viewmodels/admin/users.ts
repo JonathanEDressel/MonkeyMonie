@@ -21,6 +21,9 @@ export class UsersComponent  {
     portalPages: any[] = [];
     selectedPage: number = 1;
 
+    newPassword: string = "";
+    confirmPassword: string = "";
+
     isAdmin$: Observable<boolean>;
     users$: Observable<UserModel[]>;
     
@@ -29,8 +32,17 @@ export class UsersComponent  {
         this.users$ = _usrData.userList$;
     }
 
+    clearPasswords(): void {
+        this.newPassword = "";
+        this.confirmPassword = "";
+    }
+
+    resetPassword(): void {
+        this._usrData.updatePassword(this.newPassword); 
+        this.clearPasswords();
+    }
+
     saveUser(usr: UserModel) {
-        console.log('save user - ', usr)
         this._usrData.updateUser(usr);
     }
 

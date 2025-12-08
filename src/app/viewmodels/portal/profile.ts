@@ -36,7 +36,6 @@ export class ProfileComponent implements OnInit {
 
     saveChanges(user: UserModel): void {
         //call to save changes
-        console.log('user - ', user)
         this._usrData.updateUser(user);
     }
 
