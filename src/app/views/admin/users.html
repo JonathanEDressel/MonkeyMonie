@@ -2,7 +2,12 @@
   <div class="container-fluid p-0">
     @if (selectedUser().Username.length === 0) {
       <div class="d-flex justify-content-end mt-3">
-        <input type="text" class="form-control" style="max-width: 250px;" placeholder="Search users..." (input)="filter$.next($any($event.target).value)" />
+        <div class="input-group" style="max-width: 300px;">
+          <input type="text" class="form-control" placeholder="Search users..." [(ngModel)]="searchText" (input)="filter$.next(searchText)" />
+          <button class="btn btn-outline-secondary" type="button" (click)="searchText=''; filter$.next('')">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
       </div>
       <table class="table table-hover table-striped table-bordered shadow-sm rounded custom-table mt-4">
         <thead class="table-dark custom-header">
@@ -10,6 +15,7 @@
             <th style="width: 40px;"></th>
             <th>Username</th>
             <th>Email</th>
+            <th>Account Type</th>
             <th>Creation Date</th>
             <th>Expiration Date</th>
           </tr>
@@ -24,6 +30,7 @@
 
               <td class="align-middle">{{ usr.Username }}</td>
               <td class="align-middle">{{ usr.Email }}</td>
+              <td class="align-middle">{{ usr.accountType() }}</td>
               <td class="align-middle">{{ usr.CreatedDate | date:'short' }}</td>
               <td class="align-middle">
                 {{ usr.hasExpired() ? (usr.ExpireDate | date:'short') : '' }}
@@ -83,15 +90,22 @@
 
         <div class="col-md-4">
           <div class="form-check form-switch mt-2">
-            <label class="form-check-label fw-bold" for="isActive">Is Active</label>
+            <label class="form-check-label fw-bold" for="isActive">Active</label>
             <input class="form-check-input switch-big" type="checkbox" id="isActive" [(ngModel)]="selectedUser().IsActive" name="IsActive">
           </div>
         </div>
 
         <div class="col-md-4">
           <div class="form-check form-switch mt-2">
-            <label class="form-check-label fw-bold" for="isAdmin">Is Admin</label>
+            <label class="form-check-label fw-bold" for="isAdmin">Admin Account</label>
             <input class="form-check-input switch-big" type="checkbox" id="isAdmin" [(ngModel)]="selectedUser().IsAdmin" name="IsAdmin">
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-check form-switch mt-2">
+            <label class="form-check-label fw-bold" for="isDemo">Demo Account</label>
+            <input class="form-check-input switch-big" type="checkbox" id="isDemo" [(ngModel)]="selectedUser().IsDemo" name="isDemo">
           </div>
         </div>
 

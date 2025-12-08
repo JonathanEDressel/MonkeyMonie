@@ -33,11 +33,19 @@ export class UserModel {
         this.TwoFactor = false;
     }
 
-    getFullName() {
+    getFullName(): string {
         return this.FirstName + " " + this.LastName;
     }
 
-    hasExpired() {
+    accountType(): string {
+        if (this.IsDemo)
+            return "Demo";
+        else if (this.AdminLevel?.toLowerCase() === "site")
+            return "Site Admin";
+        return "";
+    }
+
+    hasExpired(): boolean {
         if(!this.ExpireDate || this.ExpireDate.length === 0)
             return false;
         var expdte = new Date(this.ExpireDate);
@@ -45,7 +53,7 @@ export class UserModel {
         return expdte < now;
     }
 
-    assignData(data: UserModel) {
+    assignData(data: UserModel): void {
         this.Id = data.Id;
         this.Username = data.Username;
         this.FirstName = data.FirstName;

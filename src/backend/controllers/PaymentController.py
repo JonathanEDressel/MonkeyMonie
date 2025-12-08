@@ -21,19 +21,29 @@ def add_donation():
         authusr = _authDbCtx.get_current_user()
         if not authusr:
             return jsonify({"result": "Unauthorized", "status": 401}), 401
-        _payDbCtx.add_donation(authusr.Username, method, amount, notes, str(datetime.now(timezone.utc)))
+        _payDbCtx.add_donation(authusr.Username, amount, method, notes, str(datetime.now(timezone.utc)))
         return jsonify({"result": "Successfully added donation", "status": 200}), 200
     except Exception as e:
         log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
 
+@pay_bp.route('/donations/all', methods=['GET'])
+@limiter.limit("40 per minute")
+@requires_token
+def get_all_donations():
+    try:
+        if not _authDbCtx.is_admin():
+            return jsonify({"result": "Unauthorized", "status": 401}), 401
+        return _payDbCtx.get_all_donations()
+    except Exception as e:
+        log_error_to_db(e)
+        return jsonify({"result": e, "status": 400}), 400
+    
 @pay_bp.route('/donations', methods=['GET'])
 @limiter.limit("40 per minute")
 @requires_token
 def get_donations():
     try:
-        if not _authDbCtx.is_admin():
-            return jsonify({"result": "Unauthorized", "status": 401}), 401
         return _payDbCtx.get_donations()
     except Exception as e:
         log_error_to_db(e)

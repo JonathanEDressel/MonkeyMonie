@@ -66,10 +66,30 @@
       Reset Password
     </button>
   </div>
+
+  <hr />
+  <h3>Donation Details</h3>
+  <div>
+    <table class="table table-hover table-striped table-bordered shadow-sm rounded custom-table mt-4">
+      <thead class="table-dark custom-header">
+        <tr>
+          <th>Date</th>
+          <th>Amount</th>
+          <th>Method</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+      @for (donation of personalDonations$ | async; track donation) {
+        <tr class="">
+          <td class="align-middle">{{ donation.DateAdded }}</td>
+          <td class="align-middle">{{ donation.Amount }}</td>
+          <td class="align-middle">{{ donation.Method }}</td>
+          <td class="align-middle">{{ donation.Notes }}</td>
+        </tr>
+      } 
+      </tbody>
+    </table>
+  </div>
 </div>
-<!-- <hr />
-<h3>Payment Details</h3>
-<div class="container d-flex flex-column align-items-center mt-3">
-  
-</div> -->
 }

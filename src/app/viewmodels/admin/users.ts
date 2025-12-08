@@ -27,6 +27,7 @@ export class UsersComponent  {
     isAdmin$: Observable<boolean>;
     users$: Observable<UserModel[]>;
 
+    searchText: string = "";
     filter$: BehaviorSubject<string> = new BehaviorSubject<string>("");
     usersFiltered$!: Observable<UserModel[]>;
 
@@ -51,6 +52,9 @@ export class UsersComponent  {
                         return fullName.includes(f) || username.includes(f) || email.includes(f);
                     }
                 )
+                .sort((a, b) => {
+                    return (b.IsActive === a.IsActive) ? 0 : b.IsActive ? 1 : -1;
+                })
             )
         );
     }

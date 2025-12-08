@@ -4,6 +4,8 @@ import { UserData } from '../../services/userdata';
 import { Observable } from 'rxjs';
 import { UserModel } from '../../models/usermodel';
 import { AsyncPipe } from '@angular/common';
+import { DonationModel } from '../../models/donationmodel';
+import { PaymentData } from '../../services/paymentdata';
 
 @Component({
   selector: 'overview-root',
@@ -19,8 +21,11 @@ export class ProfileComponent implements OnInit {
     newPassword: string = "";
     confirmPassword: string = "";
 
-    constructor(private _usrData: UserData) {
+    personalDonations$: Observable<DonationModel[]>;
+
+    constructor(private _usrData: UserData, private _payData: PaymentData) {
         this.user$ = _usrData.user$;
+        this.personalDonations$ = _payData.userDonation$;
     }
 
     clearPasswords(): void {
@@ -41,10 +46,11 @@ export class ProfileComponent implements OnInit {
 
     ngOnInit(): void {
         this._usrData.getUser();
+        this._payData.getDonations();
     }
 
     activate(): void {
-        console.log('profile tab called');
+        // console.log('profile tab called');
     }
 
 }

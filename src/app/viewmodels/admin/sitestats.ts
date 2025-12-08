@@ -14,7 +14,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'users-root',
   standalone: true,
-  imports: [FormsModule, AsyncPipe, DatePipe, CalendarMonthViewComponent, NgIf],
+  imports: [FormsModule, AsyncPipe, DatePipe, CalendarMonthViewComponent],
   templateUrl: '../../views/admin/sitestats.html',
   styleUrl: '../../styles/admin/sitestats.scss',
   providers: [
