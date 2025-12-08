@@ -61,6 +61,17 @@ export class UserData {
       })
     }
 
+    updateUserPassword(userid: number, newPassword: string): void {
+      this._userController.updateUserPassword(userid, newPassword).subscribe({
+        next: (res: any)=> {
+          if(res.status === 200) {
+
+          }
+          alert(res.result);
+        }
+      })
+    }
+
     updateUser(user: UserModel): void {
       this._userController.updateUser(user).subscribe({
         next: (res: any) => {

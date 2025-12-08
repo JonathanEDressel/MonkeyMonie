@@ -38,7 +38,7 @@ export class UsersComponent  {
     }
 
     resetPassword(): void {
-        this._usrData.updatePassword(this.newPassword); 
+        this._usrData.updateUserPassword(this.selectedUser().Id, this.newPassword); 
         this.clearPasswords();
     }
 

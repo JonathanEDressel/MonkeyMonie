@@ -43,6 +43,20 @@ def update_password():
         log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
+@usr_bp.route('/updateUserPassword', methods=['PATCH'])
+@limiter.limit("15 per minute")
+@requires_token
+def update_user_password():
+    try:
+        req = request.json
+        newPassword = req.get('newpassword', '').strip()
+        userid = int(req.get('userid', 0))
+        _usrCtx.update_user_password(userid, newPassword)
+        return jsonify({"result": "Successfully updated password", "status": 200}), 200
+    except Exception as e:
+        log_error_to_db(e)
+        return jsonify({"result": e, "status": 400}), 400
+    
 @usr_bp.route('/update', methods=['PUT'])
 @limiter.limit("15 per minute")
 @requires_token

@@ -20,7 +20,7 @@ class User:
     IsAdmin: bool
 
     def is_site_admin(self) -> bool:
-        return self.IsAdmin and str(self.AdminLevel).casefold() == "site"
+        return self.IsAdmin and str(self.AdminLevel).casefold().lower() == "site"
     
     def is_demo(self) -> bool:
         return self.IsDemo

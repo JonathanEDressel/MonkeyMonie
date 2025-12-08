@@ -35,7 +35,6 @@ def get_user_by_username(username):
         params = (username,)
         usr = DBHelper.run_query(sql, params, fetch=True)
         res = UserModel.data_to_model(usr[0])
-
         if res:        
             return res
         return None
@@ -61,6 +60,19 @@ def update_password(newPassword):
             return jsonify({"result": "Unauthorized", "status": 401}), 401
         sql = "UPDATE UserAcct SET UserPassword = %s WHERE Id = %s"
         params = (hashedPassword, authusr.Id)
+        return DBHelper.run_query(sql, params, False)
+    except Exception as e:
+        log_error_to_db(e)
+        return jsonify({"result": e, "status": 400}), 400
+    
+def update_user_password(userid, newPassword):
+    try:
+        hashedPassword = DBHelper.encrypt_password(newPassword)
+        authusr = _authDbCtx.get_current_user()
+        if not authusr or not authusr.is_site_admin():
+            return jsonify({"result": "Unauthorized", "status": 401}), 401
+        sql = "UPDATE UserAcct SET UserPassword = %s WHERE Id = %s"
+        params = (hashedPassword, userid)
         return DBHelper.run_query(sql, params, False)
     except Exception as e:
         log_error_to_db(e)
