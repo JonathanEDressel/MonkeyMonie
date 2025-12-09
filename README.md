@@ -57,6 +57,7 @@ Creating a Angular app to learn more about login authentication, web security an
     * <s>Add sql injection checks</s>
     * <s>Add AccountHistory table</s>
     * Add indexing to some tables (not sure which tables yet)
+    * Add caching
 * Overview page
     * Grab currnet user accounts
 * Donation Options
@@ -84,12 +85,12 @@ Creating a Angular app to learn more about login authentication, web security an
 * Admin page
     * Users Page 
         * <s>Ability to select account and edit</s>
-        * Search users
+        * <s>Search users</s>
         * Filter users shown
         * Delete users
     * Configure website settings
     * Site Stats Page
-        * Show user login activity
+        * <s>Show user login activity</s>
     * Payment Details Page
         * Show payment details by user
         * Show total income
