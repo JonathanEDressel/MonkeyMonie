@@ -1,5 +1,19 @@
 
 @if (!showModal()) {
+    @if(showDeleteModal) {
+        <app-modal [title]="deleteTitle" 
+            [message]="deleteMsg"
+            (cancelButton)="closeDeleteModal()"
+            (confirmButton)="removeAccount()">
+        </app-modal>
+
+        <ng-template #extraContent>
+            <div style="margin-top: 15px;">
+                <strong>Additional Info:</strong>
+                <p>This content is inserted via template.</p>
+            </div>
+        </ng-template>
+    }
     <div>
         <h3 class="mt-4 text-start">Add Account</h3>
         <div class="row d-flex align-items-center justify-content-center">
@@ -46,7 +60,7 @@
                             <td>{{acct.Type}}</td>
                             <td>{{acct.DateAdded}}</td>
                             <td>
-                                <button class="btn btn-sm btn-danger" (click)="removeAccount(acct.Id);  $event.stopPropagation()">
+                                <button class="btn btn-sm btn-danger" (click)="openDeleteModal(acct.Id, acct.Name);  $event.stopPropagation()">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </td>
