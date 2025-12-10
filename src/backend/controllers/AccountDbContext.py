@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from .ErrorController import log_error_to_db
 import helper.Helper as DBHelper
 import models.PersonalAccountModel as PersonalAccount
+import models.PersonalRecordModel as PersonalRecord
 
 #InvestmentAccounts
 def add_taxable_account():
@@ -69,6 +70,19 @@ def get_personal_accounts(userid):
         log_error_to_db(e)
         return -1
     
+def personal_acct_is_users(acctid, userid):
+    try:
+        acts = get_personal_accounts(userid)
+        hasAccount = False
+        for act in acts:
+            if act.Id == acctid:
+                hasAccount = True
+                break
+        return hasAccount
+    except Exception as e:
+        log_error_to_db(e)
+        return False
+    
 #PersonalAccountHistory
 def add_personal_record(accountid, balance):
     try:
@@ -82,15 +96,20 @@ def add_personal_record(accountid, balance):
         log_error_to_db(e)
         return False
     
-def personal_acct_is_users(acctid, userid):
+def get_personal_account_history(userid):
     try:
-        acts = get_personal_accounts(userid)
-        hasAccount = False
-        for act in acts:
-            if act.Id == acctid:
-                hasAccount = True
-                break
-        return hasAccount
+        if not isinstance(userid, int):
+            userid = int(userid)
+        
+        sql = "Select pah.Id, pah.AccountId, pa.UserId, pah.Balance, pa.Name, " \
+        "pah.RecordedDate From personalaccounthistory pah " \
+        "Inner Join personalaccounts as pa On pa.Id = pah.AccountId where pa.userid = %s;"
+        params = (userid,)
+        data = DBHelper.run_query(sql, params, fetch=True)
+        res = []
+        for d in data:
+            tmp = PersonalRecordModel.data_to_model(d)
+        
     except Exception as e:
         log_error_to_db(e)
         return False
