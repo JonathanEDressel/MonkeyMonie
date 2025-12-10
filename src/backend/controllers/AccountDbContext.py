@@ -108,8 +108,9 @@ def get_personal_account_history(userid):
         data = DBHelper.run_query(sql, params, fetch=True)
         res = []
         for d in data:
-            tmp = PersonalRecordModel.data_to_model(d)
-        
+            tmp = PersonalRecord.data_to_model(d)
+            res.append(tmp)
+        return res
     except Exception as e:
         log_error_to_db(e)
         return False

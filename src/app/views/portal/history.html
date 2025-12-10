@@ -1,22 +1,18 @@
 
 <div class="container mt-4">
-    <h3 class="text-start">Account History</h3>
-    <table class="table table-bordered table-hover mt-4">
-        <thead class="thead-dark">
-            <th>Date</th>
-            <th>Roth IRA</th>
-            <th>Savings</th>
-            <th>401(k)</th>
-        </thead>   
-        <tbody>
-            @for (hist of accountHistory; track hist) {
-                <tr>
-                    <td>{{hist.Date}}</td>
-                    <td>{{hist.Accounts[0]}}</td>
-                    <td>{{hist.Accounts[1]}}</td>
-                    <td>{{hist.Accounts[2]}}</td>
+    <div *ngFor="let group of mappedRecords() | keyvalue">
+        <h3 class="text-start">{{ cleanKey(group.key) }}</h3>
+        <table class="table table-bordered table-hover mt-4" style="width: 20%;">
+            <thead class="thead-dark">
+                <th>Date</th>
+                <th>Balance</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let record of group.value">
+                    <td>{{record.Date | date:'MM/dd/yyyy'}}</td>
+                    <td>{{record.Balance}}</td>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 </div>

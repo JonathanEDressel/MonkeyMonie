@@ -36,4 +36,9 @@ export class AcctController {
     getPersonalAccounts(): any {
         return this.http.get<{token: string}>(`${this.apiURL}/personal`);
     }
+
+    getPersonalAccountHistory(): any {
+        return this.http.get<{token: string}>(`${this.apiURL}/personal/records`);
+    }
 }
+

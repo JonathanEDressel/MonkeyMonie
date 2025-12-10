@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { AcctController } from "./controllers/acctcontroller";
 import { Router } from "@angular/router";
 import { PersonalAccountModel } from "../models/personalaccountmodel";
+import { PersonalAccountHistoryModel } from "../models/personalaccounthistory";
 
 @Injectable({
     providedIn: 'root'
@@ -11,9 +12,12 @@ import { PersonalAccountModel } from "../models/personalaccountmodel";
 export class AcctData {
 
     userPersonalAccounts: PersonalAccountModel[] = [];
-
     private personalActSubject = new BehaviorSubject<PersonalAccountModel[]>([]);
     personalAccounts$: Observable<PersonalAccountModel[]> = this.personalActSubject.asObservable();
+
+    userPersonalAccountHistory: PersonalAccountHistoryModel[] = [];
+    private personalActHistSubject = new BehaviorSubject<PersonalAccountHistoryModel[]>([]);
+    personalActHistory$: Observable<PersonalAccountHistoryModel[]> = this.personalActHistSubject.asObservable();
 
     constructor(private _acctController: AcctController) {}
 
@@ -96,5 +100,34 @@ export class AcctData {
             },
             error: (err: any) => console.error(err)
         })
+    }
+
+    getPersonalAccountHistory(): Promise<PersonalAccountHistoryModel[]> {
+        return new Promise((resolve, reject) => {
+            this._acctController.getPersonalAccountHistory().subscribe({
+                next: (res: any) => {
+                    if(res.status === 200) {
+                        const accounts: PersonalAccountHistoryModel[] = [];
+                        var data = res.result;
+                        for(var i = 0; i < data.length; i++) {
+                            var tmp = new PersonalAccountHistoryModel();
+                            tmp.assignData(data[i]);
+                            accounts.push(tmp);
+                        }
+                        this.personalActHistSubject.next(accounts);
+                        console.log(accounts)
+                        resolve(accounts);
+                    }
+                    else {
+                        console.warn('Failed to get account history');
+                        reject('Bad status: ' + res.status);
+                    }
+                },
+                error: (err: any) => {
+                    console.error(err);
+                    reject(err);
+                }
+            });
+        });
     }
 }
