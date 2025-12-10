@@ -1,0 +1,16 @@
+<div class="modal-backdrop" (click)="cancelAction()"></div>
+<div class="modal">
+  <button class="close-btn" (click)="cancelAction()">✕</button>
+
+  <h2 class="modal-title">{{ title }}</h2>
+
+  <p class="modal-message">{{ message }}</p>
+
+  @if (content) {
+    <ng-container [ngTemplateOutlet]="content"></ng-container>
+  }
+  <div class="modal-actions">
+    <button class="modal-cancel-btn" (click)="cancelAction()">Cancel</button>
+    <button class="modal-btn" (click)="confirmAction()">Confirm</button>
+  </div>
+</div>

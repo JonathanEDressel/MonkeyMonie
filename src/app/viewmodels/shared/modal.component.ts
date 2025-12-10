@@ -5,8 +5,8 @@ import { CommonModule } from '@angular/common';
   selector: 'app-modal',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: '../templateviews/modal.component.html',
-  styleUrls: ['../styles/modal.component.scss']
+  templateUrl: '../../views/shared/modal.component.html',
+  styleUrls: ['../../styles/shared/modal.component.scss']
 })
 
 export class ModalPopup {

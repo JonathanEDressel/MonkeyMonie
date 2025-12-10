@@ -7,7 +7,7 @@ import { AsyncPipe } from '@angular/common';
 import { CurrencyInput } from 'react-currency-input-field';
 import {CurrencyMaskModule } from 'ng2-currency-mask';
 import { CommonModule } from '@angular/common';
-import { ModalPopup } from '../../shared/templateviewmodels/modal.component';
+import { ModalPopup } from '../shared/modal.component';
 
 @Component({
   selector: 'accounts-root',
@@ -26,8 +26,8 @@ export class AccountsComponent {
     acctBalance = signal(0);
     personalAccts$: Observable<PersonalAccountModel[]>;
 
-    deleteTitle = "Delete Account";
-    deleteMsg = "Are you sure you want to delete this account?";
+    deleteTitle = "";
+    deleteMsg = "";
     showDeleteModal = false;
     idToDelete = 0;
 
@@ -44,7 +44,8 @@ export class AccountsComponent {
     openDeleteModal(id: number, name: string) {
         this.showDeleteModal = true;
         this.idToDelete = id;
-        this.deleteMsg = "Are you sure you want to delete \"" + name + "\" account?"
+        this.deleteTitle = `Delete ${name}`
+        this.deleteMsg = `Are you sure you want to delete "${name}" account?`
     }
 
     addAccount(): void {
