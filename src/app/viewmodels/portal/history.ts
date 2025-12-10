@@ -41,6 +41,10 @@ export class HistoryComponent {
         return trackAccounts;
     });
 
+    cleanKey(key: string): string {
+        return key.replace(/^\d+-/, '');
+    }
+
     constructor(private _actData: AcctData) {
 
     }
