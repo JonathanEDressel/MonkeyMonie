@@ -1,38 +1,37 @@
 
 <div class="container mt-4">
-    <div *ngFor="let group of mappedRecords() | keyvalue; let i = index">
-        <details #d open (toggle)="onToggle()">
-            <summary class="text-start no-arrow" style="cursor: pointer;">
-                <h4>
-                    <i *ngIf="d.open" class="fa-solid fa-angle-down"></i>
-                    <i *ngIf="!d.open" class="fa-solid fa-chevron-right"></i>
-                    {{ cleanKey(group.key) }}
-                </h4>
-            </summary>
-            <div class="row mt-4" style="height: 20rem;">
-                <div class="col col-4">
-                    <div style="max-height: 200px; overflow-y: auto;">
-                        <table class="table table-bordered table-hover mt-4" style="width: 90%;">
-                            <thead class="thead-dark">
-                                <th>Date</th>
-                                <th>Balance</th>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let record of group.value">
-                                    <td>{{record.Date | date:'MM/dd/yyyy'}}</td>
-                                    <td>{{record.Balance}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="col col-8">
-                    <canvas baseChart [data]="accountHistoryChartData" [options]="accountHistoryChartOptions" type="line">
-
-                    </canvas>
+    @for (rec of personalRecords$ | async; track rec) {
+    <details #d open (toggle)="onToggle()">
+        <summary class="text-start no-arrow" style="cursor: pointer;">
+            <h4>
+                <i *ngIf="d.open" class="fa-solid fa-angle-down"></i>
+                <i *ngIf="!d.open" class="fa-solid fa-chevron-right"></i>
+                {{ rec.Name }}
+            </h4>
+        </summary>
+        <div class="row mt-4" style="height: 20rem;">
+            <div class="col col-4">
+                <div style="max-height: 200px; overflow-y: auto;">
+                    <table class="table table-bordered table-hover mt-4" style="width: 90%;">
+                        <thead class="thead-dark">
+                            <th>Date</th>
+                            <th>Balance</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let record of rec.Records">
+                                <td>{{record.RecordedDate| date:'MM/dd/yyyy'}}</td>
+                                <td>{{formatCurrency(record.Balance)}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <hr />
-        </details>
-    </div>
+            <div class="col col-8">
+                <canvas *ngIf="rec.ChartRecords" baseChart [data]="rec.ChartRecords" [options]="accountHistoryChartOptions" type="line">
+                </canvas>
+            </div>
+        </div>
+        <hr />
+    </details>
+    }
 </div>

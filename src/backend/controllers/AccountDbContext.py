@@ -1,6 +1,7 @@
 from flask import jsonify
 from datetime import datetime, timezone
 from .ErrorController import log_error_to_db
+from models.PersonalAccountModel import PersonalAccount
 import helper.Helper as DBHelper
 import models.PersonalAccountModel as PersonalAccount
 import models.PersonalRecordModel as PersonalRecord
@@ -53,12 +54,8 @@ def remove_personal_account(acctid, userid):
     
 def get_personal_accounts(userid):
     try:
-        sql = "SELECT pa.Id AS AccountId, pa.UserId, pa.Balance, pa.Name, pa.Type, pa.CreatedDate From PersonalAccounts as pa " \
+        sql = "SELECT pa.Id, pa.UserId, pa.Balance, pa.Name, pa.Type, pa.CreatedDate From PersonalAccounts as pa " \
             "WHERE pa.UserId = %s Order by pa.Id Desc"
-        # sql = "SELECT PA.Id AS AccountId, PA.Balance, PA.UserId, PA.Name, PA.Type, PA.CreatedDate FROM " \
-            # "PersonalAccounts as PA " \
-            # "INNER JOIN PersonalAccountHistory AS PAH ON PA.Id = PAH.AccountId " \
-            # "WHERE PA.UserId = %s ORDER By PA.Id Desc"
         params = (userid,)
         accounts = DBHelper.run_query(sql, params, True)
         res = []
@@ -96,15 +93,55 @@ def add_personal_record(accountid, balance):
         log_error_to_db(e)
         return False
     
-def get_personal_account_history(userid):
+# def get_personal_account_history(userid):
+#     try:
+#         if not isinstance(userid, int):
+#             userid = int(userid)
+        
+#         sql = "Select pah.Id, pah.AccountId, pa.UserId, pah.Balance, pa.Name, " \
+#         "pah.RecordedDate From personalaccounthistory pah " \
+#         "Inner Join personalaccounts as pa On pa.Id = pah.AccountId where pa.userid = %s;"
+#         params = (userid,)
+#         data = DBHelper.run_query(sql, params, fetch=True)
+#         res = []
+#         for d in data:
+#             tmp = PersonalRecord.data_to_model(d)
+#             res.append(tmp)
+#         return res
+#     except Exception as e:
+#         log_error_to_db(e)
+#         return False
+
+def get_personal_history(userid):
     try:
         if not isinstance(userid, int):
             userid = int(userid)
-        
-        sql = "Select pah.Id, pah.AccountId, pa.UserId, pah.Balance, pa.Name, " \
-        "pah.RecordedDate From personalaccounthistory pah " \
-        "Inner Join personalaccounts as pa On pa.Id = pah.AccountId where pa.userid = %s;"
+            
+        sql = "Select Id, UserId, IsActive, Name, Type, Balance, CreatedDate " \
+            "From PersonalAccounts Where userid = %s"
         params = (userid,)
+        data = DBHelper.run_query(sql, params, fetch=True)
+        accounts = []
+        for d in data:
+            tmp = PersonalAccount.data_to_model(d)
+            accounts.append(tmp)
+        for act in accounts:
+            acctid = act.Id
+            records = get_personal_account_history(acctid)
+            act.Records = records.copy()
+        return accounts
+    except Exception as e:
+        log_error_to_db(e)
+        return False
+
+def get_personal_account_history(acctid):
+    try:
+        if not isinstance(acctid, int):
+            acctid = int(acctid)
+        
+        sql = "Select Id, AccountId, RecordedDate, Balance From PersonalAccountHistory " \
+            "Where AccountId = %s Order By RecordedDate Desc"
+        params = (acctid,)
         data = DBHelper.run_query(sql, params, fetch=True)
         res = []
         for d in data:

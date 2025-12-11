@@ -5,9 +5,7 @@ from datetime import datetime
 class PersonalRecordModel:
     Id: int
     AccountId: int
-    UserId: int
     Balance: float
-    Name: slice
     RecordedDate: datetime
     
 def data_to_model(data):
@@ -16,9 +14,7 @@ def data_to_model(data):
     return PersonalRecordModel(
         Id=data.get('Id'),
         AccountId=data.get('AccountId'),
-        UserId=data.get('UserId'),
         Balance=data.get('Balance'),
-        Name=data.get('Name'),
         RecordedDate=convert_datetime(data.get('RecordedDate'))
     )
     

@@ -6,13 +6,8 @@ export class EventModel {
     EventType = <string>("");
     EventUser = <string>("");
 
-    constructor() {
-        this.Id = 0;
-        this.EventTimeStamp = "";
-        this.EventText = "";
-        this.Source = "";
-        this.EventType = "";
-        this.EventUser = "";
+    constructor(init?: Partial<EventModel>) {
+        Object.assign(this, init);
     }
 
     assignData(data: EventModel) {

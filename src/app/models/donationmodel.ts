@@ -6,13 +6,8 @@ export class DonationModel {
     Method = <string>("");
     DateAdded = <string>("");
 
-    constructor() {
-        this.Id = 0;
-        this.Username = "";
-        this.Amount = "";
-        this.Notes = "";
-        this.Method = "";
-        this.DateAdded = "";
+    constructor(init?: Partial<DonationModel>) {
+        Object.assign(this, init);
     }
 
     assignData(data: DonationModel) {

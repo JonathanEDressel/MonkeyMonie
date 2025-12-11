@@ -15,22 +15,8 @@ export class UserModel {
     ConfirmedEmail = <boolean>(false);
     TwoFactor = <boolean>(false);
 
-    constructor() {
-        this.Id = 0;
-        this.Username = "";
-        this.FirstName = "";
-        this.LastName = "";
-        this.Email = "";
-        this.PhoneNumber = "";
-        this.LastLogin = "";
-        this.CreatedDate = "";
-        this.IsDemo = false;
-        this.IsAdmin = false;
-        this.ExpireDate = "";
-        this.IsActive = false;
-        this.AdminLevel = "";
-        this.ConfirmedEmail = false;
-        this.TwoFactor = false;
+    constructor(init?: Partial<UserModel>) {
+        Object.assign(this, init);
     }
 
     getFullName(): string {

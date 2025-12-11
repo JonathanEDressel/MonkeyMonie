@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 import { AcctController } from "./controllers/acctcontroller";
 import { Router } from "@angular/router";
 import { PersonalAccountModel } from "../models/personalaccountmodel";
-import { PersonalAccountHistoryModel } from "../models/personalaccounthistory";
+import { PersonalAccountHistoryModel } from "../models/personalaccounthistorymodel";
 
 @Injectable({
     providedIn: 'root'
@@ -15,9 +15,9 @@ export class AcctData {
     private personalActSubject = new BehaviorSubject<PersonalAccountModel[]>([]);
     personalAccounts$: Observable<PersonalAccountModel[]> = this.personalActSubject.asObservable();
 
-    userPersonalAccountHistory: PersonalAccountHistoryModel[] = [];
-    private personalActHistSubject = new BehaviorSubject<PersonalAccountHistoryModel[]>([]);
-    personalActHistory$: Observable<PersonalAccountHistoryModel[]> = this.personalActHistSubject.asObservable();
+    userPersonalAccountHistory: PersonalAccountModel[] = [];
+    private personalActHistSubject = new BehaviorSubject<PersonalAccountModel[]>([]);
+    personalActHistory$: Observable<PersonalAccountModel[]> = this.personalActHistSubject.asObservable();
 
     constructor(private _acctController: AcctController) {}
 
@@ -102,20 +102,19 @@ export class AcctData {
         })
     }
 
-    getPersonalAccountHistory(): Promise<PersonalAccountHistoryModel[]> {
+    getPersonalAccountHistory(): Promise<PersonalAccountModel[]> {
         return new Promise((resolve, reject) => {
             this._acctController.getPersonalAccountHistory().subscribe({
                 next: (res: any) => {
                     if(res.status === 200) {
-                        const accounts: PersonalAccountHistoryModel[] = [];
+                        const accounts: PersonalAccountModel[] = [];
                         var data = res.result;
                         for(var i = 0; i < data.length; i++) {
-                            var tmp = new PersonalAccountHistoryModel();
+                            var tmp = new PersonalAccountModel();
                             tmp.assignData(data[i]);
                             accounts.push(tmp);
                         }
                         this.personalActHistSubject.next(accounts);
-                        console.log(accounts)
                         resolve(accounts);
                     }
                     else {

@@ -1,23 +1,18 @@
-class RecordModel {
-    Balance = <number>(0);
-    Date = <Date>(new Date);
-}
+import { PersonalAccountHistoryModel } from "./personalaccounthistorymodel";
+import { ChartData, ChartOptions, ElementChartOptions } from 'chart.js';
 
 export class PersonalAccountModel {
-    Id = <number>(0);
-    Name = <string>("");
-    Balance = <number>(0);
-    Type = <string>("");
-    DateAdded = <Date>(new Date);
-    Records = <RecordModel[]>([]);
+    Id = <number>(0); 
+    Name = <string>(""); 
+    Balance = <number>(0); 
+    Type = <string>(""); 
+    DateAdded = <Date>(new Date); 
+    IsActive = <boolean>(true); 
+    ChartRecords = <ChartData<'line'> | null>null;
+    Records = <PersonalAccountHistoryModel[]>([]);
 
-    constructor() {
-        this.Id = 0;
-        this.Name = "";
-        this.Balance = 0;
-        this.Type = "";
-        this.DateAdded = new Date;
-        this.Records.length = 0;
+    constructor(init?: Partial<PersonalAccountModel>) {
+        Object.assign(this, init);
     }
 
     assignData(data: PersonalAccountModel) {
@@ -26,7 +21,19 @@ export class PersonalAccountModel {
         this.Balance = data.Balance;
         this.Type = data.Type;
         this.DateAdded = data.DateAdded;
+        this.IsActive = data.IsActive;
         this.Records = data.Records;
+        this.ChartRecords = <ChartData<'line'>>{
+        labels: data.Records.map(r => this.formatDate(r.RecordedDate)),
+        datasets: [
+            {
+                label: this.Name + ' Balance',
+                data: data.Records.map(r => r.Balance),
+                fill: false,
+                tension: 0.1
+            }
+        ]
+        };
     }
 
     getData() {
@@ -36,7 +43,16 @@ export class PersonalAccountModel {
             Balance: this.Balance,
             Type: this.Type,
             DateAdded: this.DateAdded,
+            IsActive: this.IsActive,
             Records: this.Records
         };
+    }
+
+    private formatDate(date: string | Date): string {
+        const d = new Date(date);
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${month}/${day}/${year}`;
     }
 }

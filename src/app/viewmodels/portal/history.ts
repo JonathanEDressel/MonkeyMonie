@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { ChartData, ChartOptions, ElementChartOptions } from 'chart.js';
 import { AgChartOptions } from 'ag-charts-community';
 import { BaseChartDirective } from "ng2-charts";
+import { PersonalAccountModel } from '../../models/personalaccountmodel';
 
 
 interface Record {
@@ -22,8 +23,8 @@ interface Record {
 
 export class HistoryComponent {
 
-    historyRaw = signal<any[]>([]);
-
+    personalRecords$: Observable<PersonalAccountModel[]>;
+    
     formatCurrency(val: number,dec: number = 0): string {
         return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: dec}).format(val);
     }
@@ -48,47 +49,12 @@ export class HistoryComponent {
         }
     };
 
-    accountHistoryChartData: ChartData<'line'> = {
-        labels: ['January', 'February', 'March', 'April'],
-        datasets: [
-            {
-                label: 'Balance $',
-                data: [5000, 4500, 6000, 9000],
-                fill: false,
-                tension: 0.3
-            }
-        ],
-    }
-
-    mappedRecords = computed(() => {
-        const items = this.historyRaw();
-        const trackAccounts = new Map<string, Record[]>();
-        items.forEach(x => {
-            const key = `${x.AccountId}-${x.Name}`;
-            const tmp: Record = {
-                Date: new Date(x.RecordedDate),
-                Balance: this.formatCurrency(x.Balance),
-            };
-            var list: Record[] = [];
-            if (trackAccounts.has(key)) {
-                list = trackAccounts.get(key) ?? [];
-            }
-            list.push(tmp);
-            list.sort((a, b) => b.Date.getTime() - a.Date.getTime());
-            trackAccounts.set(key, list);
-        });
-        return trackAccounts;
-    });
-
-    cleanKey(key: string): string {
-        return key.replace(/^\d+-/, '');
-    }
-
     onToggle() {
         this.cdr.detectChanges();
     }
 
     constructor(private _actData: AcctData, private cdr: ChangeDetectorRef) {
+        this.personalRecords$ = this._actData.personalActHistory$;
     }
 
     ngOnInit(): void {
@@ -97,7 +63,7 @@ export class HistoryComponent {
 
     activate(): void {
         this._actData.getPersonalAccountHistory().then(res => {
-            this.historyRaw.set(res);
+            console.log('This is how you do a then in a promise')
         })
         .catch((err) => console.error(err));
     }
