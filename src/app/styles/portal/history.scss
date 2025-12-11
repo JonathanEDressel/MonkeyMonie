@@ -1,0 +1,9 @@
+details > summary {
+  display: block;
+  list-style: none !important;
+  cursor: pointer;
+}
+
+details > summary::-webkit-details-marker {
+  display: none !important;
+}
