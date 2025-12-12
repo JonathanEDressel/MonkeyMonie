@@ -67,6 +67,20 @@ def get_personal_accounts(userid):
         log_error_to_db(e)
         return -1
     
+def get_all_personal_accounts():
+    try:
+        sql = "SELECT pa.Id, pa.UserId, pa.Balance, pa.Name, pa.Type, pa.CreatedDate From PersonalAccounts as pa " \
+            "Order by pa.Id Desc"
+        accounts = DBHelper.run_query(sql, None, True)
+        res = []
+        for a in accounts:
+            tmp = PersonalAccount.data_to_model(a)
+            res.append(tmp)
+        return res
+    except Exception as e:
+        log_error_to_db(e)
+        return -1
+    
 def personal_acct_is_users(acctid, userid):
     try:
         acts = get_personal_accounts(userid)
