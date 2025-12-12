@@ -2,7 +2,6 @@ from controllers.ErrorController import log_error_to_db
 from apscheduler.schedulers.background import BackgroundScheduler
 import models.PersonalRecordModel as PersonalRecord
 import controllers.AccountDbContext as _actDbCtx
-import random
 
 def update_personal_acts():
     try:
@@ -10,9 +9,8 @@ def update_personal_acts():
         acts = _actDbCtx.get_all_personal_accounts()
         for act in acts:
             try:
-                rand_value = random.randint(int(act.Balance), int(act.Balance*3))
-                _actDbCtx.add_personal_record(act.Id, rand_value)
-                print(f"Updated user {act.UserId} with account {act.Id, rand_value}")
+                _actDbCtx.add_personal_record(act.Id, act.Balance)
+                print(f"Updated user {act.UserId} with account {act.Id, act.Balance}")
             except Exception as e:
                 log_error_to_db(e)
                 print(f"Failed to update user ({act.UserId}) with account id ({act.Id}) - ", e)
@@ -30,8 +28,9 @@ def start_scheduler(minutes):
         scheduler = BackgroundScheduler()
         scheduler.add_job(
             update_personal_acts,
-            "interval",
-            minutes=minutes
+            "cron",
+            hour=0,
+            minute=0
         )
         scheduler.start()
     except Exception as e:
