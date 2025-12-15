@@ -2,7 +2,7 @@ import { FormsModule } from '@angular/forms';
 import { ChangeDetectorRef, Component, computed, signal } from '@angular/core';
 import { AcctData } from '../../services/acctdata';
 import { Observable } from 'rxjs';
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatCurrency } from '@angular/common';
 import { ChartData, ChartOptions, ElementChartOptions } from 'chart.js';
 import { AgChartOptions } from 'ag-charts-community';
 import { BaseChartDirective } from "ng2-charts";
@@ -25,7 +25,7 @@ export class HistoryComponent {
 
     personalRecords$: Observable<PersonalAccountModel[]>;
     
-    formatCurrency(val: number,dec: number = 0): string {
+    formatCurrency(val: number, dec: number = 0): string {
         return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: dec}).format(val);
     }
 
@@ -33,6 +33,28 @@ export class HistoryComponent {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
+            tooltip: {
+                titleFont: {
+                    size: 15
+                },
+                bodyFont: {
+                    size: 15
+                },
+                enabled: true,
+                mode: 'index',
+                intersect: false,
+                usePointStyle: true,
+                callbacks: {
+                    title: function(ctx) {
+                        return 'Date: ' + ctx[0].label;
+                    },
+                    label: function (ctx) {
+                        var lbl = ' Balance: '; 
+                        lbl += '$' + ctx.parsed.y?.toLocaleString();
+                        return lbl;
+                    }
+                }
+            },
             legend: {
                 display: false
             }
@@ -40,11 +62,27 @@ export class HistoryComponent {
         scales: {
             x: {
                 ticks: {
-                    autoSkip: true
+                    font: {
+                        weight: 'bold'
+                    },
+                    autoSkip: true,
+                    padding: 10
                 }
             },
             y: {
-                beginAtZero: false
+                beginAtZero: true,
+                ticks: {
+                    font: {
+                        weight: 'bold'
+                    },
+                    callback: function(value, idx, ticks) {
+                        return new Intl.NumberFormat('en-US', {
+                            style: 'currency',
+                            currency: 'USD',
+                            minimumFractionDigits: 0
+                        }).format(Number(value));
+                    }
+                }
             }
         }
     };
