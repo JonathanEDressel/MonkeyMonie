@@ -8,7 +8,10 @@ from helper.Scheduler import start_scheduler
 import helper.SetupDatabase as SetupDB
 
 app = Flask(__name__)
-CORS(app)#, origins=["https://monkeymonie.com"])
+CORS(app, origins=[
+    "https://monkeymonie.com",
+    "https://www.monkeymonie.com"
+])
 
 #add limiting for each user, not whole server...
 def run_db_checks():
