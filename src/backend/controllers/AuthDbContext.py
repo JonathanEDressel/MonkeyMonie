@@ -71,7 +71,7 @@ def is_admin():
 def has_admin():
     try:
         h = DBHelper.encrypt_password("password")
-        currDte = str(datetime.now(timezone.utc))
+        currDte = datetime.now(timezone.utc)
         res = DBHelper.run_query("SELECT Username FROM UserAcct Where Username = %s or Email = %s", 
                                 ("Admin", "jonathanedressel@gmail.com"), 
                                 True)

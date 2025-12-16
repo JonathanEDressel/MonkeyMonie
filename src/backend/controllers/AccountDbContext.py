@@ -41,6 +41,16 @@ def update_personal_account(acctid, name, type, balance):
     except Exception as e:
         log_error_to_db(e)
         return False
+    
+def update_personal_account_balance(acctid, balance):
+    try:
+        sql = "UPDATE PersonalAccounts SET Balance = %s WHERE Id = %s;"
+        params = (balance, acctid)
+        print(f"Updating personal account balance for account {acctid}")
+        return DBHelper.run_query(sql, params, False)
+    except Exception as e:
+        log_error_to_db(e)
+        return False
    
 def remove_personal_account(acctid, userid):
     try:

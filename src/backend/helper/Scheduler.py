@@ -2,6 +2,7 @@ from controllers.ErrorController import log_error_to_db
 from apscheduler.schedulers.background import BackgroundScheduler
 import models.PersonalRecordModel as PersonalRecord
 import controllers.AccountDbContext as _actDbCtx
+import random
 
 def update_personal_acts():
     try:
@@ -10,6 +11,8 @@ def update_personal_acts():
         for act in acts:
             try:
                 _actDbCtx.add_personal_record(act.Id, act.Balance)
+                newbalance = act.Balance + random.randint(100, 750)
+                _actDbCtx.update_personal_account_balance(act.Id, newbalance)
                 print(f"Updated user {act.UserId} with account {act.Id, act.Balance}")
             except Exception as e:
                 log_error_to_db(e)
