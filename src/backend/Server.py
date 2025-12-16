@@ -10,7 +10,9 @@ import helper.SetupDatabase as SetupDB
 app = Flask(__name__)
 CORS(app, origins=[
     "https://monkeymonie.com",
-    "https://www.monkeymonie.com"
+    "https://www.monkeymonie.com",
+    "http://localhost:4200",
+    "http://127.0.0.1:4200"
 ])
 
 #add limiting for each user, not whole server...
