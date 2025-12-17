@@ -31,7 +31,7 @@ def add_personal():
         log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
-@act_bp.route('/update/personal/<int:AcctId>', methods=['PATCH'])
+@act_bp.route('/update/personal/<int:AcctId>', methods=['POST'])
 @limiter.limit("60 per minute")
 @requires_token
 def update_personal(AcctId):
@@ -50,7 +50,7 @@ def update_personal(AcctId):
         log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
-@act_bp.route('/remove/personal/<int:AcctId>', methods=['DELETE'])
+@act_bp.route('/remove/personal/<int:AcctId>', methods=['GET'])
 @limiter.limit("60 per minute")
 @requires_token
 def remove_personal(AcctId):
@@ -66,7 +66,7 @@ def remove_personal(AcctId):
         log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
-@act_bp.route('/personal', methods=['Get'])
+@act_bp.route('/personal', methods=['GET'])
 @limiter.limit("60 per minute")
 @requires_token
 def get_personal_accounts():
@@ -79,22 +79,8 @@ def get_personal_accounts():
     except Exception as e:
         log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
-        
-# @act_bp.route('/personal/records', methods=['Get'])
-# @limiter.limit("60 per minute")
-# @requires_token
-# def get_personal_account_history():
-#     try:
-#         userid = _authCtx.get_current_user_id()
-#         if not userid or userid <= 0:
-#             return jsonify({"result": None, "status": 401}), 401
-#         acts = _actCtx.get_personal_account_history(userid)
-#         return jsonify({"result": acts, "status": 200}), 200
-#     except Exception as e:
-#         log_error_to_db(e)
-#         return jsonify({"result": e, "status": 400}), 400
 
-@act_bp.route('/personal/records', methods=['Get'])
+@act_bp.route('/personal/records', methods=['GET'])
 @limiter.limit("60 per minute")
 @requires_token
 def get_personal_account_history():
