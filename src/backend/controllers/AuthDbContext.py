@@ -117,6 +117,15 @@ def create_account(fname, lname, username, phonenumber, password):
             log_error_to_db(e)
             print("ERROR: ", e)
         
+        try:
+            currDte = datetime.now(timezone.utc)
+            updatedLogin = DBHelper.update_value("UserAcct", "LastLogin", currDte, "Username", username)
+            if not updatedLogin:
+                DBHelper.update_value("UserAcct", "LastLogin", currDte, "Email", username)
+        except Exception as e:
+            log_error_to_db(e)
+            print("ERROR: ", e)
+        
         return jsonify({"token": token}), 200
     except Exception as e:
         log_error_to_db(e)
