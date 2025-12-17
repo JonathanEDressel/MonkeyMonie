@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import jsonify, request, g
 from datetime import datetime, timezone
 from .ErrorController import log_error_to_db
 from models.UserModel import data_to_model
@@ -19,41 +19,14 @@ def get_user_token(username, uuid):
 
 def get_current_user():
     try:
-        authorized_user = request.headers.get("Authorization")
-        if not authorized_user:
-            return None
-        
-        sql = "SELECT Id, Username, FirstName, LastName, ExpireDate, Email, PhoneNumber, CreatedDate, "\
-            "ConfirmedEmail, TwoFactor, LastLogin, IsDemo, AdminLevel, IsActive, IsAdmin FROM UserAcct WHERE Username = %s or Email = %s"
-        token = authorized_user.split(" ")[1]
-        decoded_token = jwt.decode(token, SECRET_KEY, ALGO_TO_USE)
-        username = str(decoded_token['username'])
-        params = (username,username)
-        usr = DBHelper.run_query(sql, params, True)
-        res = data_to_model(usr[0])
-        if res:
-            return res
-        return None
+        return g.current_user
     except Exception as e:
         log_error_to_db(e)
         return None
 
 def get_current_user_id():
     try:
-        authorized_user = request.headers.get("Authorization")
-        if not authorized_user:
-            return None
-        
-        sql = "SELECT Id FROM UserAcct WHERE Username = %s or Email = %s"
-        token = authorized_user.split(" ")[1]
-        decoded_token = jwt.decode(token, SECRET_KEY, ALGO_TO_USE)
-        username = str(decoded_token['username'])
-        params = (username,username)
-        usr = DBHelper.run_query(sql, params, True)
-        res = int(str(usr[0]['Id']))
-        if res:
-            return res
-        return -1
+        return getattr(g.current_user, "Id", -1)
     except Exception as e:
         log_error_to_db(e)
         return None
