@@ -28,6 +28,12 @@ export class AuthController {
         return this.http.get<{token: string}>(`${this.apiURL}/isAdmin`);
     }
 
+    deleteUser(username: string) {
+        return this.http.post<{ token: string }>(`${this.apiURL}/deleteUser`, { 
+            username: username 
+        });
+    }
+
     forgotPassword(email: string) {
         return this.http.post<{ token: string}>(`${this.apiURL}/forgotPassword`, {
             email: email
@@ -35,7 +41,6 @@ export class AuthController {
     }
 
     checkVerificationCode(username: string, otptoken: string) {
-        console.log(username, otptoken)
         return this.http.post<{ token: string}>(`${this.apiURL}/verifyToken`, {
             username: username,
             otptoken: otptoken

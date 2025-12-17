@@ -77,6 +77,23 @@ def verify_token():
         log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
    
+@auth_bp.route('/deleteUser', methods=['POST'])
+@limiter.limit("5 per minute")
+@requires_token
+def delete_user():
+    try:
+        req = request.json
+        username = str(req.get('username', '')).strip()
+        if not username:
+            return jsonify({"result": "Username is required", "status": 400}), 400
+        if not _authCtx.is_admin():
+            return jsonify({"result": "Unauthorizied", "status": 401}), 401
+                
+        return _authCtx.delete_user(username)
+    except Exception as e:
+        log_error_to_db(e)
+        return jsonify({"result": e, "status": 400}), 400
+   
 @auth_bp.route('/isAdmin', methods=['GET'])
 @limiter.limit("100 per minute")
 @requires_token

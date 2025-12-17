@@ -32,13 +32,27 @@ def get_current_user_id():
 
 def is_admin():
     try:
-        auth_usr = get_current_user()
+        auth_usr = g.current_user
         if not auth_usr:
             return False
         return auth_usr.is_site_admin()
     except Exception as e:
         log_error_to_db(e)
         return False    
+
+def delete_user(username):
+    try:
+       sql = "SELECT Id FROM UserAcct WHERE Username = %s"
+       params = (username,) 
+       user = DBHelper.run_query(sql, (username,), fetch=True)
+       if not user:
+            return jsonify({"result": "User not found", "status": 404}), 404
+       sql = "DELETE FROM UserAcct WHERE Username = %s"
+       DBHelper.run_query(sql, (username,), fetch=False)
+       return jsonify({"result": f"User '{username}' deleted successfully", "status": 200}), 200
+    except Exception as e:
+        log_error_to_db(e)
+        return jsonify({"result": e, "status": 400}), 400
 
 def has_admin():
     try:
