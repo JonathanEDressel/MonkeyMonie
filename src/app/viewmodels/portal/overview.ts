@@ -32,13 +32,13 @@ export class OverviewComponent {
                     formatter: params => 
                         this.formatCurrency(params.datum.value)
                 },
-                innerLabels: [
-                    {
-                        text: '$14,000',
-                        fontSize: 14,
-                        fontWeight: 'bold',
-                    }
-                ],
+                // innerLabels: [
+                //     {
+                //         text: '$14,000',
+                //         fontSize: 14,
+                //         fontWeight: 'bold',
+                //     }
+                // ],
                 tooltip: {
                     renderer: (params) => {
                         var val = this.formatCurrency(params.datum.value, 2);

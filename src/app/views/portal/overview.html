@@ -1,6 +1,13 @@
 <div class="row mt-4 d-flex justify-content-center">
     <div class="col col-6 d-flex justify-content-center">
-        <ag-charts class="larger-canvas" style="height: 500px;" [options]="netWorthChartOptions"></ag-charts>
+        @if ((personalAccts$ | async)?.length) {
+            <ag-charts class="larger-canvas" style="height: 500px;" [options]="netWorthChartOptions"></ag-charts>
+        }
+        @else {
+            <h3>
+                No Accounts Available
+            </h3>
+        }
         <!-- <canvas id="networthchart" class="larger-canvas" style="height: 400px;" baseChart [data]="netWorthOverviewChart.data" [plugins]="netWorthOverviewChart.plugins!" [options]="netWorthOverviewChart.options" [type]="netWorthOverviewChart.type"> </canvas> -->
          <!-- <ag-charts-angular [options]="netWorthChartOptions"></ag-charts-angular> -->
     </div>
