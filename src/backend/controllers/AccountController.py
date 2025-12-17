@@ -37,7 +37,6 @@ def add_personal():
 def update_personal(AcctId):
     try:
         usr = _authCtx.get_current_user()
-        print(AcctId, usr.Id)
         if not _actCtx.personal_acct_is_users(AcctId, usr.Id):
             return jsonify({"result": None, "status": 401}), 401
         

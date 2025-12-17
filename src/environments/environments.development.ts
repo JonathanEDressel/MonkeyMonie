@@ -1,5 +1,5 @@
 //For production
 export const environment = {
-  production: false,
+  production: true,
   apiUrl: 'https://api.monkeymonie.com'
 };
