@@ -21,7 +21,7 @@ def get_all_events(dte):
 def add_event(username, eventText, eventType):
     try:
         source = str(request.remote_addr)
-        dte = str(datetime.now(timezone.utc))
+        dte = datetime.now(timezone.utc)
         sql = f"INSERT INTO EventLog (EventTimeStamp, EventText, Source, EventType, EventUser) " \
             "VALUES (%s, %s, %s, %s, %s)"
         params = (dte, eventText, source, eventType, username)

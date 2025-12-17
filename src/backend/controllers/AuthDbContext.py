@@ -80,11 +80,11 @@ def has_admin():
             sql = """
             INSERT INTO UserAcct
             (Username, UserPassword, UUID, FirstName, LastName, Email, CreatedDate,
-            ConfirmedEmail, TwoFactor, AdminLevel, IsAdmin, IsDemo)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ConfirmedEmail, TwoFactor, AdminLevel, IsAdmin, IsDemo, IsActive)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """
             params = ("Admin", h, adm_uuid, "Jonathan", "Dressel", "jonathanedressel@gmail.com", currDte,
-                    1, 0, "Site", 1, 0)
+                    1, 0, "Site", 1, 0, 1)
             DBHelper.run_query(sql, params)
     except Exception as e:
         log_error_to_db(e)
@@ -108,7 +108,7 @@ def user_login(username, password):
             usrPWHash = usrPWHash.encode('utf-8')
         token = get_user_token(usr['Username'], usr['UUID'])
         if (DBHelper.check_passwords(password, usrPWHash)) and (token is not None):
-            currDte = str(datetime.now(timezone.utc))
+            currDte = datetime.now(timezone.utc)
             updatedLogin = DBHelper.update_value("UserAcct", "LastLogin", currDte, "Username", username)
             if not updatedLogin:
                 DBHelper.update_value("UserAcct", "LastLogin", currDte, "Email", username)
@@ -130,9 +130,9 @@ def create_account(fname, lname, username, phonenumber, password):
 
         adm_uuid = DBHelper.create_uuid()
         hashedPassword = DBHelper.encrypt_password(password)
-        sql = f"INSERT INTO UserAcct (Username, Email, FirstName, LastName, UserPassword, UUID, PhoneNumber, CreatedDate) " \
-            "VALUES(%s, %s, %s, %s, %s, %s, %s, %s);"
-        vars = (username, username, fname, lname, hashedPassword, adm_uuid, phonenumber, datetime.now(timezone.utc))
+        sql = f"INSERT INTO UserAcct (Username, Email, FirstName, LastName, UserPassword, UUID, PhoneNumber, CreatedDate, IsActive) " \
+            "VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s);"
+        vars = (username, username, fname, lname, hashedPassword, adm_uuid, phonenumber, datetime.now(timezone.utc), 1)
         res = DBHelper.run_query(sql, vars, fetch=False)
         token = get_user_token(username, adm_uuid)
         if not res or not token:
