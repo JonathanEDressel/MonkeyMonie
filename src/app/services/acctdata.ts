@@ -83,23 +83,31 @@ export class AcctData {
     }
 
     getPersonalAccounts(): any {
-        this._acctController.getPersonalAccounts().subscribe({
-            next: (res: any) => {
-                if(res.status === 200) {
-                    const accounts: PersonalAccountModel[] = [];
-                    var data = res.result;
-                    for(var i = 0; i < data.length; i++) {
-                        var acct = new PersonalAccountModel();
-                        acct.assignData(data[i]);
-                        accounts.push(acct);
+        return new Promise((resolve, reject) => {
+            this._acctController.getPersonalAccounts().subscribe({
+                next: (res: any) => {
+                    if(res.status === 200) {
+                        const accounts: PersonalAccountModel[] = [];
+                        var data = res.result;
+                        for(var i = 0; i < data.length; i++) {
+                            var acct = new PersonalAccountModel();
+                            acct.assignData(data[i]);
+                            accounts.push(acct);
+                        }
+                        this.personalActSubject.next(accounts);
+                        resolve(accounts);
                     }
-                    this.personalActSubject.next(accounts);
+                    else {
+                        console.warn('Failed to get accounts');
+                        reject('Bad status: ' + res.status);
+                    }
+                },
+                error: (err: any) => { 
+                    console.error(err);
+                    reject(err);
                 }
-                else
-                    console.warn('Failed to get accounts');
-            },
-            error: (err: any) => console.error(err)
-        })
+            });
+        });
     }
 
     getPersonalAccountHistory(): Promise<PersonalAccountModel[]> {

@@ -105,8 +105,9 @@ export class OverviewComponent {
 
     ngOnInit(): void {
         this.activate();
-        this._acctData.getPersonalAccounts();
-        this.populateNetWorthData();
+        this._acctData.getPersonalAccounts().then(() => {
+            this.populateNetWorthData();
+        })
     }
 
     activate(): void {
