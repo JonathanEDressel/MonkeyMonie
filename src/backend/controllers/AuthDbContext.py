@@ -101,8 +101,8 @@ def user_login(username, password):
         usrexpdte = usr['ExpireDate']
         if (not usr):
             return jsonify({"result": "Invalid login credentials", "status": 400}), 400
-        if (usr['IsActive'] == 0):
-            return jsonify({"result": "Account is no longer active", "status": 400}), 400
+        # if (usr['IsActive'] == 0):
+        #     return jsonify({"result": "Account is no longer active", "status": 400}), 400
         if (usrexpdte and usrexpdte < datetime.now()):
             return jsonify({"result": "Account has expired", "status": 400}), 400
 
