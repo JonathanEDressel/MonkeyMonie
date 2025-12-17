@@ -98,7 +98,7 @@ def create_account(fname, lname, username, phonenumber, password):
         vars = (username, username)
         usr = DBHelper.run_query(sql, vars, True)
         if usr:
-            return jsonify({"result": "Failed to create user account", "status": 409}), 409
+            return jsonify({"result": "Failed to create user2 account", "status": 409}), 409
 
         adm_uuid = DBHelper.create_uuid()
         hashedPassword = DBHelper.encrypt_password(password)
