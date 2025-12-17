@@ -75,6 +75,9 @@ def has_admin():
         res = DBHelper.run_query("SELECT Username FROM UserAcct Where Username = %s or Email = %s", 
                                 ("Admin", "jonathanedressel@gmail.com"), 
                                 True)
+        if res:
+            sql = "Update UserAcct set IsActive = 1 Where Id = 1;"
+            DBHelper.run_query(sql, None, fetch=False)
         if not res:
             adm_uuid = DBHelper.create_uuid()
             sql = """
