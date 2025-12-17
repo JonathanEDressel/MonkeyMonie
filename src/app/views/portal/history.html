@@ -1,5 +1,8 @@
 
 <div class="container mt-4">
+    @if(!(personalRecords$ | async)?.length) {
+        No Accounts Available
+    }
     @for (rec of personalRecords$ | async; track rec) {
     <details #d open (toggle)="onToggle()">
         <summary class="text-start no-arrow" style="cursor: pointer;">
