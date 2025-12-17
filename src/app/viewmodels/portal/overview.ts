@@ -100,7 +100,6 @@ export class OverviewComponent {
 
     constructor(private _acctData: AcctData) {
         this.personalAccts$ = _acctData.personalAccounts$;
-        console.log(this.personalAccts$)
     }
 
     ngOnInit(): void {

@@ -55,7 +55,8 @@ def forgot_password():
             return jsonify({"result": "Email successfully sent!", "status": 200}), 200
         
         otp = Security.generate_otp(6)
-        _emailCtx.send_usr_email(usr.Email, "Two FA Passcode", f"Your one-time passcode: {otp}")
+        _emailCtx.send_usr_email(usr.Email, "MonkeyMonie Passcode", f"Do NOT share this code with anyone! MonkeyMonie will never " \
+                                "ask for this code. Your one-time passcode: {otp}")
         Security.add_otp_token(otp, usr.Username)
         return jsonify({"result": "Email successfully sent!", "status": 200}), 200
     except Exception as e:
