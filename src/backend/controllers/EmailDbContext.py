@@ -31,7 +31,6 @@ def send_usr_email(toAddress, subject, body):
         log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
     
-    
 def send_admin_email(subject, body):
     try:
         email_list = ["jonathanedressel@gmail.com"]

@@ -110,8 +110,12 @@ def create_account(fname, lname, username, phonenumber, password):
         if not res or not token:
             return jsonify({"result": "Failed to create user account", "status": 400}), 400
         
-        # body = f"{fname} {lname} with username {username} created an account."
-        # _emailCtx.send_admin_email("New MonkeyMonie Sign Up", body)
+        try:        
+            body = f"{fname} {lname} with username {username} created an account."
+            _emailCtx.send_admin_email("New MonkeyMonie Sign Up", body)
+        except Exception as e:
+            log_error_to_db(e)
+            print("ERROR: ", e)
         
         return jsonify({"token": token}), 200
     except Exception as e:
