@@ -98,7 +98,7 @@ def create_account(fname, lname, username, phonenumber, password):
         vars = (username, username)
         usr = DBHelper.run_query(sql, vars, True)
         if usr:
-            return jsonify({"result": "Failed to create user account " + username, "status": 409}), 409
+            return jsonify({"result": "Failed to create user account", "status": 409}), 409
 
         adm_uuid = DBHelper.create_uuid()
         hashedPassword = DBHelper.encrypt_password(password)
@@ -110,8 +110,8 @@ def create_account(fname, lname, username, phonenumber, password):
         if not res or not token:
             return jsonify({"result": "Failed to create user account", "status": 400}), 400
         
-        body = f"{fname} {lname} with username {username} created an account."
-        _emailCtx.send_admin_email("New MonkeyMonie Sign Up", body)
+        # body = f"{fname} {lname} with username {username} created an account."
+        # _emailCtx.send_admin_email("New MonkeyMonie Sign Up", body)
         
         return jsonify({"token": token}), 200
     except Exception as e:
