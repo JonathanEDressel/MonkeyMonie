@@ -1,13 +1,12 @@
-from flask import jsonify, request, g
+from flask import jsonify, g
 from datetime import datetime, timezone
 from .ErrorController import log_error_to_db
 from models.UserModel import data_to_model
+import controllers.EmailDbContext as _emailCtx
 import helper.Helper as DBHelper
 import helper.Security as Security
 import models.OTPTokenModel as OTPModel
 import controllers.EventDbContext as _eventCtx
-import jwt
-import bcrypt
 import os
 
 SECRET_KEY=os.getenv("SECRET_KEY")
@@ -110,6 +109,10 @@ def create_account(fname, lname, username, phonenumber, password):
         token = get_user_token(username, adm_uuid)
         if not res or not token:
             return jsonify({"result": "Failed to create user account", "status": 400}), 400
+        
+        body = f"{fname} {lname} with username {username} created an account."
+        _emailCtx.send_admin_email("New MonkeyMonie Sign Up", body)
+        
         return jsonify({"token": token}), 200
     except Exception as e:
         log_error_to_db(e)
