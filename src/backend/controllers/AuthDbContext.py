@@ -108,7 +108,7 @@ def user_login(username, password):
             usrPWHash = usrPWHash.encode('utf-8')
         token = get_user_token(usr['Username'], usr['UUID'])
         if (DBHelper.check_passwords(password, usrPWHash)) and (token is not None):
-            currDte = str(datetime.now(timezone.utc))
+            currDte = datetime.now(timezone.utc)
             updatedLogin = DBHelper.update_value("UserAcct", "LastLogin", currDte, "Username", username)
             if not updatedLogin:
                 DBHelper.update_value("UserAcct", "LastLogin", currDte, "Email", username)
