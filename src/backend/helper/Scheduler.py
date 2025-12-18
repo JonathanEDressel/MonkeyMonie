@@ -11,8 +11,6 @@ def update_personal_acts():
         for act in acts:
             try:
                 _actDbCtx.add_personal_record(act.Id, act.Balance)
-                newbalance = act.Balance + random.randint(100, 750)
-                _actDbCtx.update_personal_account_balance(act.Id, newbalance)
                 print(f"Updated user {act.UserId} with account {act.Id, act.Balance}")
             except Exception as e:
                 log_error_to_db(e)
@@ -31,9 +29,10 @@ def start_scheduler(minutes):
         scheduler = BackgroundScheduler()
         scheduler.add_job(
             update_personal_acts,
-            "cron",
-            hour=0,
-            minute=0
+            "interval",
+            hours=1,
+            max_instances=1,
+            coalesce=True
         )
         scheduler.start()
     except Exception as e:
