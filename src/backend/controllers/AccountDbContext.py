@@ -164,7 +164,7 @@ def get_personal_account_history(acctid):
             acctid = int(acctid)
         
         sql = "Select Id, AccountId, RecordedDate, Balance From PersonalAccountHistory " \
-            "Where AccountId = %s Order By RecordedDate Desc"
+            "Where AccountId = %s Order By RecordedDate Asc"
         params = (acctid,)
         data = DBHelper.run_query(sql, params, fetch=True)
         res = []

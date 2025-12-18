@@ -18,11 +18,13 @@
                     <table class="table table-bordered table-hover mt-4" style="width: 90%;">
                         <thead class="thead-dark">
                             <th>Date</th>
+                            <th>Time</th>
                             <th>Balance</th>
                         </thead>
                         <tbody>
                             <tr *ngFor="let record of rec.Records">
                                 <td>{{record.RecordedDate| date:'MM/dd/yyyy'}}</td>
+                                <td>{{record.RecordedDate| date:'h:mm a'}}</td>
                                 <td>{{formatCurrency(record.Balance)}}</td>
                             </tr>
                         </tbody>
