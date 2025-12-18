@@ -5,11 +5,13 @@ import { Observable } from 'rxjs';
 import { AgChartOptions } from 'ag-charts-community';
 import { CommonModule } from '@angular/common';
 import { AgChartsModule } from 'ag-charts-angular';
+import { MainComponent } from '../main';
+import { InfoPanelComponent } from "../shared/info.component";
 
 @Component({
   selector: 'overview-root',
   standalone: true,
-  imports: [CommonModule, AgChartsModule],
+  imports: [CommonModule, AgChartsModule, InfoPanelComponent],
   templateUrl: '../../views/portal/overview.html',
   styleUrl: '../../styles/portal/overview.scss'
 })
@@ -58,6 +60,10 @@ export class OverviewComponent {
         }
     };
 
+    navToAddAcount(): void {
+        this._mainComponent.setPageById(4);
+    }
+
     populateNetWorthData(): void {
         this.personalAccts$.subscribe(accts => {
             if (!accts || accts.length === 0)
@@ -98,7 +104,7 @@ export class OverviewComponent {
         return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: dec}).format(val);
     }
 
-    constructor(private _acctData: AcctData) {
+    constructor(private _acctData: AcctData, private _mainComponent: MainComponent) {
         this.personalAccts$ = _acctData.personalAccounts$;
     }
 

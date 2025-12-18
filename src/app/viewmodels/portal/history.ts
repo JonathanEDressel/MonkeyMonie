@@ -7,6 +7,8 @@ import { ChartData, ChartOptions, ElementChartOptions } from 'chart.js';
 import { AgChartOptions } from 'ag-charts-community';
 import { BaseChartDirective } from "ng2-charts";
 import { PersonalAccountModel } from '../../models/personalaccountmodel';
+import { InfoPanelComponent } from "../shared/info.component";
+import { MainComponent } from '../main';
 
 
 interface Record {
@@ -16,7 +18,7 @@ interface Record {
 
 @Component({
   selector: 'history-root',
-  imports: [FormsModule, CommonModule, BaseChartDirective],
+  imports: [FormsModule, CommonModule, BaseChartDirective, InfoPanelComponent],
   templateUrl: '../../views/portal/history.html',
   styleUrl: '../../styles/portal/history.scss'
 })
@@ -49,11 +51,15 @@ export class HistoryComponent {
         }
     };
 
+    navToAddAcount(): void {
+        this._mainComponent.setPageById(4);
+    }
+
     onToggle() {
         this.cdr.detectChanges();
     }
 
-    constructor(private _actData: AcctData, private cdr: ChangeDetectorRef) {
+    constructor(private _actData: AcctData, private cdr: ChangeDetectorRef, private _mainComponent: MainComponent) {
         this.personalRecords$ = this._actData.personalActHistory$;
     }
 

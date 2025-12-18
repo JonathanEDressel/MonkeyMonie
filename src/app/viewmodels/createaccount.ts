@@ -16,7 +16,6 @@ export class CreateAccountComponent {
     password: string = "";
     ErrorMsg = signal("");
 
-    //have this later lead to Stripe where the user can pay to sign up
     constructor(private router: Router, private _authData: AuthData) {
       _authData.ErrorMsg.set("");
       this.ErrorMsg = _authData.ErrorMsg;
