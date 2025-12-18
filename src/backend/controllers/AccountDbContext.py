@@ -2,15 +2,18 @@ from flask import jsonify
 from datetime import datetime, timezone
 from .ErrorController import log_error_to_db
 from models.PersonalAccountModel import PersonalAccount
+from bs4 import BeautifulSoup
+import re
+import requests
 import helper.Helper as DBHelper
 import models.PersonalAccountModel as PersonalAccount
 import models.PersonalRecordModel as PersonalRecord
 
-#InvestmentAccounts
+#Investment Accounts
 def add_taxable_account():
     return jsonify({"result": "success", "status": 200}), 200
     
-#PersonalAccounts
+#Personal Accounts
 def add_personal_account(userid, name, type, balance):
     try:
         params = ["UserId", "Name", "Type", "Balance", "CreatedDate"]
@@ -116,25 +119,6 @@ def add_personal_record(accountid, balance):
     except Exception as e:
         log_error_to_db(e)
         return False
-    
-# def get_personal_account_history(userid):
-#     try:
-#         if not isinstance(userid, int):
-#             userid = int(userid)
-        
-#         sql = "Select pah.Id, pah.AccountId, pa.UserId, pah.Balance, pa.Name, " \
-#         "pah.RecordedDate From personalaccounthistory pah " \
-#         "Inner Join personalaccounts as pa On pa.Id = pah.AccountId where pa.userid = %s;"
-#         params = (userid,)
-#         data = DBHelper.run_query(sql, params, fetch=True)
-#         res = []
-#         for d in data:
-#             tmp = PersonalRecord.data_to_model(d)
-#             res.append(tmp)
-#         return res
-#     except Exception as e:
-#         log_error_to_db(e)
-#         return False
 
 def get_personal_history(userid):
     try:
@@ -175,3 +159,36 @@ def get_personal_account_history(acctid):
     except Exception as e:
         log_error_to_db(e)
         return False
+    
+#User Assets
+def get_house_details(address):
+    if not address:
+        return jsonify({"error": "Please provide an address"}), 400
+
+    try:
+        search_address = address.replace(" ", "-").replace(",", "")
+        url = f"https://www.realtor.com/realestateandhomes-search/{search_address}"
+
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+        }
+
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        price_tag = soup.find("span", {"data-label": "pc-price"})
+        if not price_tag:
+            return jsonify({"error": "Could not find market value"}), 404
+
+        price_text = price_tag.get_text().replace("$", "").replace(",", "").strip()
+        market_value = int(re.sub(r"[^\d]", "", price_text))
+
+        return jsonify({
+            "address": address,
+            "market_value": market_value
+        })
+    except Exception as e:
+        log_error_to_db(e)
+        return jsonify({"error": "Please provide an address"}), 400
