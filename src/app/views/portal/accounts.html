@@ -15,8 +15,13 @@
         </ng-template>
     }
     <div>
-        <h3 class="mt-4 text-start">Add Account</h3>
-        <div class="row d-flex align-items-center justify-content-center">
+            <div class="col col-12">
+                <app-info-section title="Accounts" bodyMsg="Add and manage your financial accounts in one place to get a complete view of your 
+                finances. By linking your accounts, you can track balances, monitor activity, and gain better insight into your overall 
+                financial picture. Your information is securely stored and used only to provide accurate, up-to-date account details">
+                </app-info-section>
+            </div>
+        <div class="row mt-4 d-flex align-items-center justify-content-center">
             <div class="col col-3">
                 <strong>Name</strong>
                 <input class="form-control account-input" placeholder="Account Nickname" [(ngModel)]="acctName"/>
