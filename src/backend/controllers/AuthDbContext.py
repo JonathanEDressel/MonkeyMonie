@@ -79,6 +79,7 @@ def user_login(username, password):
     try:
         sql = f"SELECT UserPassword, Username, UUID, IsActive, ExpireDate FROM UserAcct WHERE Username=%s or Email=%s"
         vars = (username, username)
+        print(username, password)
         jsusr = DBHelper.run_query(sql, vars, True)
         usr = jsusr[0]
         usrexpdte = usr['ExpireDate']
