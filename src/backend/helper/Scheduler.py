@@ -30,7 +30,7 @@ def start_scheduler(minutes):
         scheduler.add_job(
             update_personal_acts,
             "interval",
-            minutes=1,
+            hours=12,
             max_instances=1,
             coalesce=True
         )
