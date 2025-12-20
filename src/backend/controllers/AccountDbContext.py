@@ -40,6 +40,7 @@ def update_personal_account(acctid, name, type, balance):
         sql = "UPDATE PersonalAccounts SET Name = %s, Type = %s, Balance = %s WHERE Id = %s;"
         params = (name, type, balance, acctid)
         print(f"Updating personal account {acctid}")
+        add_personal_record(acctid, balance)
         return DBHelper.run_query(sql, params, False)
     except Exception as e:
         log_error_to_db(e)
@@ -96,8 +97,10 @@ def get_all_personal_accounts():
     
 def personal_acct_is_users(acctid, userid):
     try:
+        print(userid)
         acts = get_personal_accounts(userid)
         hasAccount = False
+        print('ACTS - ', acts)
         for act in acts:
             if act.Id == acctid:
                 hasAccount = True
