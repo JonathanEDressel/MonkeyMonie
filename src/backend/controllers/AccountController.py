@@ -38,9 +38,8 @@ def add_personal():
 def update_personal(AcctId):
     try:
         usr = _authCtx.get_current_user()
-        if (not usr.Id) or (usr.Id) or (not _actCtx.personal_acct_is_users(AcctId, usr.Id)):
+        if (not usr) or (usr.Id <= 0) or (not _actCtx.personal_acct_is_users(AcctId, usr.Id)):
             return jsonify({"result": None, "status": 401}), 401
-        
         req = request.json
         balance = float(req.get('balance', 0))
         name = str(req.get('name', '').strip())
@@ -57,7 +56,7 @@ def update_personal(AcctId):
 def remove_personal(AcctId):
     try:
         usr = _authCtx.get_current_user()
-        if (not usr.Id) or (usr.Id) <= 0:
+        if (not usr.Id) or (usr.Id <= 0):
             return jsonify({"result": None, "status": 401}), 401
         if not _actCtx.personal_acct_is_users(AcctId, usr.Id):
             return jsonify({"result": None, "status": 401}), 401
@@ -74,7 +73,7 @@ def remove_personal(AcctId):
 def get_personal_accounts():
     try:
         userid = _authCtx.get_current_user_id()
-        if (not userid) or (userid) <= 0:
+        if (not userid) or (userid <= 0):
             return jsonify({"result": None, "status": 401}), 401
         acts = _actCtx.get_personal_accounts(userid)
         return jsonify({"result": acts, "status": 200}), 200
@@ -88,7 +87,7 @@ def get_personal_accounts():
 def get_personal_account_history():
     try:
         userid = _authCtx.get_current_user_id()
-        if (not userid) or (userid) <= 0:
+        if (not userid) or (userid <= 0):
             return jsonify({"result": None, "status": 401}), 401
         acts = _actCtx.get_personal_history(userid)
         return jsonify({"result": acts, "status": 200}), 200
@@ -103,7 +102,7 @@ def get_personal_account_history():
 def get_house_details():
     try:
         userid = _authCtx.get_current_user_id()
-        if not userid or userid <= 0:
+        if (not userid) or (userid <= 0):
             return jsonify({"result": None, "status": 401}), 401
         req = request.json
         address = str(req.get('address', '').strip())

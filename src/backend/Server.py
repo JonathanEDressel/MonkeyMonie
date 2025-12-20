@@ -30,7 +30,8 @@ limiter.init_app(app)
 
 register_routes(app)
 
+start_scheduler(1)
+
 if __name__ == '__main__':
     run_db_checks()
-    start_scheduler(1)
     app.run(host='0.0.0.0', port=5000)

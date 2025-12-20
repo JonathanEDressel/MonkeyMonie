@@ -40,6 +40,7 @@ def update_personal_account(acctid, name, type, balance):
         sql = "UPDATE PersonalAccounts SET Name = %s, Type = %s, Balance = %s WHERE Id = %s;"
         params = (name, type, balance, acctid)
         print(f"Updating personal account {acctid}")
+        add_personal_record(acctid, balance)
         return DBHelper.run_query(sql, params, False)
     except Exception as e:
         log_error_to_db(e)
