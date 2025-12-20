@@ -97,10 +97,8 @@ def get_all_personal_accounts():
     
 def personal_acct_is_users(acctid, userid):
     try:
-        print(userid)
         acts = get_personal_accounts(userid)
         hasAccount = False
-        print('ACTS - ', acts)
         for act in acts:
             if act.Id == acctid:
                 hasAccount = True
