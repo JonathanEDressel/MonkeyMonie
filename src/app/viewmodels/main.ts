@@ -90,6 +90,10 @@ export class MainComponent {
       this.selectedPage = page.Id;
     }
 
+    setPageById(id: number): void {
+      this.selectedPage = id;
+    }
+
     ngOnInit(): void {
       this._usrData.getUser();
     }

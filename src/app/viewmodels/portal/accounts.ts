@@ -8,11 +8,12 @@ import { CurrencyInput } from 'react-currency-input-field';
 import {CurrencyMaskModule } from 'ng2-currency-mask';
 import { CommonModule } from '@angular/common';
 import { ModalPopup } from '../shared/modal.component';
+import { InfoPanelComponent } from "../shared/info.component";
 
 @Component({
   selector: 'accounts-root',
   standalone: true,
-  imports: [FormsModule, AsyncPipe, CurrencyMaskModule, CommonModule, ModalPopup],
+  imports: [FormsModule, AsyncPipe, CurrencyMaskModule, CommonModule, ModalPopup, InfoPanelComponent],
   templateUrl: '../../views/portal/accounts.html',
   styleUrl: '../../styles/portal/accounts.scss'
 })

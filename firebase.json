@@ -1,18 +1,10 @@
 {
   "hosting": {
-    "public": "dist/my-app/browser",
+    "public": "/dist/my-app/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ],
-    "headers": [
-      {
-        "source": "**",
-        "headers": [
-          { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" }
-        ]
-      }
     ],
     "rewrites": [
       {

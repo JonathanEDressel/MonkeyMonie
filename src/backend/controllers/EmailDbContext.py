@@ -30,3 +30,25 @@ def send_usr_email(toAddress, subject, body):
     except Exception as e:
         log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
+    
+def send_admin_email(subject, body):
+    try:
+        email_list = ["jonathanedressel@gmail.com"]
+        email_list.append(EMAIL_SENDER)
+        client = PostmarkClient(server_token=POSTMARK_TOKEN)
+        res = client.emails.send(
+            From=EMAIL_SENDER,
+            To=email_list,
+            Subject=subject,
+            TextBody=body
+        )
+
+        if hasattr(res, 'ErrorCode') and res['ErrorCode'] == 0:
+            return jsonify({"result": "Email successfully sent!", "status": 200}), 200
+        elif isinstance(res, dict) and res.get('ErrorCode') == 0:
+            return jsonify({"result": "Email successfully sent!", "status": 200}), 200
+        error_message = res.get('Message', 'Unknown error') if isinstance(res, dict) else str(res)
+        return jsonify({"result": error_message, "status": 400}), 400
+    except Exception as e:
+        log_error_to_db(e)
+        return jsonify({"result": e, "status": 400}), 400

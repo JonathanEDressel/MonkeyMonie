@@ -22,7 +22,7 @@ export class AcctController {
     }
 
     updatePersonalAccount(account: PersonalAccountModel) {
-        return this.http.patch<{ token: string }>(`${this.apiURL}/update/personal/` + account.Id, { 
+        return this.http.post<{ token: string }>(`${this.apiURL}/update/personal/` + account.Id, { 
             name: account.Name,
             type: account.Type,
             balance: account.Balance
@@ -30,7 +30,7 @@ export class AcctController {
     }
 
     removePersonalAccount(Id: number) {
-        return this.http.delete<{ token: string}>(`${this.apiURL}/remove/personal/` + Id);
+        return this.http.get<{ token: string}>(`${this.apiURL}/remove/personal/` + Id);
     }
 
     getPersonalAccounts(): any {

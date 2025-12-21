@@ -20,8 +20,10 @@ def get_user_by_id(id):
         sql = "SELECT * FROM UserAcct WHERE Id = %s LIMIT 1;"
         params = (id,)
         usr = DBHelper.run_query(sql, params, fetch=True)
+        if not usr:
+            return None
+        
         res = UserModel.data_to_model(usr[0])
-
         if usr:        
             return res
         return None
@@ -34,6 +36,25 @@ def get_user_by_username(username):
         sql = "SELECT * FROM UserAcct WHERE Username = %s LIMIT 1;"
         params = (username,)
         usr = DBHelper.run_query(sql, params, fetch=True)
+        if not usr:
+            return None
+        
+        res = UserModel.data_to_model(usr[0])
+        if res:        
+            return res
+        return None
+    except Exception as e:
+        log_error_to_db(e)
+        return jsonify({"result": e, "status": 400}), 400
+    
+def get_user_by_uuid(uuid):
+    try:
+        sql = "SELECT * FROM UserAcct WHERE uuid = %s LIMIT 1;"
+        params = (uuid,)
+        usr = DBHelper.run_query(sql, params, fetch=True)
+        if not usr:
+            return None
+        
         res = UserModel.data_to_model(usr[0])
         if res:        
             return res

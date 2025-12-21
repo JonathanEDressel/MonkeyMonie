@@ -20,6 +20,9 @@ MAX_TOKEN_LENGTH = 2000
 if not SECRET_KEY:
     raise ValueError("SECRET_KEY environment variable is not set.")
 
+if not JWT_AUDIENCE:
+    raise ValueError("JWT_AUDIENCE environment variable is not set")
+
 def create_jwt(uuid, username, extra_claims=None, kid=None):
     if not uuid or not username:
         return None
@@ -27,12 +30,10 @@ def create_jwt(uuid, username, extra_claims=None, kid=None):
     expiration = now + timedelta(minutes=TOKEN_LIFETIME)
     payload = {
         "user_id": uuid,
-        "username": username,
         "exp": expiration,
         "iat": now, #iat - time it was issued
-        "nbf": now, #nbf - cannot be issued befre x time to be valid
         "iss": JWT_ISSUER, #iss - identifies the org. that created and signed the token. shows where the token originated
-        # "aud": JWT_AUDIENCE, #aud - identifies the recipients for whom the token is intended. Prevents a token to be used for another system
+        "aud": JWT_AUDIENCE, #aud - identifies the recipients for whom the token is intended. Prevents a token to be used for another system
         "jti": str(uuid) + "-" + now.isoformat()
     }
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGO_TO_USE)
@@ -45,6 +46,9 @@ def create_jwt(uuid, username, extra_claims=None, kid=None):
 def requires_token(f):
     @wraps(f)
     def decorator(*args, **kwargs):
+        if request.method == "OPTIONS":
+            return f(*args, **kwargs)
+        
         auth_header = request.headers.get("Authorization", "")
         if not auth_header:
             return jsonify({"error": "Missing Authorization header"}), 401
@@ -54,24 +58,23 @@ def requires_token(f):
             return jsonify({"error": "Invalid Authorization header format"}), 401
 
         token = parts[1]
-
         try:
             decoded = jwt.decode(
                 jwt=token,
                 key=SECRET_KEY,
                 algorithms=[ALGO_TO_USE],
                 issuer=JWT_ISSUER,
-                # audience=JWT_AUDIENCE,
+                audience=JWT_AUDIENCE,
                 options={
-                    "require": ["exp", "iat", "jti", "iss"], #aud
+                    "require": ["exp", "iat", "jti", "iss", "aud"],
                     "verify_exp": True,
                     "verify_iss": True,
-                    # "verify_aud": True
+                    "verify_aud": True
                 }
             )
-        except jwt.ExpiredSignatureError:
+        except jwt.ExpiredSignatureError as e:
             return jsonify({"error": "Token expired"}), 401
-        except jwt.InvalidAudienceError:
+        except jwt.InvalidAudienceError as e:
             return jsonify({"error": "Invalid token audience"}), 401
         except jwt.InvalidIssuerError:
             return jsonify({"error": "Invalid token issuer"}), 401
@@ -83,15 +86,13 @@ def requires_token(f):
             return jsonify({"error": "Token is missing jti"}), 401
         if token_is_revoked(jti):
             return jsonify({"error": "Token is revoked"}), 401
-        username = decoded.get("username")
-        if not username:
+        uuid = decoded.get("user_id")
+        if not uuid:
             return jsonify({"error": "Token is missing username"}), 401
 
-        usr = _usrDbContext.get_user_by_username(username)
-        if not usr:
+        usr = _usrDbContext.get_user_by_uuid(uuid)
+        if (not usr) or (not usr.IsActive):
             return jsonify({"error": "User not found"}), 404
-        
-        #add a isActive attr. to UserModel and check if the account is active
 
         g.decoded_token = decoded
         g.current_user = usr

@@ -30,10 +30,9 @@ def start_scheduler(minutes):
         scheduler.add_job(
             update_personal_acts,
             "interval",
-            minutes=minutes
-            # "cron",
-            # hour=0,
-            # minute=0
+            hours=12,
+            max_instances=1,
+            coalesce=True
         )
         scheduler.start()
     except Exception as e:

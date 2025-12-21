@@ -1,0 +1,27 @@
+.section-info {
+
+  .title-header {
+    color: #0377FE;
+  }
+
+  .info-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid #0377FE;
+    color: #0377FE;
+    background: transparent;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #0377FE;
+      color: #fff;
+    }
+  }
+
+  .info-content {
+    text-align: start;
+    color: whitesmoke;
+    background-color: #0377FE;
+  }
+}

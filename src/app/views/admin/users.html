@@ -21,6 +21,7 @@
             <th>Account Type</th>
             <th>Creation Date</th>
             <th>Expiration Date</th>
+            <th style="width: 40px;"></th>
           </tr>
         </thead>
         <tbody>
@@ -37,6 +38,9 @@
               <td class="align-middle">{{ usr.CreatedDate | date:'short' }}</td>
               <td class="align-middle">
                 {{ usr.hasExpired() ? (usr.ExpireDate | date:'short') : '' }}
+              </td>
+              <td class="text-center align-middle" (click)="deleteUser(usr);  $event.stopPropagation()">
+                <i class="fa-solid fa-trash-can" [style.color]="'red'"></i>
               </td>
             </tr>
           }

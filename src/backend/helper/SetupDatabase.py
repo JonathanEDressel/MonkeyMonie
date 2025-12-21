@@ -140,6 +140,36 @@ def validate_db():
         "DateAdded DATETIME, " \
         "Method VARCHAR(100))")
     
+    DBHelper.create_table("UserAssets", "" \
+        "(Id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, " \
+        "UserId INTEGER NOT NULL, " \
+        "IsActive TINYINT DEFAULT 1," \
+        "Name VARCHAR(100), " \
+        "Type VARCHAR(100), " \
+        "Value FLOAT, " \
+        "CreatedDate DATETIME, " \
+        "FOREIGN KEY (UserId) References UserAcct(Id) ON DELETE CASCADE)")
+    
+    DBHelper.create_table("UserAssetHistory", "" \
+        "(Id INTEGER PRIMARY KEY AUTO_INCREMENT, " \
+        "AssetId INTEGER NOT NULL, " \
+        "RecordedDate DATETIME, " \
+        "Value FLOAT, " \
+        "FOREIGN KEY (AssetId) References UserAssets(Id) ON DELETE CASCADE)")
+    
+    DBHelper.create_table("NetWorth", "" \
+        "(Id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, " \
+        "UserId INTEGER NOT NULL, " \
+        "TotalValue FLOAT, " \
+        "FOREIGN KEY (UserId) References UserAcct(Id) ON DELETE CASCADE)")
+    
+    DBHelper.create_table("NetWorthHistory", "" \
+        "(Id INTEGER PRIMARY KEY AUTO_INCREMENT NOT NULL, " \
+        "NetWorthId INTEGER NOT NULL, " \
+        "TotalValue FLOAT, " \
+        "RecordedDate DATETIME, " \
+        "FOREIGN KEY (NetWorthId) References NetWorth(Id) ON DELETE CASCADE)")
+    
 def add_columns():
     add_user_isactive_column()
     

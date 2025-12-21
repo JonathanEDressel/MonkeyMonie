@@ -1,13 +1,12 @@
-from flask import jsonify, request
+from flask import jsonify, g
 from datetime import datetime, timezone
 from .ErrorController import log_error_to_db
 from models.UserModel import data_to_model
+import controllers.EmailDbContext as _emailCtx
 import helper.Helper as DBHelper
 import helper.Security as Security
 import models.OTPTokenModel as OTPModel
 import controllers.EventDbContext as _eventCtx
-import jwt
-import bcrypt
 import os
 
 SECRET_KEY=os.getenv("SECRET_KEY")
@@ -19,48 +18,21 @@ def get_user_token(username, uuid):
 
 def get_current_user():
     try:
-        authorized_user = request.headers.get("Authorization")
-        if not authorized_user:
-            return None
-        
-        sql = "SELECT Id, Username, FirstName, LastName, ExpireDate, Email, PhoneNumber, CreatedDate, "\
-            "ConfirmedEmail, TwoFactor, LastLogin, IsDemo, AdminLevel, IsActive, IsAdmin FROM UserAcct WHERE Username = %s or Email = %s"
-        token = authorized_user.split(" ")[1]
-        decoded_token = jwt.decode(token, SECRET_KEY, ALGO_TO_USE)
-        username = str(decoded_token['username'])
-        params = (username,username)
-        usr = DBHelper.run_query(sql, params, True)
-        res = data_to_model(usr[0])
-        if res:
-            return res
-        return None
+        return g.current_user
     except Exception as e:
         log_error_to_db(e)
         return None
 
 def get_current_user_id():
     try:
-        authorized_user = request.headers.get("Authorization")
-        if not authorized_user:
-            return None
-        
-        sql = "SELECT Id FROM UserAcct WHERE Username = %s or Email = %s"
-        token = authorized_user.split(" ")[1]
-        decoded_token = jwt.decode(token, SECRET_KEY, ALGO_TO_USE)
-        username = str(decoded_token['username'])
-        params = (username,username)
-        usr = DBHelper.run_query(sql, params, True)
-        res = int(str(usr[0]['Id']))
-        if res:
-            return res
-        return -1
+        return getattr(g.current_user, "Id", -1)
     except Exception as e:
         log_error_to_db(e)
         return None
 
 def is_admin():
     try:
-        auth_usr = get_current_user()
+        auth_usr = g.current_user
         if not auth_usr:
             return False
         return auth_usr.is_site_admin()
@@ -68,10 +40,24 @@ def is_admin():
         log_error_to_db(e)
         return False    
 
+def delete_user(username):
+    try:
+       sql = "SELECT Id FROM UserAcct WHERE Username = %s"
+       params = (username,) 
+       user = DBHelper.run_query(sql, (username,), fetch=True)
+       if not user:
+            return jsonify({"result": "User not found", "status": 404}), 404
+       sql = "DELETE FROM UserAcct WHERE Username = %s"
+       DBHelper.run_query(sql, (username,), fetch=False)
+       return jsonify({"result": f"User '{username}' deleted successfully", "status": 200}), 200
+    except Exception as e:
+        log_error_to_db(e)
+        return jsonify({"result": e, "status": 400}), 400
+
 def has_admin():
     try:
         h = DBHelper.encrypt_password("password")
-        currDte = str(datetime.now(timezone.utc))
+        currDte = datetime.now(timezone.utc)
         res = DBHelper.run_query("SELECT Username FROM UserAcct Where Username = %s or Email = %s", 
                                 ("Admin", "jonathanedressel@gmail.com"), 
                                 True)
@@ -80,11 +66,11 @@ def has_admin():
             sql = """
             INSERT INTO UserAcct
             (Username, UserPassword, UUID, FirstName, LastName, Email, CreatedDate,
-            ConfirmedEmail, TwoFactor, AdminLevel, IsAdmin, IsDemo)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ConfirmedEmail, TwoFactor, AdminLevel, IsAdmin, IsDemo, IsActive)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """
             params = ("Admin", h, adm_uuid, "Jonathan", "Dressel", "jonathanedressel@gmail.com", currDte,
-                    1, 0, "Site", 1, 0)
+                    1, 0, "Site", 1, 0, 1)
             DBHelper.run_query(sql, params)
     except Exception as e:
         log_error_to_db(e)
@@ -108,7 +94,7 @@ def user_login(username, password):
             usrPWHash = usrPWHash.encode('utf-8')
         token = get_user_token(usr['Username'], usr['UUID'])
         if (DBHelper.check_passwords(password, usrPWHash)) and (token is not None):
-            currDte = str(datetime.now(timezone.utc))
+            currDte = datetime.now(timezone.utc)
             updatedLogin = DBHelper.update_value("UserAcct", "LastLogin", currDte, "Username", username)
             if not updatedLogin:
                 DBHelper.update_value("UserAcct", "LastLogin", currDte, "Email", username)
@@ -130,13 +116,30 @@ def create_account(fname, lname, username, phonenumber, password):
 
         adm_uuid = DBHelper.create_uuid()
         hashedPassword = DBHelper.encrypt_password(password)
-        sql = f"INSERT INTO UserAcct (Username, Email, FirstName, LastName, UserPassword, UUID, PhoneNumber, CreatedDate) " \
-            "VALUES(%s, %s, %s, %s, %s, %s, %s, %s);"
-        vars = (username, username, fname, lname, hashedPassword, adm_uuid, phonenumber, datetime.now(timezone.utc))
+        sql = f"INSERT INTO UserAcct (Username, Email, FirstName, LastName, UserPassword, UUID, PhoneNumber, CreatedDate, IsActive) " \
+            "VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s);"
+        vars = (username, username, fname, lname, hashedPassword, adm_uuid, phonenumber, datetime.now(timezone.utc), 1)
         res = DBHelper.run_query(sql, vars, fetch=False)
         token = get_user_token(username, adm_uuid)
         if not res or not token:
             return jsonify({"result": "Failed to create user account", "status": 400}), 400
+        
+        try:        
+            body = f"{fname} {lname} with username {username} created an account."
+            _emailCtx.send_admin_email("New MonkeyMonie Sign Up", body)
+        except Exception as e:
+            log_error_to_db(e)
+            print("ERROR: ", e)
+        
+        try:
+            currDte = datetime.now(timezone.utc)
+            updatedLogin = DBHelper.update_value("UserAcct", "LastLogin", currDte, "Username", username)
+            if not updatedLogin:
+                DBHelper.update_value("UserAcct", "LastLogin", currDte, "Email", username)
+        except Exception as e:
+            log_error_to_db(e)
+            print("ERROR: ", e)
+        
         return jsonify({"token": token}), 200
     except Exception as e:
         log_error_to_db(e)

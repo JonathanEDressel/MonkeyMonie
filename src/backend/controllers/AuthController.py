@@ -55,7 +55,8 @@ def forgot_password():
             return jsonify({"result": "Email successfully sent!", "status": 200}), 200
         
         otp = Security.generate_otp(6)
-        _emailCtx.send_usr_email(usr.Email, "Two FA Passcode", f"Your one-time passcode: {otp}")
+        _emailCtx.send_usr_email(usr.Email, "MonkeyMonie Passcode", f"Do NOT share this code with anyone! MonkeyMonie will never " \
+                                "ask for this code. Your one-time passcode: {otp}")
         Security.add_otp_token(otp, usr.Username)
         return jsonify({"result": "Email successfully sent!", "status": 200}), 200
     except Exception as e:
@@ -72,6 +73,23 @@ def verify_token():
         if _authCtx.valid_otp(otp, username):
             return _authCtx.get_token_data(username)
         return jsonify({"result": "Could not verify token", "status": 400}), 400
+    except Exception as e:
+        log_error_to_db(e)
+        return jsonify({"result": e, "status": 400}), 400
+   
+@auth_bp.route('/deleteUser', methods=['POST'])
+@limiter.limit("5 per minute")
+@requires_token
+def delete_user():
+    try:
+        req = request.json
+        username = str(req.get('username', '')).strip()
+        if not username:
+            return jsonify({"result": "Username is required", "status": 400}), 400
+        if not _authCtx.is_admin():
+            return jsonify({"result": "Unauthorizied", "status": 401}), 401
+                
+        return _authCtx.delete_user(username)
     except Exception as e:
         log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
