@@ -2,6 +2,7 @@ from controllers.ErrorController import log_error_to_db
 from apscheduler.schedulers.background import BackgroundScheduler
 import models.PersonalRecordModel as PersonalRecord
 import controllers.AccountDbContext as _actDbCtx
+import random
 
 def update_personal_acts():
     try:
@@ -28,9 +29,11 @@ def start_scheduler(minutes):
         scheduler = BackgroundScheduler()
         scheduler.add_job(
             update_personal_acts,
-            "cron",
-            hour=0,
-            minute=0
+            "interval",
+            minutes=minutes
+            # "cron",
+            # hour=0,
+            # minute=0
         )
         scheduler.start()
     except Exception as e:
