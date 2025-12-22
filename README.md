@@ -98,8 +98,8 @@ Creating a Angular app to learn more about login authentication, web security an
         * Show annual income
         * Show avg. monthly profit per user 
     * Error Log Page
-        * Show errors
-        * Allow filtering by day
+        * <s>Show errors</s>
+        * <s>Allow filtering by day</s>
 * Error Logging DB:
     * <s>Add error logging table</s>
     * <s>Find way to log errors in the table when exceptions are hit</s>
