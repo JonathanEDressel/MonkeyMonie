@@ -14,7 +14,7 @@ def data_to_model(data):
     if not data:
         return None
     return ErrorLogModel(
-        Id=data.get('AccountId'),
+        Id=data.get('Id'),
         EventTimeStamp=convert_datetime(data.get('EventTimeStamp')),
         StackTrace=data.get('StackTrace'),
         Detail=data.get('Detail'),

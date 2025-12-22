@@ -1,0 +1,47 @@
+.table-wrapper {
+    max-height: 450px;       
+    overflow-y: auto;
+}
+
+.table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.table thead {
+    background-color: #212529; 
+}
+
+.clickable-row {
+    cursor: pointer;
+}
+
+.stacktrace-panel {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  background: #f8f9fa;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.stacktrace-header {
+  padding: 10px 14px;
+  border-bottom: 1px solid #dee2e6;
+  background: #e9ecef;
+  font-size: 0.9rem;
+}
+
+.stacktrace-body {
+  margin: 0;
+  padding: 14px;
+  max-height: 300px;
+  overflow: auto;
+
+  font-family: Consolas, Menlo, Monaco, monospace;
+  font-size: 0.85rem;
+  line-height: 1.4;
+
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #fdfdfd;
+}

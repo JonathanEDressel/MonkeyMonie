@@ -1,6 +1,6 @@
 from flask import jsonify
 from datetime import datetime, timezone
-from .ErrorController import log_error_to_db
+from helper.ErrorHandler import log_error_to_db
 from models.PersonalAccountModel import PersonalAccount
 from bs4 import BeautifulSoup
 import re

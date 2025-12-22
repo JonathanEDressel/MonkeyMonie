@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from Extensions import limiter
 from datetime import datetime, timezone
 from helper.Security import requires_token
-from .ErrorController import log_error_to_db
+from helper.ErrorHandler import log_error_to_db
 import controllers.AuthDbContext as _authCtx
 import controllers.EventDbContext as _eventCtx
 

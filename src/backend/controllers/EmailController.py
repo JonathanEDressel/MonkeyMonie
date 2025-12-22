@@ -1,7 +1,7 @@
 from email.mimie.text import MIMEText
 from flask import jsonify
 import EmailDbContext as _emailDbCtx
-from .ErrorController import log_error_to_db
+from helper.ErrorHandler import log_error_to_db
 
 def send_usr_email(toAddress, fromAddress, subject, body):
     try:

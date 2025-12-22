@@ -8,6 +8,7 @@ import { AsyncPipe, NgComponentOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { UsersComponent } from './users';
 import { SiteStatsComponent } from './sitestats';
+import { ErrorLogComponent } from './errorlog';
 
 @Component({
   selector: 'admin-root',
@@ -33,7 +34,7 @@ export class AdminComponent  {
             { Id: 2, Title: 'Site Statistics', class: "", Route: '/admin', Visible$: this.isAdmin$, isSelected: Observable<false>, View: SiteStatsComponent },
             { Id: 3, Title: 'Payment Details', class: "", Route: '/admin', Visible$: this.isAdmin$, isSelected: Observable<false>, View: UsersComponent },
             { Id: 4, Title: 'Settings', class: "", Route: '/admin', Visible$: this.isAdmin$, isSelected: Observable<false>, View: UsersComponent },
-            { Id: 5, Title: 'Error Log', class: "", Route: '/admin', Visible$: this.isAdmin$, isSelected: Observable<false>, View: UsersComponent },
+            { Id: 5, Title: 'Error Log', class: "", Route: '/admin', Visible$: this.isAdmin$, isSelected: Observable<false>, View: ErrorLogComponent },
         ];
     }
 
@@ -52,7 +53,7 @@ export class AdminComponent  {
     }
 
     activate(): void {
-        this._usrData.getUsers();
+        // this._usrData.getUsers();
     }
 
     logout(): void {

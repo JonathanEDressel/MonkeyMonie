@@ -1,6 +1,6 @@
 from flask import jsonify, g
 from datetime import datetime, timezone
-from .ErrorController import log_error_to_db
+from helper.ErrorHandler import log_error_to_db
 from models.UserModel import data_to_model
 import controllers.EmailDbContext as _emailCtx
 import helper.Helper as DBHelper

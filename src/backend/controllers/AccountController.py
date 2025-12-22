@@ -3,7 +3,7 @@ from helper.Security import requires_token
 from Extensions import limiter
 import controllers.AuthDbContext as _authCtx
 import controllers.AccountDbContext as _actCtx
-from .ErrorController import log_error_to_db
+from helper.ErrorHandler import log_error_to_db
 
 act_bp = Blueprint("act", __name__)
 

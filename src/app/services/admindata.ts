@@ -1,10 +1,11 @@
-import { Injectable, signal } from "@angular/core";
+import { Injectable, numberAttribute, signal } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 import { EventModel } from "../models/eventmodel";
 import { AdminController } from "./controllers/admincontroller";
 import { CalendarEvent } from "angular-calendar";
 import { AuthData } from "./authdata";
 import { AuthController } from "./controllers/authcontroller";
+import { ErrorLogModel } from "../models/errorlogmodel";
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +15,8 @@ export class AdminData {
     private eventSubject = new BehaviorSubject<EventModel[]>([]);
     userEvents$: Observable<EventModel[]> = this.eventSubject.asObservable();
 
-    constructor(private _adminController: AdminController, private _authController: AuthController) {}
+    private errorSubject = new BehaviorSubject<ErrorLogModel[]>([]);
+    errorLogs$: Observable<ErrorLogModel[]> = this.errorSubject.asObservable();
 
     ErrorMsg = signal("");
 
@@ -33,6 +35,25 @@ export class AdminData {
                 }
                 else
                     console.warn('Failed to get accounts');
+            },
+            error: (err: any) => console.error(err)
+        })
+    }
+
+    getErrorLog(day: number, month: number, year: number): any {
+        return this._adminController.getErrorLog(day, month, year).subscribe({
+            next: (res: any) => {
+                if(res.status === 200) {
+                    const logs: ErrorLogModel[] = [];
+                    var data = res.result;
+                    for(var i = 0; i < data.length; i++) {
+                        var tmp = new ErrorLogModel();
+                        tmp.assignData(data[i]);
+                        logs.push(tmp);
+                    }
+                    this.errorSubject.next(logs);
+                }
+
             },
             error: (err: any) => console.error(err)
         })
@@ -58,4 +79,6 @@ export class AdminData {
             });
         });
     }
+
+    constructor(private _adminController: AdminController, private _authController: AuthController) {}
 }

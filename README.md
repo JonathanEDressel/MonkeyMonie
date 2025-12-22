@@ -62,7 +62,7 @@ Creating a Angular app to learn more about login authentication, web security an
     * Grab currnet user accounts
 * Donation Options
     * Add table to track giving
-        * Amount and username
+        * <s>Amount and username</s>
     * Allow user to donate 
         * <s>Via Venmo</s>
         * <s>Via Paypal</s>
@@ -86,8 +86,8 @@ Creating a Angular app to learn more about login authentication, web security an
     * Users Page 
         * <s>Ability to select account and edit</s>
         * <s>Search users</s>
-        * Filter users shown
-        * Delete users
+        * <s>Filter users shown</s>
+        * <s>Delete users</s>
     * Configure website settings
     * Site Stats Page
         * <s>Show user login activity</s>
