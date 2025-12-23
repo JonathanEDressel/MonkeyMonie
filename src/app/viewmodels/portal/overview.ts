@@ -59,22 +59,22 @@ export class OverviewComponent {
                     }
                 },
                 y: {
-                beginAtZero: true,
-                ticks: {
-                    callback: function(value) {
-                    return `$${value.toLocaleString()}`; 
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                        return `$${value.toLocaleString()}`; 
+                        },
+                        maxTicksLimit: 6
                     },
-                    maxTicksLimit: 6
-                },
-                grid: {
-                    lineWidth: 1,
-                    color: 'rgba(0,0,0,0.05)',
-                },
-                border: {
-                    color: 'rgba(0,0,0,0.1)',  
-                    width: 1
+                    grid: {
+                        lineWidth: 1,
+                        color: 'rgba(0,0,0,0.05)',
+                    },
+                    border: {
+                        color: 'rgba(0,0,0,0.1)',  
+                        width: 1
+                    }
                 }
-            }
         },
         elements: {
             line: {
