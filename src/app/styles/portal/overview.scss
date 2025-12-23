@@ -1,0 +1,44 @@
+.responsive-chart {
+  width: 100%;
+  max-width: 100%;
+  height: 400px; 
+  @media (min-width: 992px) {
+    height: 500px;
+  }
+  @media (max-width: 576px) {
+    height: 300px;
+  }
+}
+
+app-info-section {
+  width: 100%;
+}
+
+.no-accounts h3 {
+  font-size: 1.5rem;
+  @media(min-width: 768px) {
+    font-size: 2rem;
+  }
+}
+
+.no-accounts p {
+  font-size: 1rem;
+  @media(min-width: 768px) {
+    font-size: 1.125rem;
+  }
+}
+
+.no-accounts button {
+  width: 100%;
+  max-width: 300px;
+  font-size: 1rem;
+  @media(min-width: 768px) {
+    width: auto;
+    font-size: 1.125rem;
+  }
+}
+
+.row {
+  margin-left: 0;
+  margin-right: 0;
+}

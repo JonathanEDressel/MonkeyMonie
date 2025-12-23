@@ -1,76 +1,93 @@
 @if(user$ | async; as user)
 {
-<div class="container d-flex flex-column align-items-center mt-3 mb-3">
+<div class="container user-profile-container mt-3 mb-3">
+
   <div class="d-flex justify-content-center mb-3">
     <button type="button" class="btn btn-success" (click)="saveChanges(user)">
       Save Changes
     </button>
   </div>
 
-  <div class="form-floating mb-3" style="width: 25%;">
-    <input type="text" id="username" class="form-control" [(ngModel)]="user.Username">
-    <label class="bolden-label" for="username">Username</label>
-  </div>
+  <div class="row g-3 justify-content-center">
+    <div class="col-12 col-sm-6 col-md-4">
+      <div class="form-floating">
+        <input type="text" id="username" class="form-control" [(ngModel)]="user.Username">
+        <label class="bolden-label" for="username">Username</label>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4">
+      <div class="form-floating">
+        <input type="text" id="firstName" class="form-control" [(ngModel)]="user.FirstName">
+        <label class="bolden-label" for="firstName">First Name</label>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4">
+      <div class="form-floating">
+        <input type="text" id="lastName" class="form-control" [(ngModel)]="user.LastName">
+        <label class="bolden-label" for="lastName">Last Name</label>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4">
+      <div class="form-floating">
+        <input type="email" id="email" class="form-control" [(ngModel)]="user.Email">
+        <label class="bolden-label" for="email">Email</label>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4">
+      <div class="form-floating">
+        <input type="tel" id="phone" class="form-control" [(ngModel)]="user.PhoneNumber">
+        <label class="bolden-label" for="phone">Phone Number</label>
+      </div>
+    </div>
 
-  <div class="form-floating mb-3" style="width: 25%;">
-    <input type="text" id="firstName" class="form-control" [(ngModel)]="user.FirstName">
-    <label class="bolden-label" for="firstName">First Name</label>
-  </div>
+    <div class="col-12 col-sm-6 col-md-4 d-flex align-items-center">
+      <strong class="me-3">Two-Factor Authentication</strong>
+      <input class="form-check-input switch-big" type="checkbox" id="twoFactor" [(ngModel)]="user.TwoFactor">
+    </div>
 
-  <div class="form-floating mb-3" style="width: 25%;">
-    <input type="text" id="lastName" class="form-control" [(ngModel)]="user.LastName">
-    <label class="bolden-label" for="lastName">Last Name</label>
-  </div>
-
-  <div class="form-floating mb-3" style="width: 25%;">
-    <input type="email" id="email" class="form-control" [(ngModel)]="user.Email">
-    <label class="bolden-label" for="email">Email</label>
-  </div>
-
-  <div class="form-floating mb-3" style="width: 25%;">
-    <input type="tel" id="phone" class="form-control" [(ngModel)]="user.PhoneNumber">
-    <label class="bolden-label" for="phone">Phone Number</label>
-  </div>
-
-  <div class="form-check form-switch mb-3" style="width: 25%;">
-    <strong class="form-check-label" for="twoFactor">Two-Factor Authentication</strong>
-    <input class="form-check-input switch-big" type="checkbox" id="twoFactor" [(ngModel)]="user.TwoFactor">
-  </div>
-
-  <div class="mb-3 d-flex flex-column" style="width: 25%;">
-    <label class="form-label mb-1"><strong>Expiration Date</strong></label>
-    <div class="p-2 border rounded bg-light text-muted">
-      <strong>{{ user.ExpireDate || '—' }}</strong>
+    <div class="col-12 col-sm-6 col-md-4">
+      <label class="form-label mb-1"><strong>Expiration Date</strong></label>
+      <div class="p-2 border rounded bg-light text-muted">
+        <strong>{{ user.ExpireDate || '—' }}</strong>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4">
+      <label class="form-label mb-1"><strong>Created Date</strong></label>
+      <div class="p-2 border rounded bg-light text-muted">
+        <strong>{{ user.CreatedDate || '—' }}</strong>
+      </div>
     </div>
   </div>
 
-  <div class="mb-3 d-flex flex-column" style="width: 25%;">
-    <label class="form-label mb-1"><strong>Created Date</strong></label>
-    <div class="p-2 border rounded bg-light text-muted">
-      <strong>{{ user.CreatedDate || '—' }}</strong>
+  <h3 class="mt-4">Reset Password</h3>
+  <div class="row g-3 justify-content-center">
+    <div class="col-12 col-sm-6 col-md-4">
+      <div class="form-floating">
+        <input type="password" id="newPassword" class="form-control" [(ngModel)]="newPassword">
+        <label for="newPassword">New Password</label>
+      </div>
     </div>
-  </div>
-  <h3 class="mt-3">Reset Password</h3>
-  <div class="form-floating mb-3" style="width: 25%;">
-    <input type="password" id="newPassword" class="form-control" [(ngModel)]="newPassword">
-    <label for="newPassword">New Password</label>
-  </div>
-
-  <div class="form-floating mb-3" style="width: 25%;">
-    <input type="password" id="confirmPassword" class="form-control" [(ngModel)]="confirmPassword" (keydown.enter)="resetPassword()">
-    <label for="confirmPassword">Confirm Password</label>
+    <div class="col-12 col-sm-6 col-md-4">
+      <div class="form-floating">
+        <input type="password" id="confirmPassword" class="form-control" [(ngModel)]="confirmPassword" (keydown.enter)="resetPassword()">
+        <label for="confirmPassword">Confirm Password</label>
+      </div>
+    </div>
   </div>
 
   <div class="d-flex justify-content-center mt-3">
-    <button type="button" class="btn btn-warning" [disabled]="(!newPassword || !confirmPassword) || (newPassword.length === 0 || confirmPassword.length === 0) || (newPassword !== confirmPassword)" (click)="resetPassword()">
+    <button type="button" class="btn btn-warning"
+      [disabled]="(!newPassword || !confirmPassword) || (newPassword.length === 0 || confirmPassword.length === 0) || (newPassword !== confirmPassword)"
+      (click)="resetPassword()">
       Reset Password
     </button>
   </div>
 
   <hr />
+
   <h3>Donation Details</h3>
-  <div>
-    <table class="table table-hover table-striped table-bordered shadow-sm rounded custom-table mt-4">
+  <div class="table-responsive mt-3">
+    <table class="table table-hover table-striped table-bordered shadow-sm rounded custom-table">
       <thead class="table-dark custom-header">
         <tr>
           <th>Date</th>
@@ -80,16 +97,17 @@
         </tr>
       </thead>
       <tbody>
-      @for (donation of personalDonations$ | async; track donation) {
-        <tr class="">
-          <td class="align-middle">{{ donation.DateAdded }}</td>
-          <td class="align-middle">{{ donation.Amount }}</td>
-          <td class="align-middle">{{ donation.Method }}</td>
-          <td class="align-middle">{{ donation.Notes }}</td>
-        </tr>
-      } 
+        @for (donation of personalDonations$ | async; track donation) {
+          <tr>
+            <td class="align-middle">{{ donation.DateAdded }}</td>
+            <td class="align-middle">{{ donation.Amount }}</td>
+            <td class="align-middle">{{ donation.Method }}</td>
+            <td class="align-middle">{{ donation.Notes }}</td>
+          </tr>
+        }
       </tbody>
     </table>
   </div>
+
 </div>
 }

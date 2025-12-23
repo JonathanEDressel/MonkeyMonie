@@ -14,7 +14,7 @@ export class InfoPanelComponent {
   @Input() subtitle: string = '';
   @Input() bodyMsg: string = '';
 
-  showInfo: boolean = true;
+  showInfo: boolean = false;
 
   toggleInfo(): void {
     this.showInfo = !this.showInfo;

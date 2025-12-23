@@ -1,3 +1,82 @@
+app-info-section {
+  width: 100%;
+}
+
+.account-details {
+  margin-bottom: 2rem;
+
+  .summary-header {
+    font-weight: 500;
+  }
+
+  .dashed-border {
+    border-bottom: 2px dashed black;
+  }
+
+  .account-content {
+    display: flex;
+    flex-direction: column;
+
+    @media(min-width: 992px) {
+      flex-direction: row;
+    }
+  }
+
+  table {
+    width: 100%;
+    margin-bottom: 0;
+    th, td {
+      text-align: center;
+    }
+  }
+
+  .table-responsive {
+    max-height: 30rem;
+    overflow-y: auto;
+  }
+
+  canvas {
+    width: 100% !important;
+    height: 300px;
+
+    @media(min-width: 768px) {
+      height: 400px;
+    }
+    @media(min-width: 992px) {
+      height: 500px;
+    }
+  }
+}
+
+.no-accounts {
+  h3 {
+    font-size: 1.5rem;
+    @media(min-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+  p {
+    font-size: 1rem;
+    @media(min-width: 768px) {
+      font-size: 1.125rem;
+    }
+  }
+  button {
+    width: 100%;
+    max-width: 300px;
+    font-size: 1rem;
+    @media(min-width: 768px) {
+      width: auto;
+      font-size: 1.125rem;
+    }
+  }
+}
+
+.row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
 details > summary {
   display: block;
   list-style: none !important;
