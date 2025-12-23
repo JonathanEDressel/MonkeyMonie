@@ -59,7 +59,7 @@ export class OverviewComponent {
                     }
                 },
                 y: {
-                beginAtZero: false,
+                beginAtZero: true,
                 ticks: {
                     callback: function(value) {
                     return `$${value.toLocaleString()}`; 

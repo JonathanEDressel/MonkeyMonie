@@ -66,11 +66,11 @@ export class HistoryComponent {
                     }
                 },
                 y: {
-                beginAtZero: false,
-                ticks: {
-                    callback: function(value) {
-                    return `$${value.toLocaleString()}`; 
-                    },
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                        return `$${value.toLocaleString()}`; 
+                        },
                     maxTicksLimit: 6
                 },
                 grid: {
