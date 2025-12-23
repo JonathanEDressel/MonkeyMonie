@@ -7,27 +7,35 @@
   </div>
 </div>
 
-<div class="row mt-4 d-flex justify-content-center">
-  <div class="col-12 col-md-10 col-lg-8 d-flex flex-column align-items-center">
-
-    <ag-charts
-      class="responsive-chart"
-      *ngIf="(personalAccts$ | async)?.length !== 0"
-      [options]="netWorthChartOptions">
+<div class="row mt-4 justify-content-center">
+  <div class="col-12 col-md-10 col-lg-8 d-flex justify-content-center">
+    <ag-charts class="responsive-chart" *ngIf="(personalAccts$ | async)?.length !== 0" [options]="netWorthChartOptions">
     </ag-charts>
-
-    <div *ngIf="(personalAccts$ | async)?.length === 0" class="text-center mt-5 no-accounts">
-      <h3 class="mb-3">No Accounts Connected Yet</h3>
-      <p class="text-muted mb-4">
-        Add your checking, savings, or retirement accounts to start
-        tracking your net worth and financial progress.
-      </p>
-      <button class="btn btn-primary btn-lg" (click)="navToAddAcount()">
-        Add Your First Account
-      </button>
-    </div>
-
   </div>
+</div>
+
+<div class="row mt-4 justify-content-center">
+  @for(act of personalRecords$ | async; track act) {
+    <div class="col-12 col-md-6 col-lg-4 mb-4 d-flex flex-column align-items-center chart-col">
+      <h5 class="chart-title">{{ act.Name }} - {{ act.Balance | currency:'USD' }}</h5>
+      <canvas *ngIf="act.ChartRecords" baseChart 
+              [data]="act.ChartRecords" 
+              [options]="accountHistoryChartOptions" 
+              [type]="'line'">
+      </canvas>
+    </div>
+  }
+</div>
+
+<div *ngIf="(personalAccts$ | async)?.length === 0" class="text-center mt-5 no-accounts">
+  <h3 class="mb-3">No Accounts Connected Yet</h3>
+  <p class="text-muted mb-4">
+    Add your checking, savings, or retirement accounts to start
+    tracking your net worth and financial progress.
+  </p>
+  <button class="btn btn-primary btn-lg" (click)="navToAddAcount()">
+    Add Your First Account
+  </button>
 </div>
 
 <hr />
