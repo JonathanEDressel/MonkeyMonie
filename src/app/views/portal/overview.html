@@ -13,9 +13,12 @@
     </ag-charts>
   </div>
 </div>
+<hr />
 
 <div class="row mt-4 justify-content-center">
-  @for(act of personalRecords$ | async; track act) {
+  @if((personalRecords$ | async)?.length !== 0) {
+    <h3>Personal Accounts</h3>
+    @for(act of personalRecords$ | async; track act) {
     <div class="col-12 col-md-6 col-lg-4 mb-4 d-flex flex-column align-items-center chart-col">
       <h5 class="chart-title">{{ act.Name }} - {{ act.Balance | currency:'USD' }}</h5>
       <canvas *ngIf="act.ChartRecords" baseChart 
@@ -24,6 +27,7 @@
               [type]="'line'">
       </canvas>
     </div>
+  }
   }
 </div>
 
@@ -37,5 +41,3 @@
     Add Your First Account
   </button>
 </div>
-
-<hr />

@@ -78,12 +78,12 @@ export class OverviewComponent {
         },
         elements: {
             line: {
-            tension: 0.2,
-            borderWidth: 2
+                tension: 0.2,
+                borderWidth: 2
             },
             point: {
-            radius: 3,
-            hoverRadius: 5
+                radius: 3,
+                hoverRadius: 5
             }
         }
     };
@@ -108,7 +108,7 @@ export class OverviewComponent {
                 tooltip: {
                     enabled: true,
                     renderer: (params: any) => ({
-                        content: `${params.datum.name}: ${this.formatCurrency(params.datum.value, 2)}`
+                        content: `${params.datum.name}: ${this.formatCurrency(params.datum.value, 0)}`
                     })
                 } as any
             } as AgPieSeriesOptions
