@@ -1,6 +1,13 @@
 {
   "hosting": {
-    "public": "/dist/my-app/browser",
+    "public": "dist/my-app/browser",
+    "redirects": [
+      {
+        "source": "/",
+        "destination": "https://www.monkeymonie.com",
+        "type": 301
+      }
+    ],
     "ignore": [
       "firebase.json",
       "**/.*",
