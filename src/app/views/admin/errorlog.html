@@ -1,0 +1,55 @@
+<div class="d-flex justify-content-center" style="min-height: 600px;">
+  <div class="container-fluid p-0">
+
+    <div class="mb-3 d-flex align-items-center gap-2">
+      <label class="fw-semibold mb-0">Select Date:</label>
+      <input
+        type="date"
+        class="form-control"
+        style="max-width: 200px;"
+        [(ngModel)]="errorLogDate"
+      />
+    </div>
+
+    <div class="table-wrapper">
+      <table class="table table-hover table-striped table-bordered shadow-sm rounded custom-table">
+        <thead class="table-dark custom-header">
+          <tr>
+            <th>User</th>
+            <th>Date</th>
+            <th>Stack</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (error of errorLogs$ | async; track error) {
+            <tr class="clickable-row" (click)="selectError(error)">
+              <td class="align-middle">{{ error.Username }}</td>
+              <td class="align-middle">
+                {{ error.EventTimeStamp | date:'short' }}
+              </td>
+              <td class="align-middle">{{ error.Detail }}</td>
+              <td class="align-middle">{{ error.StackTrace }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    @if(selectedError().Id > 0) 
+    {
+    <div class="stacktrace-panel mt-4">
+        <div class="stacktrace-header">
+            <strong>Stack Trace</strong>
+            <span class="text-muted ms-2">
+                {{ selectedError().Username }} ·
+                {{ selectedError().EventTimeStamp | date:'medium' }}
+            </span>
+        </div>
+        <pre class="stacktrace-body text-start">
+            {{ selectedError().StackTrace }}
+        </pre>
+    </div>
+    }
+  </div>
+</div>

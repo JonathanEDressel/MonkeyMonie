@@ -24,8 +24,8 @@
   right: 20px;
   z-index: 1050;
   border-radius: 50%;
-  padding: 15px 18px;
-  font-size: 42px;
+  padding: 15px;
+  font-size: 1.2rem;
   background-color: #ff6f3c;
   border: none;
   box-shadow: 0px 4px 12px rgba(0,0,0,0.25);
@@ -55,11 +55,14 @@
 
 .modal-title {
     font-weight: 600;
-    // font-size: 1.5rem;
 }
 
 .modal-header .modal-title {
     margin: 0 auto;
+}
+
+.modal-body {
+  padding: 1rem !important;
 }
 
 .giving-modal ul li {
@@ -87,6 +90,10 @@
 .table-custom {
     border-radius: 12px;
     overflow: hidden;
+
+    th, td {
+        text-align: center;
+    }
 }
 
 .table-custom thead {
@@ -96,4 +103,20 @@
 
 .table-custom tbody tr:hover {
     background-color: #f1f3f5 !important;
+}
+
+.logo-img {
+  max-width: 100%;
+  height: auto;
+}
+
+.navbar-brand img {
+  max-height: 50px;
+}
+
+.navbar-text {
+  font-size: 0.9rem;
+  @media(max-width: 992px) {
+    display: none !important;
+  }
 }

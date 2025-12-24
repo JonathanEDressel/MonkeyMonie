@@ -1,34 +1,43 @@
 <div class="row mt-4 justify-content-center text-center">
-    <div class="col col-12">
-        <app-info-section title="Financial Overview" bodyMsg="This dashboard shows all your checking, savings, and retirement
-                accounts in one place. Your net worth is calculated by totaling the balances
-                of all connected accounts.">
-        </app-info-section>
-    </div>
+  <div class="col-12 col-md-8 col-lg-6">
+    <app-info-section
+      title="Financial Overview"
+      bodyMsg="This dashboard shows all your checking, savings, and retirement accounts in one place. Your net worth is calculated by totaling the balances of all connected accounts.">
+    </app-info-section>
+  </div>
 </div>
 
-<div class="row mt-4 d-flex justify-content-center">
-    <div class="col col-6 d-flex flex-column align-items-center">
-
-        <ag-charts
-            class="larger-canvas"
-            style="height: 500px;"
-            [options]="netWorthChartOptions"
-            *ngIf="(personalAccts$ | async)?.length !== 0">
-        </ag-charts>
-
-        <div *ngIf="(personalAccts$ | async)?.length === 0" class="text-center mt-5">
-            <h3 class="mb-3">No Accounts Connected Yet</h3>
-            <p class="text-muted mb-4">
-                Add your checking, savings, or retirement accounts to start
-                tracking your net worth and financial progress.
-            </p>
-
-            <button class="btn btn-primary btn-lg" (click)="navToAddAcount()">
-                Add Your First Account
-            </button>
-        </div>
-    </div>
+<div class="row mt-4 justify-content-center">
+  <div class="col-12 col-md-10 col-lg-8 d-flex justify-content-center">
+    <ag-charts class="responsive-chart" *ngIf="(personalAccts$ | async)?.length !== 0" [options]="netWorthChartOptions">
+    </ag-charts>
+  </div>
 </div>
-
 <hr />
+
+<div class="row mt-4 justify-content-center">
+  @if((personalRecords$ | async)?.length !== 0) {
+    <h3>Personal Accounts</h3>
+    @for(act of personalRecords$ | async; track act) {
+    <div class="col-12 col-md-6 col-lg-4 mb-4 d-flex flex-column align-items-center chart-col">
+      <h5 class="chart-title">{{ act.Name }} - {{ act.Balance | currency:'USD' }}</h5>
+      <canvas *ngIf="act.ChartRecords" baseChart 
+              [data]="act.ChartRecords" 
+              [options]="accountHistoryChartOptions" 
+              [type]="'line'">
+      </canvas>
+    </div>
+  }
+  }
+</div>
+
+<div *ngIf="(personalAccts$ | async)?.length === 0" class="text-center mt-5 no-accounts">
+  <h3 class="mb-3">No Accounts Connected Yet</h3>
+  <p class="text-muted mb-4">
+    Add your checking, savings, or retirement accounts to start
+    tracking your net worth and financial progress.
+  </p>
+  <button class="btn btn-primary btn-lg" (click)="navToAddAcount()">
+    Add Your First Account
+  </button>
+</div>

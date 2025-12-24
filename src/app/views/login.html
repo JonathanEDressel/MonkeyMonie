@@ -1,44 +1,40 @@
-<main class="container d-flex justify-content-center align-items-center min-vh-100">
-  <div class="col-10 col-md-6 text-center bg-light p-4 rounded shadow">
-    <img class="logo-img mb-4" src="assets/images/monkeymonielogo.png" alt="MonkeyMonie Logo" height="140" style="border: 3px black solid;"/>
+<main class="container d-flex justify-content-center align-items-center min-vh-100 px-3">
+  <div class="auth-card w-100">
+    <img class="logo-img mb-3" src="assets/images/monkeymonielogo.png" alt="MonkeyMonie Logo"/>
+
     <h2 class="mb-4">Log In or Sign Up</h2>
 
-    <div class="d-flex align-items-center mb-3">
-      <div class="col col-2 text-start">
-        <label for="email" class="form-label me-5 mb-0"><strong>Email</strong></label>
-      </div>
-      <div class="col col-10">
-        <input id="email" type="email" class="form-control" placeholder="Email or username" [(ngModel)]="UserEmail" />
-      </div>
+    <div class="mb-3 text-start">
+      <label for="email" class="form-label fw-bold">Email</label>
+      <input id="email" type="email" class="form-control" placeholder="Email or username" [(ngModel)]="UserEmail" />
     </div>
-    <div class="d-flex align-items-center">
-      <div class="col col-2 text-start">
-        <label for="password" class="form-label me-3 mb-0"><strong>Password</strong></label>
-      </div>
-      <div class="col col-10">
-        <input id="password" type="password" class="form-control" [(ngModel)]="UserPassword" (keydown.enter)="login()" >
-      </div>
+
+    <div class="mb-2 text-start">
+      <label for="password" class="form-label fw-bold">Password</label>
+      <input id="password" type="password" class="form-control" [(ngModel)]="UserPassword" (keydown.enter)="login()"/>
     </div>
-    <div>
-      <div class="col col-12 text-end">
-        <a href="forgotpassword">Forgot Password</a>
-      </div>
+
+    <div class="text-end mb-4">
+      <a class="small" href="forgotpassword">Forgot password?</a>
     </div>
-    <button class="col-4 btn btn-success" id="user-login-btn" (click)="login()">
+
+    <button class="btn btn-success w-100 mb-3" id="user-login-btn" (click)="login()">
       Login
-      <i class="fa-solid fa-right-to-bracket"></i> 
+      <i class="fa-solid fa-right-to-bracket ms-2"></i>
     </button>
+
     @if (ErrorMsg()) {
-      <div class="mt-2 alert alert-warning" role="alert">
-        <label>{{ErrorMsg()}}</label>
+      <div class="alert alert-warning mt-2" role="alert">
+        {{ ErrorMsg() }}
       </div>
     }
-    <div class="text-center mt-3 mb-3">
-      <h3>OR</h3>
+
+    <div class="divider my-4">
+      <span>OR</span>
     </div>
-    <button class="col-4 btn btn-primary" (click)="createAccount()">
+
+    <button class="btn btn-primary w-100" (click)="createAccount()">
       Create an Account
     </button>
   </div>
 </main>
-

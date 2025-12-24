@@ -5,7 +5,7 @@ import controllers.AuthDbContext as _authCtx
 import controllers.EmailDbContext as _emailCtx
 import helper.Helper as DBHelper
 import helper.Security as Security
-from .ErrorController import log_error_to_db
+from helper.ErrorHandler import log_error_to_db
 from models.UserModel import data_to_model
 
 auth_bp = Blueprint("auth", __name__)

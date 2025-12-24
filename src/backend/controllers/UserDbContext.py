@@ -1,5 +1,5 @@
 from flask import jsonify
-from .ErrorController import log_error_to_db
+from helper.ErrorHandler import log_error_to_db
 import helper.Helper as DBHelper
 import models.UserModel as UserModel
 import controllers.AuthDbContext as _authDbCtx

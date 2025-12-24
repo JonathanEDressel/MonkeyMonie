@@ -1,0 +1,77 @@
+/* Chart container and title styling */
+.chart-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+/* Chart canvas styling */
+canvas {
+  width: 100% !important;
+  height: 250px !important; /* default for mobile */
+}
+
+@media (min-width: 768px) {
+  canvas {
+    height: 300px !important; /* tablet */
+  }
+}
+
+@media (min-width: 1200px) {
+  canvas {
+    height: 350px !important; /* desktop */
+  }
+}
+
+/* Responsive Net Worth Chart */
+.responsive-chart {
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  display: block;
+  margin: 0 auto; /* centers chart */
+  max-height: 400px;
+}
+
+@media (min-width: 992px) {
+  .responsive-chart {
+    height: 500px;
+  }
+}
+
+@media (max-width: 576px) {
+  .responsive-chart {
+    height: 300px;
+  }
+}
+
+/* Chart columns that expand if fewer than 3 in row */
+.chart-col {
+  flex: 1 1 auto; /* allows column to grow */
+  min-width: 300px; /* prevents charts from being too small */
+  max-width: 100%; /* ensures they don't overflow */
+}
+
+/* Mobile-friendly adjustments */
+@media (max-width: 768px) {
+  .chart-title {
+    font-size: 0.9rem;
+  }
+  canvas {
+    height: 220px !important;
+  }
+}
+
+.no-accounts h3 {
+  font-size: 1.5rem;
+}
+
+.no-accounts p {
+  font-size: 1rem;
+}
+
+.no-accounts button {
+  width: 100%;
+  max-width: 300px;
+}

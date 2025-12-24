@@ -21,6 +21,7 @@ CORS(
 def run_db_checks():
     SetupDB.validate_db()
     SetupDB.add_columns()
+    SetupDB.update_columns()
 
 @app.route('/')
 def home():

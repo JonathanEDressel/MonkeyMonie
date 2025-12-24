@@ -37,16 +37,60 @@ export class HistoryComponent {
         plugins: {
             legend: {
                 display: false
+            },
+            tooltip: {
+                mode: 'index',
+                intersect: false,
+                callbacks: {
+                    label: function(context) {
+                        var val = context?.parsed?.y ?? '';
+                        return `$${val.toLocaleString()}`; 
+                    }
+                }
+            }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        autoSkip: true,         
+                        maxTicksLimit: 10,     
+                        callback: function(value, index, ticks) {
+                        const date = new Date(this.getLabelForValue(Number(value)));
+                        return `${date.getMonth()+1}/${date.getDate()}`;
+                        },
+                        maxRotation: 0,
+                        minRotation: 0
+                    },
+                    grid: {
+                        display: false          
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                        return `$${value.toLocaleString()}`; 
+                        },
+                    maxTicksLimit: 6
+                },
+                grid: {
+                    lineWidth: 1,
+                    color: 'rgba(0,0,0,0.05)',
+                },
+                border: {
+                    color: 'rgba(0,0,0,0.1)',  
+                    width: 1
+                }
             }
         },
-        scales: {
-            x: {
-                ticks: {
-                    autoSkip: true
-                }
+        elements: {
+            line: {
+            tension: 0.2,
+            borderWidth: 2
             },
-            y: {
-                beginAtZero: false
+            point: {
+            radius: 3,
+            hoverRadius: 5
             }
         }
     };
@@ -69,7 +113,6 @@ export class HistoryComponent {
 
     activate(): void {
         this._actData.getPersonalAccountHistory().then(res => {
-            console.log('This is how you do a then in a promise')
         })
         .catch((err) => console.error(err));
     }

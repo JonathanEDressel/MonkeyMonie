@@ -1,5 +1,5 @@
 from models.EventModel import data_to_model, EventModel
-from .ErrorController import log_error_to_db
+from helper.ErrorHandler import log_error_to_db
 from datetime import datetime, timezone
 from flask import Flask, request
 import helper.Helper as DBHelper
