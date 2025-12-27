@@ -107,12 +107,15 @@ export class OverviewComponent {
                 
                 tooltip: {
                     enabled: true,
-                    renderer: (params: any) => ({
-                        content: `${params.datum.name}: ${this.formatCurrency(params.datum.value, 0)}`
-                    })
+                    renderer: (params: any) => {
+                        return `<div class="ag-chart-tooltip-content">${params.datum.name}: ${this.formatCurrency(params.datum.value, 0)}</div>`;
+                    }
                 } as any
             } as AgPieSeriesOptions
         ],
+        tooltip: {
+            enabled: true,
+        },
         title: {
             text: 'Net Worth',
             fontSize: 28,
