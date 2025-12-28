@@ -36,14 +36,14 @@ export class OverviewComponent implements AfterViewInit, OnDestroy {
         scales: {
             x: {
                 ticks: {
-                autoSkip: true,         
-                maxTicksLimit: 10,     
-                callback: function(value, index, ticks) {
-                    const date = new Date(this.getLabelForValue(Number(value)));
-                    return `${date.getMonth()+1}/${date.getDate()}`;
-                },
-                maxRotation: 0,
-                minRotation: 0
+                    autoSkip: true,         
+                    maxTicksLimit: 10,     
+                    callback: function(value, index, ticks) {
+                        const date = new Date(this.getLabelForValue(Number(value)));
+                        return `${date.getMonth()+1}/${date.getDate()}`;
+                    },
+                    maxRotation: 0,
+                    minRotation: 0
                 },
                 grid: {
                     display: false          
@@ -55,7 +55,7 @@ export class OverviewComponent implements AfterViewInit, OnDestroy {
                     callback: function(value) {
                         return `$${value.toLocaleString()}`; 
                     },
-                    maxTicksLimit: 6
+                    maxTicksLimit: 10,
                 },
                 grid: {
                     lineWidth: 1,

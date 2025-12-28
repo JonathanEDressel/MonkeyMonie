@@ -1,5 +1,6 @@
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartOptions } from 'chart.js';
+import { range } from 'rxjs';
 
 export type ChartHandle = {
     canvas: HTMLCanvasElement;
@@ -11,6 +12,76 @@ export function createChartHandle(chartDir: BaseChartDirective): ChartHandle | n
         const chart = (chartDir as any).chart as any;
         if (!chart || !chart.canvas) return null;
         const canvas = chart.canvas as HTMLCanvasElement;
+        // find a sensible container to attach the drag info UI
+        // prefer the nearest .card so the bar sits inside the card, otherwise fall back to .chart-wrapper or parent
+        let container: HTMLElement | null = null;
+        try {
+            container = (canvas.closest && canvas.closest('.card')) as HTMLElement | null;
+        } catch {}
+        if (!container) {
+            try { container = (canvas.closest && canvas.closest('.chart-wrapper')) as HTMLElement | null; } catch {}
+        }
+        if (!container) container = canvas.parentElement as HTMLElement | null;
+        if (!container) container = (chart.canvas && (chart.canvas.parentElement as HTMLElement)) || null;
+        if (container && container instanceof HTMLElement) {
+            // ensure the wrapper can position children absolutely
+            if (getComputedStyle(container).position === 'static') container.style.position = 'relative';
+        }
+
+        // create small drag info element (hidden until drag starts)
+        let infoEl: HTMLElement | null = null;
+        if (container) {
+            infoEl = document.createElement('div');
+            infoEl.className = 'chart-drag-info';
+            infoEl.style.display = 'none';
+            infoEl.style.pointerEvents = 'none';
+            infoEl.innerHTML = `
+                <div class="drag-info-left">
+                    <div class="label">Date</div>
+                    <div class="value range">N/A</div>
+                </div>
+                <div class="drag-info-right">
+                    <div class="label">Change</div>
+                    <div class="value pct">N/A</div>
+                </div>`;
+            container.appendChild(infoEl);
+
+            // apply inline fallback styles so the UI is visible even if global SCSS
+            try {
+                const pctEl = infoEl.querySelector('.pct') as HTMLElement | null;
+                const rangeEl = infoEl.querySelector('.range') as HTMLElement | null;
+                if (pctEl) {
+                    pctEl.style.background = 'rgba(255,255,255,0.03)';
+                    pctEl.style.padding = '6px 10px';
+                    pctEl.style.borderRadius = '999px';
+                    pctEl.style.fontWeight = '800';
+                    pctEl.style.minWidth = '72px';
+                    pctEl.style.textAlign = 'center';
+                    pctEl.style.display = 'inline-block';
+                    pctEl.style.color = '#000000';
+                    pctEl.style.border = '1px solid rgba(255,255,255,0.04)';
+                    pctEl.style.fontVariantNumeric = 'tabular-nums';
+                }
+                if (rangeEl) {
+                    rangeEl.style.background = 'rgba(255,255,255,0.03)';
+                    rangeEl.style.padding = '6px 8px';
+                    rangeEl.style.borderRadius = '8px';
+                    rangeEl.style.border = '1px solid rgba(255,255,255,0.04)';
+                    rangeEl.style.fontWeight = '700';
+                    rangeEl.style.whiteSpace = 'nowrap';
+                }
+            } catch {}
+        }
+
+        const formatShortDate = (lab: any) => {
+            try {
+                if (!lab) return 'N/A';
+                const d = new Date(lab);
+                if (isNaN(d.getTime())) return String(lab);
+                const month = d.toLocaleString('en-US', { month: 'short' });
+                return `${month} ${d.getDate()}`;
+            } catch { return String(lab); }
+        };
 
         let dragging = false;
         let startValue: number | null = null;
@@ -51,6 +122,26 @@ export function createChartHandle(chartDir: BaseChartDirective): ChartHandle | n
             const ds = chart.data.datasets && chart.data.datasets[0];
             startValue = (ds && ds.data && ds.data[idx] != null) ? Number(ds.data[idx]) : null;
             try { (chart as any)._dragStartIndex = idx; (chart as any)._dragStartValue = startValue; } catch {}
+            // show info element if present
+            try {
+                if (infoEl) {
+                        const startLabel = chart.data.labels ? chart.data.labels[startIndex!] : 'N/A';
+                        const pctText = startValue == null ? 'N/A' : '0.00%';
+                        const pctEl = infoEl.querySelector('.pct') as HTMLElement | null;
+                        const rangeEl = infoEl.querySelector('.range') as HTMLElement | null;
+                        if (rangeEl)  {
+                            rangeEl.textContent = `${formatShortDate(startLabel)} → ${formatShortDate(startLabel)}`;
+                        }
+                        if (pctEl) {
+                            pctEl.textContent = pctText;
+                            pctEl.classList.remove('positive','negative');
+                            pctEl.style.color = '#000000';
+                            pctEl.style.backgroundColor = 'rgba(255,255,255,0.03)';
+                            pctEl.style.border = '1px solid rgba(255,255,255,0.04)';
+                        }
+                        infoEl.style.display = 'flex';
+                    }
+            } catch {}
         };
 
         const onPointerMove = (ev: PointerEvent) => {
@@ -121,6 +212,40 @@ export function createChartHandle(chartDir: BaseChartDirective): ChartHandle | n
                     hd.backgroundColor = colorFill;
                 }
                 chart.update('none');
+                // update info element with date range and percent
+                try {
+                    if (infoEl) {
+                        const startLabel = (typeof startIndex === 'number' && chart.data.labels) ? chart.data.labels[startIndex] : 'N/A';
+                        const currLabel = chart.data.labels ? chart.data.labels[idx] : 'N/A';
+                        const pctText = isFinite(pct) ? `${pct > 0 ? '+' : ''}${pct.toFixed(2)}%` : 'N/A';
+                        const pctEl = infoEl.querySelector('.pct') as HTMLElement | null;
+                        const rangeEl = infoEl.querySelector('.range') as HTMLElement | null;
+                        if (rangeEl) rangeEl.textContent = `${formatShortDate(startLabel)} → ${formatShortDate(currLabel)}`;
+                        if (pctEl) {
+                            pctEl.textContent = pctText;
+                            pctEl.classList.remove('positive','negative');
+                            // inline color/background fallback
+                            if (pct > 0) {
+                                pctEl.classList.add('positive');
+                                pctEl.style.color = '#000000';
+                                pctEl.style.backgroundColor = 'rgba(34,197,94,0.12)';
+                                pctEl.style.border = '1px solid rgba(34,197,94,0.18)';
+                                pctEl.style.textShadow = '';
+                            } else if (pct < 0) {
+                                pctEl.classList.add('negative');
+                                pctEl.style.color = '#000000';
+                                pctEl.style.backgroundColor = 'rgba(220,38,38,0.08)';
+                                pctEl.style.border = '1px solid rgba(220,38,38,0.12)';
+                                pctEl.style.textShadow = '';
+                            } else {
+                                pctEl.style.color = '#000000';
+                                pctEl.style.backgroundColor = 'rgba(255,255,255,0.03)';
+                                pctEl.style.border = '1px solid rgba(255,255,255,0.04)';
+                                pctEl.style.textShadow = '';
+                            }
+                        }
+                    }
+                } catch {}
             } catch (ex) {}
         };
 
@@ -146,6 +271,27 @@ export function createChartHandle(chartDir: BaseChartDirective): ChartHandle | n
                 _origFill = null;
             } catch {}
             try { delete (chart as any)._dragStartIndex; delete (chart as any)._dragStartValue; } catch {}
+            try {
+                if (infoEl) {
+                    infoEl.style.display = 'none';
+                }
+            } catch {}
+
+            try {
+                if (infoEl) {
+                    const pctEl = infoEl.querySelector('.pct') as HTMLElement | null;
+                    const rangeEl = infoEl.querySelector('.range') as HTMLElement | null;
+                    if (pctEl) {
+                        pctEl.style.color = '';
+                        pctEl.style.backgroundColor = '';
+                        pctEl.style.border = '';
+                    }
+                    if (rangeEl) {
+                        rangeEl.style.background = '';
+                        rangeEl.style.border = '';
+                    }
+                }
+            } catch {}
         };
 
         canvas.addEventListener('pointerdown', onPointerDown);
@@ -159,6 +305,9 @@ export function createChartHandle(chartDir: BaseChartDirective): ChartHandle | n
             try {
                 chart.data.datasets = chart.data.datasets.filter((d: any) => d == null || d.label !== '__drag_highlight__');
                 chart.update();
+            } catch {}
+            try {
+                if (infoEl && infoEl.parentElement) infoEl.parentElement.removeChild(infoEl);
             } catch {}
         };
 
@@ -174,7 +323,9 @@ export function applyTooltipTheme(options: ChartOptions<'line'>) {
         mode: 'index',
         intersect: false,
         displayColors: false,
-        // themed dark card matching app accent
+        position: 'nearest',
+        yAlign: 'top',
+        xAlign: 'center',
         backgroundColor: 'rgba(17,24,39,0.96)',
         borderColor: '#ff4081',
         borderWidth: 1,
@@ -185,12 +336,10 @@ export function applyTooltipTheme(options: ChartOptions<'line'>) {
         padding: 12,
         cornerRadius: 10,
         boxPadding: 6,
-        // alignment
         titleAlign: 'left',
         bodyAlign: 'left',
         caretPadding: 8,
         caretSize: 6,
-        // filter out the temporary highlight dataset so values don't duplicate
         filter: function(item: any) {
             return !(item && item.dataset && item.dataset.label === '__drag_highlight__');
         },
@@ -204,31 +353,8 @@ export function applyTooltipTheme(options: ChartOptions<'line'>) {
             },
             label: function(context: any) {
                 const val = context?.parsed?.y ?? '';
-                const chart = context && (context as any).chart as any;
-                const idx = context.dataIndex;
                 const lines: string[] = [];
                 lines.push(`Amount: $${Number(val).toLocaleString()}`);
-                try {
-                    const sIdx = chart && chart._dragStartIndex != null ? chart._dragStartIndex as number : null;
-                    const sVal = chart && chart._dragStartValue != null ? chart._dragStartValue as number : null;
-                    if (sIdx != null && sVal != null) {
-                        const startLabel = chart.data.labels ? chart.data.labels[sIdx] : null;
-                        const currLabel = chart.data.labels ? chart.data.labels[idx] : null;
-                        let pctText = 'N/A';
-                        if (sVal === 0) pctText = 'N/A';
-                        else {
-                            const pct = ((Number(val) - sVal) / Math.abs(sVal)) * 100;
-                            const sign = pct > 0 ? '+' : '';
-                            pctText = `${sign}${pct.toFixed(2)}%`;
-                        }
-                        if (startLabel || currLabel) {
-                            lines.push(`Date Range: ${startLabel ?? 'N/A'} → ${currLabel ?? 'N/A'} `);
-                        } 
-                        if (pctText) {
-                            lines.push(`Percent Change: ${pctText}`);
-                        }
-                    }
-                } catch (e) {}
                 return lines;
             }
         }
