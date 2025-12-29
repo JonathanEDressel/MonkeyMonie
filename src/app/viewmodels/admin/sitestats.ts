@@ -4,7 +4,7 @@ import { provideCalendar } from 'angular-calendar';
 import { DateAdapter } from 'angular-calendar';
 import { FormsModule } from '@angular/forms';
 import { Component } from '@angular/core';
-import { AsyncPipe, NgIf, DatePipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { AdminData } from '../../services/admindata';
 import { EventModel } from '../../models/eventmodel';
 import { Observable } from 'rxjs';
@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'users-root',
   standalone: true,
-    imports: [FormsModule, AsyncPipe, NgIf, DatePipe, CalendarMonthViewComponent],
+    imports: [FormsModule, AsyncPipe, DatePipe, CalendarMonthViewComponent],
   templateUrl: '../../views/admin/sitestats.html',
   styleUrl: '../../styles/admin/sitestats.scss',
   providers: [

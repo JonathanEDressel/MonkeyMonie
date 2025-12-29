@@ -121,7 +121,11 @@ export function createChartHandle(chartDir: BaseChartDirective): ChartHandle | n
             startIndex = idx;
             const ds = chart.data.datasets && chart.data.datasets[0];
             startValue = (ds && ds.data && ds.data[idx] != null) ? Number(ds.data[idx]) : null;
-            try { (chart as any)._dragStartIndex = idx; (chart as any)._dragStartValue = startValue; } catch {}
+            try { 
+                console.log('idx - ', idx, startValue);
+                (chart as any)._dragStartIndex = idx;
+                (chart as any)._dragStartValue = startValue; 
+            } catch {}
             // show info element if present
             try {
                 if (infoEl) {
@@ -270,7 +274,19 @@ export function createChartHandle(chartDir: BaseChartDirective): ChartHandle | n
                 _origBackground = null;
                 _origFill = null;
             } catch {}
-            try { delete (chart as any)._dragStartIndex; delete (chart as any)._dragStartValue; } catch {}
+            try { 
+                if(chart) {
+                    console.log('deleting - ', (chart as any)._dragStartIndex)
+                    console.log('deleting - ', (chart as any)._dragStartValue)
+                    if (chart._dragStartIndex)
+                        delete (chart as any)._dragStartIndex; 
+                    if (chart._dragStartValue)
+                        delete (chart as any)._dragStartValue; 
+                    
+                }
+                
+            } catch {
+            }
             try {
                 if (infoEl) {
                     infoEl.style.display = 'none';
