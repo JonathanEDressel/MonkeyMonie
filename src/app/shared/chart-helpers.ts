@@ -58,7 +58,7 @@ export function createChartHandle(chartDir: BaseChartDirective): ChartHandle | n
                     pctEl.style.minWidth = '72px';
                     pctEl.style.textAlign = 'center';
                     pctEl.style.display = 'inline-block';
-                    pctEl.style.color = '#000000';
+                    pctEl.style.color = 'rgba(0,0,0,0)';
                     pctEl.style.border = '1px solid rgba(255,255,255,0.04)';
                     pctEl.style.fontVariantNumeric = 'tabular-nums';
                 }
@@ -102,12 +102,39 @@ export function createChartHandle(chartDir: BaseChartDirective): ChartHandle | n
 
                 const ds = chart.data.datasets && chart.data.datasets[0];
                 if (ds && _originalsCaptured) {
-                    if (_origPointBg !== null) ds.pointBackgroundColor = _origPointBg; else { ds.pointBackgroundColor = undefined; delete ds.pointBackgroundColor; }
-                    if (_origPointBorder !== null) ds.pointBorderColor = _origPointBorder; else { ds.pointBorderColor = undefined; delete ds.pointBorderColor; }
-                    if (_origPointRadius !== null) ds.pointRadius = _origPointRadius; else { ds.pointRadius = undefined; delete ds.pointRadius; }
-                    if (_origBackground !== null) ds.backgroundColor = _origBackground; else { ds.backgroundColor = undefined; delete ds.backgroundColor; }
-                    if (_origFill !== null) ds.fill = _origFill; else { ds.fill = undefined; delete ds.fill; }
-                    chart.update();
+                    if (_origPointBg !== null) 
+                        ds.pointBackgroundColor = _origPointBg; 
+                    else { 
+                        ds.pointBackgroundColor = undefined;
+                        delete ds.pointBackgroundColor; 
+                    }
+                    if (_origPointBorder !== null) 
+                        ds.pointBorderColor = _origPointBorder; 
+                    else { 
+                        ds.pointBorderColor = undefined;
+                        delete ds.pointBorderColor; 
+                    }
+                    if (_origPointRadius !== null) 
+                        ds.pointRadius = _origPointRadius; 
+                    else { 
+                        ds.pointRadius = undefined; 
+                        delete ds.pointRadius; 
+                    }
+                    if (_origBackground !== null) 
+                        ds.backgroundColor = _origBackground; 
+                    else { 
+                        ds.backgroundColor = undefined; 
+                        delete ds.backgroundColor; 
+                    }
+                    if (_origFill !== null) 
+                        ds.fill = _origFill; 
+                    else { 
+                        ds.fill = undefined; 
+                        delete ds.fill; 
+                    }
+                    // chart.update();
+                    chart.update('none');
+                    chart.update('active');
                 }
                 _originalsCaptured = false;
                 _origPointBg = null;
@@ -186,7 +213,7 @@ export function createChartHandle(chartDir: BaseChartDirective): ChartHandle | n
                         if (pctEl) {
                             pctEl.textContent = pctText;
                             pctEl.classList.remove('positive','negative');
-                            pctEl.style.color = '#000000';
+                            pctEl.style.color = 'rgba(0,0,0,0)';
                             pctEl.style.backgroundColor = 'rgba(255,255,255,0.03)';
                             pctEl.style.border = '1px solid rgba(255,255,255,0.04)';
                         }
@@ -213,12 +240,26 @@ export function createChartHandle(chartDir: BaseChartDirective): ChartHandle | n
                     _origFill = ds.fill ?? null;
                     _originalsCaptured = true;
                 }
-
                 if (startIndex == null || currValue == null || startValue == null) {
                     if (_originalsCaptured) {
-                        if (_origPointBg !== null) ds.pointBackgroundColor = _origPointBg; else { ds.pointBackgroundColor = undefined; delete ds.pointBackgroundColor; }
-                        if (_origPointBorder !== null) ds.pointBorderColor = _origPointBorder; else { ds.pointBorderColor = undefined; delete ds.pointBorderColor; }
-                        if (_origPointRadius !== null) ds.pointRadius = _origPointRadius; else { ds.pointRadius = undefined; delete ds.pointRadius; }
+                        if (_origPointBg !== null) 
+                            ds.pointBackgroundColor = _origPointBg; 
+                        else { 
+                            ds.pointBackgroundColor = undefined; 
+                            delete ds.pointBackgroundColor; 
+                        }
+                        if (_origPointBorder !== null) 
+                            ds.pointBorderColor = _origPointBorder; 
+                        else { 
+                            ds.pointBorderColor = undefined; 
+                            delete ds.pointBorderColor; 
+                        }
+                        if (_origPointRadius !== null) 
+                            ds.pointRadius = _origPointRadius; 
+                        else { 
+                            ds.pointRadius = undefined; 
+                            delete ds.pointRadius; 
+                        }
                         chart.data.datasets = chart.data.datasets.filter((d: any) => d == null || d.label !== '__drag_highlight__');
                         _highlightDatasetIndex = null;
                         chart.update();
@@ -230,7 +271,7 @@ export function createChartHandle(chartDir: BaseChartDirective): ChartHandle | n
                 const e = Math.max(startIndex, idx);
                 const pct = ((currValue - startValue) / Math.abs(startValue)) * 100;
                 const colorFill = pct > 0 ? 'rgba(31,138,31,0.15)' : (pct < 0 ? 'rgba(200,36,51,0.15)' : 'rgba(0,0,0,0.08)');
-                const pointColor = pct > 0 ? '#1f8a1f' : (pct < 0 ? '#c82333' : '#000');
+                const pointColor = pct > 0 ? 'rgba(31, 138, 31)' : (pct < 0 ? 'rgba(200, 35, 51)' : 'rgba(0,0,0,0)');
 
                 const cnt = (ds.data && ds.data.length) ? ds.data.length : (chart.data.labels ? chart.data.labels.length : 0);
                 const bgArr = new Array(cnt).fill('rgba(0,0,0,0)');
