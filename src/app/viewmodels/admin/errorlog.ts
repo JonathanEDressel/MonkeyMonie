@@ -1,7 +1,7 @@
 import { FormsModule } from '@angular/forms';
 import { Component , signal} from '@angular/core';
 import { Observable } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { DatePipe } from '@angular/common';
 import { AdminData } from '../../services/admindata';
 import { ErrorLogModel } from '../../models/errorlogmodel';
@@ -9,7 +9,7 @@ import { ErrorLogModel } from '../../models/errorlogmodel';
 @Component({
   selector: 'users-root',
   standalone: true,
-  imports: [FormsModule, AsyncPipe, DatePipe],
+  imports: [CommonModule, FormsModule, AsyncPipe, DatePipe],
   templateUrl: '../../views/admin/errorlog.html',
   styleUrl: '../../styles/admin/errorlog.scss'
 })
