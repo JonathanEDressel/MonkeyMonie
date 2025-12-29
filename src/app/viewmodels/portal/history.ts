@@ -1,5 +1,5 @@
 import { FormsModule } from '@angular/forms';
-import { ChangeDetectorRef, Component, computed, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, QueryList, signal, ViewChildren } from '@angular/core';
 import { AcctData } from '../../services/acctdata';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -9,6 +9,7 @@ import { BaseChartDirective } from "ng2-charts";
 import { PersonalAccountModel } from '../../models/personalaccountmodel';
 import { InfoPanelComponent } from "../shared/info.component";
 import { MainComponent } from '../main';
+import { applyTooltipTheme, ChartHandle, createChartHandle } from '../../shared/chart-helpers';
 
 
 interface Record {
@@ -37,41 +38,31 @@ export class HistoryComponent {
         plugins: {
             legend: {
                 display: false
-            },
-            tooltip: {
-                mode: 'index',
-                intersect: false,
-                callbacks: {
-                    label: function(context) {
-                        var val = context?.parsed?.y ?? '';
-                        return `$${val.toLocaleString()}`; 
-                    }
-                }
             }
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        autoSkip: true,         
-                        maxTicksLimit: 10,     
-                        callback: function(value, index, ticks) {
+        },
+        scales: {
+            x: {
+                ticks: {
+                    autoSkip: true,         
+                    maxTicksLimit: 10,     
+                    callback: function(value, index, ticks) {
                         const date = new Date(this.getLabelForValue(Number(value)));
                         return `${date.getMonth()+1}/${date.getDate()}`;
-                        },
-                        maxRotation: 0,
-                        minRotation: 0
                     },
-                    grid: {
-                        display: false          
-                    }
+                    maxRotation: 0,
+                    minRotation: 0
                 },
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value) {
-                        return `$${value.toLocaleString()}`; 
-                        },
-                    maxTicksLimit: 6
+                grid: {
+                    display: false          
+                }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function(value) {
+                    return `$${value.toLocaleString()}`; 
+                },
+                maxTicksLimit: 10
                 },
                 grid: {
                     lineWidth: 1,
@@ -85,12 +76,12 @@ export class HistoryComponent {
         },
         elements: {
             line: {
-            tension: 0.2,
-            borderWidth: 2
+                tension: 0.2,
+                borderWidth: 2
             },
             point: {
-            radius: 3,
-            hoverRadius: 5
+                radius: 1,
+                hoverRadius: 1
             }
         }
     };
@@ -103,9 +94,39 @@ export class HistoryComponent {
         this.cdr.detectChanges();
     }
 
+    @ViewChildren(BaseChartDirective) charts!: QueryList<BaseChartDirective>;
+
     constructor(private _actData: AcctData, private cdr: ChangeDetectorRef, private _mainComponent: MainComponent) {
         this.personalRecords$ = this._actData.personalActHistory$;
+        applyTooltipTheme(this.accountHistoryChartOptions);
     }
+
+    private _chartHandles: ChartHandle[] = [];
+    
+        ngAfterViewInit(): void {
+            this.charts.forEach(chartDir => {
+                const h = createChartHandle(chartDir);
+                if (h) this._chartHandles.push(h);
+            });
+            this.charts.changes.subscribe(() => {
+                this._detachAllHandlers();
+                this.charts.forEach(cd => {
+                    const h = createChartHandle(cd);
+                    if (h) this._chartHandles.push(h);
+                });
+            });
+        }
+    
+        ngOnDestroy(): void {
+            this._detachAllHandlers();
+        }
+    
+        private _detachAllHandlers() {
+            this._chartHandles.forEach(h => {
+                try { h.remove(); } catch {}
+            });
+            this._chartHandles = [];
+        }
 
     ngOnInit(): void {
         this.activate();

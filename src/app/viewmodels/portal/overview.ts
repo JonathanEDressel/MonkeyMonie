@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChildren, QueryList, AfterViewInit, OnDestroy } from '@angular/core';
 import { AcctData } from '../../services/acctdata';
 import { PersonalAccountModel } from '../../models/personalaccountmodel';
 import { Observable } from 'rxjs';
@@ -9,6 +9,7 @@ import { MainComponent } from '../main';
 import { InfoPanelComponent } from "../shared/info.component";
 import { ChartOptions } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
+import { createChartHandle, ChartHandle, applyTooltipTheme } from '../../shared/chart-helpers';
 
 @Component({
   selector: 'overview-root',
@@ -18,7 +19,7 @@ import { BaseChartDirective } from 'ng2-charts';
   styleUrl: '../../styles/portal/overview.scss'
 })
 
-export class OverviewComponent {
+export class OverviewComponent implements AfterViewInit, OnDestroy {
     personalRecords$: Observable<PersonalAccountModel[]>;
 
     personalAccts$: Observable<PersonalAccountModel[]>;
@@ -30,51 +31,41 @@ export class OverviewComponent {
         plugins: {
             legend: {
                 display: false
-            },
-            tooltip: {
-                mode: 'index',
-                intersect: false,
-                callbacks: {
-                    label: function(context) {
-                        var val = context?.parsed?.y ?? '';
-                        return `$${val.toLocaleString()}`; 
-                    }
-                }
             }
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        autoSkip: true,         
-                        maxTicksLimit: 10,     
-                        callback: function(value, index, ticks) {
+        },
+        scales: {
+            x: {
+                ticks: {
+                    autoSkip: true,         
+                    maxTicksLimit: 10,     
+                    callback: function(value, index, ticks) {
                         const date = new Date(this.getLabelForValue(Number(value)));
                         return `${date.getMonth()+1}/${date.getDate()}`;
-                        },
-                        maxRotation: 0,
-                        minRotation: 0
                     },
-                    grid: {
-                        display: false          
-                    }
+                    maxRotation: 0,
+                    minRotation: 0
                 },
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value) {
-                        return `$${value.toLocaleString()}`; 
-                        },
-                        maxTicksLimit: 6
-                    },
-                    grid: {
-                        lineWidth: 1,
-                        color: 'rgba(0,0,0,0.05)',
-                    },
-                    border: {
-                        color: 'rgba(0,0,0,0.1)',  
-                        width: 1
-                    }
+                grid: {
+                    display: false          
                 }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function(value) {
+                        return `$${value.toLocaleString()}`; 
+                    },
+                    maxTicksLimit: 10,
+                },
+                grid: {
+                    lineWidth: 1,
+                    color: 'rgba(0,0,0,0.05)',
+                },
+                border: {
+                    color: 'rgba(0,0,0,0.1)',  
+                    width: 1
+                }
+            }
         },
         elements: {
             line: {
@@ -82,8 +73,8 @@ export class OverviewComponent {
                 borderWidth: 2
             },
             point: {
-                radius: 3,
-                hoverRadius: 5
+                radius: 1,
+                hoverRadius: 1
             }
         }
     };
@@ -104,15 +95,17 @@ export class OverviewComponent {
                     fontSize: 14,
                     color: '#333',
                 },
-                
                 tooltip: {
                     enabled: true,
-                    renderer: (params: any) => ({
-                        content: `${params.datum.name}: ${this.formatCurrency(params.datum.value, 0)}`
-                    })
+                    renderer: (params: any) => {
+                        return `<div class="ag-chart-tooltip-content p-2" style="font-size: 15px;">${params.datum.name}: <strong>${this.formatCurrency(params.datum.value, 0)}</strong></div>`;
+                    }
                 } as any
             } as AgPieSeriesOptions
         ],
+        tooltip: {
+            enabled: true,
+        },
         title: {
             text: 'Net Worth',
             fontSize: 28,
@@ -165,6 +158,36 @@ export class OverviewComponent {
     constructor(private _acctData: AcctData, private _mainComponent: MainComponent) {
         this.personalAccts$ = _acctData.personalAccounts$;
         this.personalRecords$ = _acctData.personalActHistory$;
+        applyTooltipTheme(this.accountHistoryChartOptions);
+    }
+
+    @ViewChildren(BaseChartDirective) charts!: QueryList<BaseChartDirective>;
+
+    private _chartHandles: ChartHandle[] = [];
+
+    ngAfterViewInit(): void {
+        this.charts.forEach(chartDir => {
+            const h = createChartHandle(chartDir);
+            if (h) this._chartHandles.push(h);
+        });
+        this.charts.changes.subscribe(() => {
+            this._detachAllHandlers();
+            this.charts.forEach(cd => {
+                const h = createChartHandle(cd);
+                if (h) this._chartHandles.push(h);
+            });
+        });
+    }
+
+    ngOnDestroy(): void {
+        this._detachAllHandlers();
+    }
+
+    private _detachAllHandlers() {
+        this._chartHandles.forEach(h => {
+            try { h.remove(); } catch {}
+        });
+        this._chartHandles = [];
     }
 
     ngOnInit(): void {
