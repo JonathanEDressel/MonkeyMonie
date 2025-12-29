@@ -6,33 +6,39 @@
     </div>
   </div>
   <div class="row">
-    <div class="calendar-container">
+    <div class="calendar-container card shadow-sm p-3">
+      <ng-template #loginEventTemplate let-event="event">
+        <span class="login-count"><i class="fa-solid fa-right-to-bracket me-1 text-danger"></i> {{ event?.meta?.count ?? 0 }}</span>
+      </ng-template>
       <mwl-calendar-month-view
         [viewDate]="calendarViewDate"
-        [events]="monthEvents">
+        [events]="monthEvents"
+        [activeDayIsOpen]="true"
+        (dayClicked)="onDayClicked($event)"
+        [eventTitleTemplate]="loginEventTemplate">
       </mwl-calendar-month-view>
     </div>
   <div class="row">
     <div class="col col-12 container-fluid p-0">
-      <table class="table table-hover table-striped table-bordered shadow-sm rounded custom-table mt-4">
-        <thead class="table-dark custom-header">
-          <tr>
-            <th>User</th>
-            <th>Timestamp</th>
-            <th>Type</th>
-            <th>Source</th>
-          </tr>
-        </thead>
-      </table>
+      <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+        <h5 class="mb-0"><i class="fa-solid fa-right-to-bracket me-2 text-danger"></i>Logins for Selected Day</h5>
+        <div class="text-muted small" *ngIf="selectedDate">{{ selectedDate | date:'fullDate' }}</div>
+      </div>
 
       <div class="table-scroll">
         <table class="table table-hover table-striped table-bordered shadow-sm rounded custom-table m-0">
+          <thead class="table-dark custom-header">
+            <tr>
+              <th>User</th>
+              <th>Timestamp</th>
+              <th>Source</th>
+            </tr>
+          </thead>
           <tbody>
-            @for (evnt of userEvents$ | async; track evnt) {
+            @for (evnt of displayEvents; track evnt) {
               <tr>
                 <td class="align-middle">{{ evnt.EventUser }}</td>
                 <td class="align-middle">{{ evnt.EventTimeStamp | date: 'short' }}</td>
-                <td class="align-middle">{{ evnt.EventType }}</td>
                 <td class="align-middle">{{ evnt.Source }}</td>
               </tr>
             }

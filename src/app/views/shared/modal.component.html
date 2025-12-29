@@ -1,16 +1,24 @@
 <div class="modal-backdrop" (click)="cancelAction()"></div>
 <div class="modal">
-  <button class="close-btn" (click)="cancelAction()">✕</button>
-
-  <h2 class="modal-title">{{ title }}</h2>
+  <div class="modal-header">
+    <div>
+      <h2 class="modal-title"><i class="fa-solid fa-exclamation-circle text-danger me-2"></i>{{ title }}</h2>
+    </div>
+    <button class="close-btn" (click)="cancelAction()" aria-label="Close modal">✕</button>
+  </div>
 
   <p class="modal-message">{{ message }}</p>
 
   @if (content) {
     <ng-container [ngTemplateOutlet]="content"></ng-container>
   }
+  
   <div class="modal-actions">
-    <button class="modal-cancel-btn" (click)="cancelAction()">Cancel</button>
-    <button class="modal-btn" (click)="confirmAction()">Confirm</button>
+    <button class="modal-cancel-btn" (click)="cancelAction()">
+      <i class="fa-solid fa-times me-2"></i>Cancel
+    </button>
+    <button class="modal-btn" (click)="confirmAction()">
+      <i class="fa-solid fa-check me-2"></i>Confirm
+    </button>
   </div>
 </div>

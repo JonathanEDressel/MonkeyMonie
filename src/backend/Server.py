@@ -2,12 +2,16 @@ from flask import Flask
 from Extensions import limiter
 from flask_limiter.util import get_remote_address
 from flask_cors import CORS
+from werkzeug.middleware.proxy_fix import ProxyFix
 from Routes import register_routes
 from datetime import datetime
 from helper.Scheduler import start_scheduler
 import helper.SetupDatabase as SetupDB
 
 app = Flask(__name__)
+
+# Configure ProxyFix to trust proxy headers (X-Forwarded-For, X-Forwarded-Proto, etc.)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 CORS(
         app, 
         methods=["GET", "POST"],
@@ -17,7 +21,6 @@ CORS(
         max_age=3600
     )
 
-#add limiting for each user, not whole server...
 def run_db_checks():
     SetupDB.validate_db()
     SetupDB.add_columns()
