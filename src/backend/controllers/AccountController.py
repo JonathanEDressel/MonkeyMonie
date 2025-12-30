@@ -1,9 +1,11 @@
 from flask import Blueprint, jsonify, request, g
 from helper.Security import requires_token
 from Extensions import limiter
+from helper.ErrorHandler import log_error_to_db
 import controllers.AuthDbContext as _authCtx
 import controllers.AccountDbContext as _actCtx
-from helper.ErrorHandler import log_error_to_db
+import controllers.RobinhoodDbContext as _rhCtx
+import controllers.WebullDbContext as _wbCtx
 
 act_bp = Blueprint("act", __name__)
 
@@ -112,3 +114,40 @@ def get_house_details():
     except Exception as e:
         log_error_to_db(e)
         return jsonify({"result": e, "status": 400}), 400
+    
+#Robinhood Accounts
+@act_bp.route('/robinhood/accounts', methods=['GET'])
+@limiter.limit("60 per minute")
+@requires_token
+def get_robinhood_accounts():
+    try:
+        email = str(req.get('email', '').strip()) 
+        password = str(req.get('password', '').strip()) 
+        mfa_code = str(req.get('mfa_code', '').strip()) # Optional
+        
+        if not email or not password:
+            return jsonify({'error': 'Email and password required'}), 400
+        
+        return _rhCtx.get_robinhood_accounts(email, password, mfa_code)
+    except Exception as e:
+        log_error_to_db(e)
+        return jsonify({"result": e, "status": 400}), 400
+    
+# @act_bp.route('/webull/accounts', methods=['GET'])
+# @limiter.limit("60 per minute")
+# @requires_token
+# def webull_accounts_route():
+#     try:
+#         req = request.json
+#         email = str(req.get('email', '').strip()) 
+#         password = str(req.get('password', '').strip()) 
+#         trading_pin = str(req.get('trading_pin', '').strip())  # Optional, 6 digits
+#         mfa_code = str(req.get('mfa_code', '').strip())  # Optional
+        
+#         if not email or not password:
+#             return jsonify({'error': 'Email and password required'}), 400
+        
+#         return _wbCtx.get_webull_accounts(email, password, trading_pin, mfa_code)
+#     except Exception as e:
+#         log_error_to_db(e)
+#         return jsonify({"result": e, "status": 400}), 400
