@@ -58,7 +58,7 @@ export function createChartHandle(chartDir: BaseChartDirective): ChartHandle | n
                     pctEl.style.minWidth = '72px';
                     pctEl.style.textAlign = 'center';
                     pctEl.style.display = 'inline-block';
-                    pctEl.style.color = '#000000';
+                    pctEl.style.color = 'rgba(0,0,0,0)';
                     pctEl.style.border = '1px solid rgba(255,255,255,0.04)';
                     pctEl.style.fontVariantNumeric = 'tabular-nums';
                 }
@@ -86,12 +86,86 @@ export function createChartHandle(chartDir: BaseChartDirective): ChartHandle | n
         let dragging = false;
         let startValue: number | null = null;
         let startIndex: number | null = null;
+        let _originalsCaptured = false;
         let _origPointBg: any = null;
         let _origPointBorder: any = null;
         let _origPointRadius: any = null;
         let _origBackground: any = null;
         let _origFill: any = null;
         let _highlightDatasetIndex: number | null = null;
+
+        const clearHighlight = () => {
+            try {
+                // Remove highlight dataset first
+                chart.data.datasets = chart.data.datasets.filter((d: any) => d == null || d.label !== '__drag_highlight__');
+                _highlightDatasetIndex = null;
+
+                const ds = chart.data.datasets && chart.data.datasets[0];
+                if (ds && _originalsCaptured) {
+                    if (_origPointBg !== null) 
+                        ds.pointBackgroundColor = _origPointBg; 
+                    else { 
+                        ds.pointBackgroundColor = undefined;
+                        delete ds.pointBackgroundColor; 
+                    }
+                    if (_origPointBorder !== null) 
+                        ds.pointBorderColor = _origPointBorder; 
+                    else { 
+                        ds.pointBorderColor = undefined;
+                        delete ds.pointBorderColor; 
+                    }
+                    if (_origPointRadius !== null) 
+                        ds.pointRadius = _origPointRadius; 
+                    else { 
+                        ds.pointRadius = undefined; 
+                        delete ds.pointRadius; 
+                    }
+                    if (_origBackground !== null) 
+                        ds.backgroundColor = _origBackground; 
+                    else { 
+                        ds.backgroundColor = undefined; 
+                        delete ds.backgroundColor; 
+                    }
+                    if (_origFill !== null) 
+                        ds.fill = _origFill; 
+                    else { 
+                        ds.fill = undefined; 
+                        delete ds.fill; 
+                    }
+                    // chart.update();
+                    chart.update('none');
+                    chart.update('active');
+                }
+                _originalsCaptured = false;
+                _origPointBg = null;
+                _origPointBorder = null;
+                _origPointRadius = null;
+                _origBackground = null;
+                _origFill = null;
+            } catch {}
+            try { 
+                if(chart) {
+                    if (chart._dragStartIndex) delete (chart as any)._dragStartIndex; 
+                    if (chart._dragStartValue) delete (chart as any)._dragStartValue; 
+                }
+            } catch {}
+            try {
+                if (infoEl) {
+                    infoEl.style.display = 'none';
+                    const pctEl = infoEl.querySelector('.pct') as HTMLElement | null;
+                    const rangeEl = infoEl.querySelector('.range') as HTMLElement | null;
+                    if (pctEl) {
+                        pctEl.style.color = '';
+                        pctEl.style.backgroundColor = '';
+                        pctEl.style.border = '';
+                    }
+                    if (rangeEl) {
+                        rangeEl.style.background = '';
+                        rangeEl.style.border = '';
+                    }
+                }
+            } catch {}
+        };
 
         const nearestIndex = (chart: any, xValue: any): number => {
             const labels = chart.data.labels || [];
@@ -113,6 +187,7 @@ export function createChartHandle(chartDir: BaseChartDirective): ChartHandle | n
         };
 
         const onPointerDown = (ev: PointerEvent) => {
+            clearHighlight();
             dragging = true;
             const rect = canvas.getBoundingClientRect();
             const x = ev.clientX - rect.left;
@@ -121,7 +196,10 @@ export function createChartHandle(chartDir: BaseChartDirective): ChartHandle | n
             startIndex = idx;
             const ds = chart.data.datasets && chart.data.datasets[0];
             startValue = (ds && ds.data && ds.data[idx] != null) ? Number(ds.data[idx]) : null;
-            try { (chart as any)._dragStartIndex = idx; (chart as any)._dragStartValue = startValue; } catch {}
+            try { 
+                (chart as any)._dragStartIndex = idx;
+                (chart as any)._dragStartValue = startValue; 
+            } catch {}
             // show info element if present
             try {
                 if (infoEl) {
@@ -135,7 +213,7 @@ export function createChartHandle(chartDir: BaseChartDirective): ChartHandle | n
                         if (pctEl) {
                             pctEl.textContent = pctText;
                             pctEl.classList.remove('positive','negative');
-                            pctEl.style.color = '#000000';
+                            pctEl.style.color = 'rgba(0,0,0,0)';
                             pctEl.style.backgroundColor = 'rgba(255,255,255,0.03)';
                             pctEl.style.border = '1px solid rgba(255,255,255,0.04)';
                         }
@@ -154,19 +232,38 @@ export function createChartHandle(chartDir: BaseChartDirective): ChartHandle | n
             const currValue = (ds && ds.data && ds.data[idx] != null) ? Number(ds.data[idx]) : null;
             try {
                 if (!ds) return;
-                if (_origPointBg === null) _origPointBg = ds.pointBackgroundColor ?? null;
-                if (_origPointBorder === null) _origPointBorder = ds.pointBorderColor ?? null;
-                if (_origPointRadius === null) _origPointRadius = ds.pointRadius ?? null;
-                if (_origBackground === null) _origBackground = ds.backgroundColor ?? null;
-                if (_origFill === null) _origFill = ds.fill ?? null;
-
+                if (!_originalsCaptured) {
+                    _origPointBg = ds.pointBackgroundColor ?? null;
+                    _origPointBorder = ds.pointBorderColor ?? null;
+                    _origPointRadius = ds.pointRadius ?? null;
+                    _origBackground = ds.backgroundColor ?? null;
+                    _origFill = ds.fill ?? null;
+                    _originalsCaptured = true;
+                }
                 if (startIndex == null || currValue == null || startValue == null) {
-                    if (_origPointBg !== null) ds.pointBackgroundColor = _origPointBg; else ds.pointBackgroundColor = undefined;
-                    if (_origPointBorder !== null) ds.pointBorderColor = _origPointBorder; else ds.pointBorderColor = undefined;
-                    if (_origPointRadius !== null) ds.pointRadius = _origPointRadius; else ds.pointRadius = undefined;
-                    chart.data.datasets = chart.data.datasets.filter((d: any) => d == null || d.label !== '__drag_highlight__');
-                    _highlightDatasetIndex = null;
-                    chart.update();
+                    if (_originalsCaptured) {
+                        if (_origPointBg !== null) 
+                            ds.pointBackgroundColor = _origPointBg; 
+                        else { 
+                            ds.pointBackgroundColor = undefined; 
+                            delete ds.pointBackgroundColor; 
+                        }
+                        if (_origPointBorder !== null) 
+                            ds.pointBorderColor = _origPointBorder; 
+                        else { 
+                            ds.pointBorderColor = undefined; 
+                            delete ds.pointBorderColor; 
+                        }
+                        if (_origPointRadius !== null) 
+                            ds.pointRadius = _origPointRadius; 
+                        else { 
+                            ds.pointRadius = undefined; 
+                            delete ds.pointRadius; 
+                        }
+                        chart.data.datasets = chart.data.datasets.filter((d: any) => d == null || d.label !== '__drag_highlight__');
+                        _highlightDatasetIndex = null;
+                        chart.update();
+                    }
                     return;
                 }
 
@@ -174,7 +271,7 @@ export function createChartHandle(chartDir: BaseChartDirective): ChartHandle | n
                 const e = Math.max(startIndex, idx);
                 const pct = ((currValue - startValue) / Math.abs(startValue)) * 100;
                 const colorFill = pct > 0 ? 'rgba(31,138,31,0.15)' : (pct < 0 ? 'rgba(200,36,51,0.15)' : 'rgba(0,0,0,0.08)');
-                const pointColor = pct > 0 ? '#1f8a1f' : (pct < 0 ? '#c82333' : '#000');
+                const pointColor = pct > 0 ? 'rgba(31, 138, 31)' : (pct < 0 ? 'rgba(200, 35, 51)' : 'rgba(0,0,0,0)');
 
                 const cnt = (ds.data && ds.data.length) ? ds.data.length : (chart.data.labels ? chart.data.labels.length : 0);
                 const bgArr = new Array(cnt).fill('rgba(0,0,0,0)');
@@ -252,60 +349,25 @@ export function createChartHandle(chartDir: BaseChartDirective): ChartHandle | n
         const onPointerUp = () => {
             dragging = false;
             startValue = null;
-            try {
-                const ds = chart.data.datasets && chart.data.datasets[0];
-                if (ds) {
-                    if (_origPointBg !== null) ds.pointBackgroundColor = _origPointBg; else ds.pointBackgroundColor = undefined;
-                    if (_origPointBorder !== null) ds.pointBorderColor = _origPointBorder; else ds.pointBorderColor = undefined;
-                    if (_origPointRadius !== null) ds.pointRadius = _origPointRadius; else ds.pointRadius = undefined;
-                    if (_origBackground !== null) ds.backgroundColor = _origBackground; else ds.backgroundColor = undefined;
-                    if (_origFill !== null) ds.fill = _origFill; else ds.fill = undefined;
-                    chart.data.datasets = chart.data.datasets.filter((d: any) => d == null || d.label !== '__drag_highlight__');
-                    _highlightDatasetIndex = null;
-                    chart.update();
-                }
-                _origPointBg = null;
-                _origPointBorder = null;
-                _origPointRadius = null;
-                _origBackground = null;
-                _origFill = null;
-            } catch {}
-            try { delete (chart as any)._dragStartIndex; delete (chart as any)._dragStartValue; } catch {}
-            try {
-                if (infoEl) {
-                    infoEl.style.display = 'none';
-                }
-            } catch {}
+        };
 
-            try {
-                if (infoEl) {
-                    const pctEl = infoEl.querySelector('.pct') as HTMLElement | null;
-                    const rangeEl = infoEl.querySelector('.range') as HTMLElement | null;
-                    if (pctEl) {
-                        pctEl.style.color = '';
-                        pctEl.style.backgroundColor = '';
-                        pctEl.style.border = '';
-                    }
-                    if (rangeEl) {
-                        rangeEl.style.background = '';
-                        rangeEl.style.border = '';
-                    }
-                }
-            } catch {}
+        const onDocumentPointerDown = (ev: PointerEvent) => {
+            if (ev.target !== canvas) {
+                clearHighlight();
+            }
         };
 
         canvas.addEventListener('pointerdown', onPointerDown);
         window.addEventListener('pointermove', onPointerMove);
         window.addEventListener('pointerup', onPointerUp);
+        document.addEventListener('pointerdown', onDocumentPointerDown);
 
         const remove = () => {
             try { canvas.removeEventListener('pointerdown', onPointerDown); } catch {}
             try { window.removeEventListener('pointermove', onPointerMove); } catch {}
             try { window.removeEventListener('pointerup', onPointerUp); } catch {}
-            try {
-                chart.data.datasets = chart.data.datasets.filter((d: any) => d == null || d.label !== '__drag_highlight__');
-                chart.update();
-            } catch {}
+            try { document.removeEventListener('pointerdown', onDocumentPointerDown); } catch {}
+            clearHighlight();
             try {
                 if (infoEl && infoEl.parentElement) infoEl.parentElement.removeChild(infoEl);
             } catch {}

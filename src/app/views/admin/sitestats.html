@@ -6,38 +6,39 @@
     </div>
   </div>
   <div class="row">
-    <div class="calendar-container">
+    <!-- <div class="calendar-container">
       <mwl-calendar-month-view
         [viewDate]="calendarViewDate"
         [events]="monthEvents">
       </mwl-calendar-month-view>
-    </div>
-  <div class="row">
-    <div class="col col-12 container-fluid p-0">
-      <table class="table table-hover table-striped table-bordered shadow-sm rounded custom-table mt-4">
-        <thead class="table-dark custom-header">
-          <tr>
-            <th>User</th>
-            <th>Timestamp</th>
-            <th>Type</th>
-            <th>Source</th>
-          </tr>
-        </thead>
-      </table>
-
-      <div class="table-scroll">
-        <table class="table table-hover table-striped table-bordered shadow-sm rounded custom-table m-0">
-          <tbody>
-            @for (evnt of userEvents$ | async; track evnt) {
-              <tr>
-                <td class="align-middle">{{ evnt.EventUser }}</td>
-                <td class="align-middle">{{ evnt.EventTimeStamp | date: 'short' }}</td>
-                <td class="align-middle">{{ evnt.EventType }}</td>
-                <td class="align-middle">{{ evnt.Source }}</td>
-              </tr>
-            }
-          </tbody>
+    </div> -->
+    <div class="row">
+      <div class="col col-12 container-fluid p-0">
+        <table class="table table-hover table-striped table-bordered shadow-sm rounded custom-table mt-4">
+          <thead class="table-dark custom-header">
+            <tr>
+              <th>User</th>
+              <th>Timestamp</th>
+              <th>Type</th>
+              <th>Source</th>
+            </tr>
+          </thead>
         </table>
+
+        <div class="table-scroll">
+          <table class="table table-hover table-striped table-bordered shadow-sm rounded custom-table m-0">
+            <tbody>
+              @for (evnt of userEvents$ | async; track evnt) {
+                <tr>
+                  <td class="align-middle">{{ evnt.EventUser }}</td>
+                  <td class="align-middle">{{ evnt.EventTimeStamp | date: 'short' }}</td>
+                  <td class="align-middle">{{ evnt.EventType }}</td>
+                  <td class="align-middle">{{ evnt.Source }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
