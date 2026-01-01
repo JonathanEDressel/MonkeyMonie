@@ -1,9 +1,44 @@
-.switch-big {
-  transform: scale(1.6);
-  transform-origin: left;
-  margin-right: 25px;
-}
+.user-profile-container {
+  padding: 1rem;
 
-.bolden-label {
+  .form-floating {
+    width: 100%;
+    input {
+      width: 100%;
+    }
+  }
+
+  .switch-big {
+    transform: scale(1.6);
+    transform-origin: left;
+    margin-right: 1rem;
+  }
+
+  .bolden-label {
     font-weight: 700;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  .custom-table th, .custom-table td {
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  button {
+    min-height: 38px;
+  }
+
+  @media (max-width: 576px) {
+    .form-floating {
+      margin-bottom: 1rem;
+    }
+
+    .switch-big {
+      transform: scale(1.4);
+      margin-right: 0.5rem;
+    }
+  }
 }

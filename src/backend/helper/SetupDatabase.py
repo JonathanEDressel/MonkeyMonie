@@ -27,7 +27,7 @@ def validate_db():
     DBHelper.create_table("ErrorLog", "" \
         "(Id INTEGER PRIMARY KEY AUTO_INCREMENT, " \
         "EventTimeStamp DATETIME, " \
-        "StackTrace VARCHAR(255), " \
+        "StackTrace Text, " \
         "Detail VARCHAR(255), " \
         "Username VARCHAR(100))")
     
@@ -169,6 +169,14 @@ def validate_db():
         "TotalValue FLOAT, " \
         "RecordedDate DATETIME, " \
         "FOREIGN KEY (NetWorthId) References NetWorth(Id) ON DELETE CASCADE)")
+    
+def update_columns():
+    update_stacktrace()
+    
+def update_stacktrace():
+    print("Updating ErrorLog.StackTrace column")
+    DBHelper.run_query("ALTER TABLE ErrorLog MODIFY COLUMN StackTrace MEDIUMTEXT", None, False)
+    
     
 def add_columns():
     add_user_isactive_column()

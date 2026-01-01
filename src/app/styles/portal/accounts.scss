@@ -9,3 +9,48 @@
   font-weight: 500;
   padding-right: 8px;
 }
+
+.add-account-row {
+    input.account-input {
+        width: 100%;
+    }
+    button {
+        min-height: 38px;
+    }
+}
+
+.table-responsive {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+}
+.table th, .table td {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.edit-modal-container {
+    height: 100%;
+    padding: 1rem;
+
+    .edit-card {
+        width: 100%;
+        max-width: 600px;
+
+        @media (max-width: 576px) {
+            padding: 1rem;
+        }
+    }
+
+    .form-control.account-input {
+        width: 100%;
+    }
+
+    button.fs-4 {
+        font-size: 1.5rem;
+    }
+}
+
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}

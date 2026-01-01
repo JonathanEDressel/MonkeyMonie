@@ -9,11 +9,19 @@ import { environment } from '../../../environments/environments';
 export class AdminController {
     constructor(private http: HttpClient) {}
 
-    private apiURL = environment.apiUrl + '/event';
+    private apiURL = environment.apiUrl;
 
     getUserEvents(dte: string): any {
-        return this.http.post<{token: string}>(`${this.apiURL}/events`, {
-          date: dte
-        });
+      return this.http.post<{token: string}>(`${this.apiURL}/event/events`, {
+        date: dte
+      });
+    }
+
+    getErrorLog(day: number, month: number, year: number): any {
+      return this.http.post<{token: string}>(`${this.apiURL}/errors/logs`, {
+        day: day,
+        month: month,
+        year: year
+      })
     }
 }

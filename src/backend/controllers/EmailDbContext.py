@@ -3,7 +3,7 @@ from flask import jsonify
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from postmarker.core import PostmarkClient
-from .ErrorController import log_error_to_db
+from helper.ErrorHandler import log_error_to_db
 import os
 
 load_dotenv()

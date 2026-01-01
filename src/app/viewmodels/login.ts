@@ -1,7 +1,6 @@
-import { NgClass } from '@angular/common';
-import { EmailValidator, FormsModule } from '@angular/forms';
-import { Component, NgModule, OnInit, signal } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { Component, OnInit, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthData } from '../services/authdata';
 
 @Component({

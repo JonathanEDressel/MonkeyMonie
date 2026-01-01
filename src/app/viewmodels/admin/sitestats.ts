@@ -1,12 +1,10 @@
-import { CalendarMonthViewComponent, CalendarEvent, CalendarEventAction } from 'angular-calendar';
+import { CalendarMonthViewComponent, CalendarEvent } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { provideCalendar } from 'angular-calendar';
 import { DateAdapter } from 'angular-calendar';
 import { FormsModule } from '@angular/forms';
-import { Component, signal } from '@angular/core';
-import { UserData } from '../../services/userdata';
-import { AsyncPipe, NgIf } from '@angular/common';
-import { DatePipe } from '@angular/common';
+import { Component } from '@angular/core';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { AdminData } from '../../services/admindata';
 import { EventModel } from '../../models/eventmodel';
 import { Observable } from 'rxjs';
@@ -14,7 +12,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'users-root',
   standalone: true,
-  imports: [FormsModule, AsyncPipe, DatePipe, CalendarMonthViewComponent],
+    imports: [FormsModule, AsyncPipe, DatePipe],//CalendarMonthViewComponent
   templateUrl: '../../views/admin/sitestats.html',
   styleUrl: '../../styles/admin/sitestats.scss',
   providers: [
@@ -26,7 +24,6 @@ import { Observable } from 'rxjs';
 })
 
 export class SiteStatsComponent  {
-    
     userEvents$: Observable<EventModel[]>;
 
     _actvitiyMonthDate: string = new Date().toISOString().slice(0, 7);

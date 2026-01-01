@@ -1,4 +1,3 @@
-
 @if (!showModal()) {
     @if(showDeleteModal) {
         <app-modal [title]="deleteTitle" 
@@ -8,118 +7,148 @@
         </app-modal>
 
         <ng-template #extraContent>
-            <div style="margin-top: 15px;">
+            <div class="mt-3">
                 <strong>Additional Info:</strong>
                 <p>This content is inserted via template.</p>
             </div>
         </ng-template>
     }
     <div>
-            <div class="col col-12">
-                <app-info-section title="Accounts" bodyMsg="Add and manage your financial accounts in one place to get a complete view of your 
-                finances. By linking your accounts, you can track balances, monitor activity, and gain better insight into your overall 
-                financial picture. Your information is securely stored and used only to provide accurate, up-to-date account details">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
+                <app-info-section
+                    title="Accounts"
+                    bodyMsg="Add and manage your financial accounts in one place to get a complete view of your finances. 
+                             By linking your accounts, you can track balances, monitor activity, and gain better insight into your overall financial picture. 
+                             Your information is securely stored and used only to provide accurate, up-to-date account details">
                 </app-info-section>
-            </div>
-        <div class="row mt-4 d-flex align-items-center justify-content-center">
-            <div class="col col-3">
-                <strong>Name</strong>
-                <input class="form-control account-input" placeholder="Account Nickname" [(ngModel)]="acctName"/>
-            </div>
-
-            <div class="col col-3">
-                <strong>Balance ($)</strong>
-                <input class="form-control account-input" placeholder="Balance" [(ngModel)]="acctBalance" />
-            </div>
-
-            <div class="col col-3">
-                <strong>Type</strong>
-                <input class="form-control account-input" placeholder="Savings, checking, etc." [(ngModel)]="acctType" (keydown.enter)="addAccount()" />
-            </div>
-
-            <div class="col col-1 pt-4">
-                <span> </span>
-                <button class="btn btn-success" (click)="addAccount()">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
             </div>
         </div>
 
+        <div class="row mt-5 justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
+                <div class="card shadow-sm add-account-card p-4">
+                    <h5 class="mb-4"><i class="fa-solid fa-plus-circle me-2"></i>Add New Account</h5>
+                    <div class="row g-3 align-items-end">
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <label class="form-label">Account Name</label>
+                            <input class="form-control account-input" placeholder="e.g., Checking, Savings" [(ngModel)]="acctName"/>
+                        </div>
 
-        <h3 class="mt-4 text-start">Added Accounts</h3>
-        <div class="container mt-4">
-            <table class="table table-bordered table-hover mt-4">
-                <thead class="thead-dark">
-                    <th>Name</th>
-                    <th>Balance</th>
-                    <th>Type</th>
-                    <th>Date Added</th>
-                    <th></th>
-                </thead>   
-                <tbody>
-                    @for (acct of personalAccts$ | async; track acct)
-                    {
-                        <tr class="clickable-row" (click)="selectAccount(acct)">
-                            <td>{{acct.Name}}</td>
-                            <td class="currency">{{acct.Balance  | currency:'USD':'symbol':'1.2-2' }}</td>
-                            <td>{{acct.Type}}</td>
-                            <td>{{acct.DateAdded}}</td>
-                            <td>
-                                <button class="btn btn-sm btn-danger" (click)="openDeleteModal(acct.Id, acct.Name);  $event.stopPropagation()">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <label class="form-label">Balance ($)</label>
+                            <input class="form-control account-input" placeholder="0.00" [(ngModel)]="acctBalance" />
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <label class="form-label">Account Type</label>
+                            <select class="form-control account-input" [(ngModel)]="acctType">
+                                <option value="" disabled selected>Select account type...</option>
+                                <option value="Checking">Checking</option>
+                                <option value="Savings">Savings</option>
+                                <option value="Money Market">Money Market</option>
+                                <option value="Certificate of Deposit (CD)">Certificate of Deposit (CD)</option>
+                                <option value="Individual Retirement Account (IRA)">Individual Retirement Account (IRA)</option>
+                                <option value="Brokerage">Brokerage</option>
+                                <option value="Health Savings Account (HSA)">Health Savings Account (HSA)</option>
+                                <option value="529 College Savings Plan">529 College Savings Plan</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 mt-2">
+                            <button class="btn btn-success w-100" (click)="addAccount()">
+                                <i class="fa-solid fa-plus me-2"></i>Add Account
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5 justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
+                <h4 class="mb-4"><i class="fa-solid fa-wallet me-2"></i>Your Accounts</h4>
+                
+                @if ((personalAccts$ | async)?.length === 0) {
+                    <div class="text-center text-muted p-5">
+                        <i class="fa-solid fa-inbox fs-1 mb-3 d-block"></i>
+                        <p>No accounts added yet. Create one above to get started!</p>
+                    </div>
+                } @else {
+                    <div class="row g-3">
+                        @for (acct of personalAccts$ | async; track acct) {
+                            <div class="col-12 col-md-6">
+                                <div class="card account-card shadow-sm h-100" style="cursor: pointer;" (click)="selectAccount(acct)">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-3">
+                                            <div>
+                                                <h5 class="card-title mb-1">{{ acct.Name }}</h5>
+                                                <p class="card-text text-muted small mb-0">{{ acct.Type }}</p>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(acct.Id, acct.Name); $event.stopPropagation()">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </div>
+                                        <div class="mt-3 pt-3 border-top">
+                                            <small class="text-muted d-block mb-1">Current Balance</small>
+                                            <h6 class="mb-2">{{ acct.Balance | currency:'USD':'symbol':'1.2-2' }}</h6>
+                                            <small class="text-muted d-block">Added: {{ acct.DateAdded }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
         </div>
     </div>
 }
 @else {
-    <div class="d-flex align-items-center justify-content-center" style="height: 600px;">
-        <div class="card shadow p-4" style="width: 75%; height: 80%;">
-            <h4 class="text-center mb-3">Edit <span style="font-style: italic;">{{selectedAccount().Name}}</span></h4>
-            <h6 class="mb-4">Edit account details here</h6>
-            
-            <div class="d-flex align-items-center mb-3">
-                <div class="col col-4 text-end align-items-center">
-                    <label for="email" class="form-label me-5 mb-0"><strong>Account Name</strong></label>
-                </div>
-                <div class="col col-4">
-                    <input id="email" type="email" class="form-control account-input" placeholder="name" [(ngModel)]="selectedAccount().Name" />
+    <div class="d-flex align-items-center justify-content-center edit-modal-container">
+        <div class="card shadow p-4 edit-card" style="max-width: 500px;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="mb-1"><i class="fa-solid fa-edit me-2"></i>Edit Account</h4>
+                    <p class="text-muted small mb-0"><span class="fst-italic fw-semibold">{{ selectedAccount().Name }}</span></p>
                 </div>
             </div>
 
-            <div class="d-flex align-items-center mb-3">
-                <div class="col col-4 text-end align-items-center">
-                    <label for="email" class="form-label me-5 mb-0"><strong>Account Type</strong></label>
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label"><strong>Account Name</strong></label>
+                    <input type="text" class="form-control account-input" [(ngModel)]="selectedAccount().Name" />
                 </div>
-                <div class="col col-4">
-                    <input id="email" type="email" class="form-control account-input" placeholder="name" [(ngModel)]="selectedAccount().Type" />
+                <div class="col-12">
+                    <label class="form-label"><strong>Account Type</strong></label>
+                    <select type="text" class="form-control account-input" [(ngModel)]="selectedAccount().Type">
+                        <option value="">Select account type...</option>
+                        <option value="Asset">Asset</option>
+                        <option value="Checking">Checking</option>
+                        <option value="Savings">Savings</option>
+                        <option value="Money Market">Money Market</option>
+                        <option value="Certificate of Deposit (CD)">Certificate of Deposit (CD)</option>
+                        <option value="Roth IRA">Roth IRA</option>
+                        <option value="Traditional IRA">Traditional IRA</option>
+                        <option value="401(k)">401(k)</option>
+                        <option value="Brokerage">Brokerage</option>
+                        <option value="Health Savings Account (HSA)">Health Savings Account (HSA)</option>
+                        <option value="529 College Savings Plan">529 College Savings Plan</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <label class="form-label"><strong>Balance ($)</strong></label>
+                    <input type="number" class="form-control account-input" [(ngModel)]="selectedAccount().Balance" />
                 </div>
             </div>
 
-            <div class="d-flex align-items-center mb-3">
-                <div class="col col-4 text-end align-items-center">
-                    <label for="balance" class="form-label me-5 mb-0"><strong>Balance ($)</strong></label>
-                </div>
-                <div class="col col-4">
-                    <input type="number" class="form-control account-input" placeholder="$0.00" [(ngModel)]="selectedAccount().Balance" />
-                </div>
-            </div>
-
-            <div class="row d-flex justify-content-center mb-3">
-                <div class="col col-auto">
-                    <button class="btn btn-danger" (click)="closeModal()">
-                        <i class="fa-solid fa-ban" style="font-size: x-large;"></i>
-                    </button>
-                </div>
-                <div class="col col-auto">
-                    <button class="btn btn-success" (click)="updateAccount(selectedAccount())">
-                        <i class="fas fa-save" style="font-size: x-large;"></i>
-                    </button>
-                </div>
+            <div class="d-flex gap-2 mt-5">
+                <button class="btn btn-outline-secondary flex-grow-1" (click)="closeModal()">
+                    <i class="fa-solid fa-ban me-2"></i>Cancel
+                </button>
+                <button class="btn btn-success flex-grow-1" (click)="updateAccount(selectedAccount())">
+                    <i class="fas fa-save me-2"></i>Save
+                </button>
             </div>
         </div>
     </div>

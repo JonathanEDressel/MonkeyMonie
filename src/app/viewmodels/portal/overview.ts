@@ -1,62 +1,125 @@
-import { Component } from '@angular/core';
+import { Component, ViewChildren, QueryList, AfterViewInit, OnDestroy } from '@angular/core';
 import { AcctData } from '../../services/acctdata';
 import { PersonalAccountModel } from '../../models/personalaccountmodel';
 import { Observable } from 'rxjs';
-import { AgChartOptions } from 'ag-charts-community';
+import { AgChartOptions, AgPieSeriesOptions  } from 'ag-charts-community';
 import { CommonModule } from '@angular/common';
 import { AgChartsModule } from 'ag-charts-angular';
 import { MainComponent } from '../main';
 import { InfoPanelComponent } from "../shared/info.component";
+import { ChartOptions } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
+import { createChartHandle, ChartHandle, applyTooltipTheme } from '../../shared/chart-helpers';
 
 @Component({
   selector: 'overview-root',
   standalone: true,
-  imports: [CommonModule, AgChartsModule, InfoPanelComponent],
+  imports: [CommonModule, AgChartsModule, InfoPanelComponent, BaseChartDirective],
   templateUrl: '../../views/portal/overview.html',
   styleUrl: '../../styles/portal/overview.scss'
 })
 
-export class OverviewComponent {
+export class OverviewComponent implements AfterViewInit, OnDestroy {
+    personalRecords$: Observable<PersonalAccountModel[]>;
 
     personalAccts$: Observable<PersonalAccountModel[]>;
     individualAccounts: AgChartOptions[] = [];
+
+    accountHistoryChartOptions: ChartOptions<'line'> = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            x: {
+                ticks: {
+                    autoSkip: true,         
+                    maxTicksLimit: 10,     
+                    callback: function(value, index, ticks) {
+                        const date = new Date(this.getLabelForValue(Number(value)));
+                        return `${date.getMonth()+1}/${date.getDate()}`;
+                    },
+                    maxRotation: 0,
+                    minRotation: 0
+                },
+                grid: {
+                    display: false          
+                }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function(value) {
+                        return `$${value.toLocaleString()}`; 
+                    },
+                    maxTicksLimit: 10,
+                },
+                grid: {
+                    lineWidth: 1,
+                    color: 'rgba(0,0,0,0.05)',
+                },
+                border: {
+                    color: 'rgba(0,0,0,0.1)',  
+                    width: 1
+                }
+            }
+        },
+        elements: {
+            line: {
+                tension: 0.2,
+                borderWidth: 2
+            },
+            point: {
+                radius: 1,
+                hoverRadius: 1
+            }
+        }
+    };
 
     netWorthChartOptions: AgChartOptions = {
         data: [],
         series: [
             {
-                type: "donut",
-                calloutLabelKey: 'name',
+                type: "pie",
                 angleKey: 'value',
+                calloutLabelKey: 'name',
                 innerRadiusRatio: 0.6,
                 sectorLabelKey: 'value',
+                strokeWidth: 2,
+                stroke: '#fff',
                 sectorLabel: {
-                    formatter: params => 
-                        this.formatCurrency(params.datum.value)
+                    formatter: params => this.formatCurrency(params.datum.value),
+                    fontSize: 14,
+                    color: '#333',
                 },
-                // innerLabels: [
-                //     {
-                //         text: '$14,000',
-                //         fontSize: 14,
-                //         fontWeight: 'bold',
-                //     }
-                // ],
                 tooltip: {
-                    renderer: (params) => {
-                        var val = this.formatCurrency(params.datum.value, 2);
-                        return {
-                            title: `${params.datum.name}: ${val}`,
-                        }
+                    enabled: true,
+                    renderer: (params: any) => {
+                        return `<div class="ag-chart-tooltip-content p-2" style="font-size: 15px;">${params.datum.name}: <strong>${this.formatCurrency(params.datum.value, 0)}</strong></div>`;
                     }
-                }
-            },
+                } as any
+            } as AgPieSeriesOptions
         ],
+        tooltip: {
+            enabled: true,
+        },
         title: {
             text: 'Net Worth',
-            fontSize: 44
+            fontSize: 28,
+            fontWeight: 'bold',
+            color: '#222',
         },
         legend: {
-            position: 'bottom'
+            enabled: false,
+            position: 'top',
+            spacing: 10,
+            item: {
+                label: { fontStyle: 'normal', fontWeight: 'normal' },
+                marker: { size: 14 }
+            }
         }
     };
 
@@ -88,31 +151,51 @@ export class OverviewComponent {
         });
     }
 
-    //Need to get data for history
-    // populateSingleAccounts(): void {
-    //     this.personalAccts$.subscribe(accts => {
-    //         if(!accts || accts.length === 0)
-    //             return;
-
-    //         this.individualAccounts = accts.map(a => {
-    //             const data = a.Balance;
-    //         })
-    //     })
-    // }
-
     formatCurrency(val: number,dec: number = 0): string {
         return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: dec}).format(val);
     }
 
     constructor(private _acctData: AcctData, private _mainComponent: MainComponent) {
         this.personalAccts$ = _acctData.personalAccounts$;
+        this.personalRecords$ = _acctData.personalActHistory$;
+        applyTooltipTheme(this.accountHistoryChartOptions);
+    }
+
+    @ViewChildren(BaseChartDirective) charts!: QueryList<BaseChartDirective>;
+
+    private _chartHandles: ChartHandle[] = [];
+
+    ngAfterViewInit(): void {
+        this.charts.forEach(chartDir => {
+            const h = createChartHandle(chartDir);
+            if (h) this._chartHandles.push(h);
+        });
+        this.charts.changes.subscribe(() => {
+            this._detachAllHandlers();
+            this.charts.forEach(cd => {
+                const h = createChartHandle(cd);
+                if (h) this._chartHandles.push(h);
+            });
+        });
+    }
+
+    ngOnDestroy(): void {
+        this._detachAllHandlers();
+    }
+
+    private _detachAllHandlers() {
+        this._chartHandles.forEach(h => {
+            try { h.remove(); } catch {}
+        });
+        this._chartHandles = [];
     }
 
     ngOnInit(): void {
         this.activate();
         this._acctData.getPersonalAccounts().then(() => {
             this.populateNetWorthData();
-        })
+        });
+        this._acctData.getPersonalAccountHistory();
     }
 
     activate(): void {

@@ -1,3 +1,215 @@
+app-info-section {
+  width: 100%;
+}
+
+.account-details {
+  margin-bottom: 2rem;
+  position: relative;
+
+  .summary-header {
+    font-weight: 500;
+  }
+
+  .dashed-border {
+    border-bottom: 2px dashed black;
+  }
+
+  .account-content {
+    display: flex;
+    flex-direction: column;
+
+    @media(min-width: 992px) {
+      flex-direction: row;
+    }
+  }
+
+  table {
+    width: 100%;
+    margin-bottom: 0;
+    th, td {
+      text-align: center;
+    }
+  }
+
+  .table-responsive {
+    max-height: 30rem;
+    overflow-y: auto;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid rgba(15,23,42,0.06);
+    box-shadow: 0 6px 18px rgba(15,23,42,0.04);
+  }
+
+  /* ensure card is a positioning context for drag-info */
+  .card { position: relative; }
+  .card .card-body { overflow: visible; }
+
+  .table-card { height: 100%; }
+
+  .chart-card { background: transparent; box-shadow: none; border: none; }
+
+  .balance-badge {
+    background: linear-gradient(90deg,#ff8fab,#ff4081);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-weight: 700;
+  }
+
+  .balance-summary { text-align: center; }
+
+  .collapse-icon { background: transparent; border: none; color: #666; }
+
+  &.account-details:not([open]) {}
+}
+
+.account-details:not([open]) .summary-header {
+  padding-left: 28px;
+  position: relative;
+}
+.account-details:not([open]) .summary-header::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 60%;
+  border-radius: 6px;
+  background: linear-gradient(180deg,#ff8fab,#ff4081);
+  box-shadow: 0 4px 10px rgba(255,64,129,0.15);
+}
+
+.account-details:not([open]) { border-left: 1px solid rgba(15,23,42,0.03); padding-left: 8px; }
+
+  canvas {
+    width: 100% !important;
+    height: 100%;
+
+    @media(min-width: 768px) {
+      height: 100%;
+    }
+    @media(min-width: 992px) {
+      height: 100%;
+    }
+  }
+
+  /* fixed wrapper heights to prevent canvas resizing during drag */
+  .chart-wrapper {
+    height: 300px;
+  }
+
+  @media(min-width: 768px) {
+    .chart-wrapper { height: 400px; }
+  }
+
+  @media(min-width: 992px) {
+    .chart-wrapper { height: 500px; }
+  }
+
+  /* Ensure chart wrapper and drag-info mirror overview styling so info bar doesn't affect layout */
+  .chart-wrapper { position: relative; }
+
+  .chart-drag-info {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    background: linear-gradient(180deg, rgba(20,23,28,0.98), rgba(14,16,20,0.95));
+    border: 1px solid rgba(255,64,129,0.14);
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 12px;
+    z-index: 50;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: 0 8px 24px rgba(2,6,23,0.6);
+    min-width: 220px;
+    pointer-events: none;
+  }
+
+  .chart-drag-info .drag-info-left,
+  .chart-drag-info .drag-info-right {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chart-drag-info .label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.65);
+    font-weight: 700;
+    letter-spacing: 0.4px;
+  }
+
+  .chart-drag-info .value {
+    font-size: 14px;
+    margin-top: 2px;
+  }
+
+  .chart-drag-info .range { white-space: nowrap; }
+  .chart-drag-info .pct { font-variant-numeric: tabular-nums; }
+
+  .chart-drag-info .pct { color: #000000; }
+  .chart-drag-info .pct.positive { color: #000000; }
+  .chart-drag-info .pct.negative { color: #000000; }
+
+  /* Decorative chips */
+  .chart-drag-info .range {
+    background: rgba(255,255,255,0.03);
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.04);
+    font-weight: 700;
+  }
+
+  .chart-drag-info .pct {
+    background: rgba(255,255,255,0.03);
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-weight: 800;
+    min-width: 72px;
+    text-align: center;
+  }
+
+  .chart-drag-info .pct.positive { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.18); color: #000000; }
+  .chart-drag-info .pct.negative { background: rgba(220,38,38,0.08); border: 1px solid rgba(220,38,38,0.12); color: #000000; }
+
+
+.no-accounts {
+  h3 {
+    font-size: 1.5rem;
+    @media(min-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+  p {
+    font-size: 1rem;
+    @media(min-width: 768px) {
+      font-size: 1.125rem;
+    }
+  }
+  button {
+    width: 100%;
+    max-width: 300px;
+    font-size: 1rem;
+    @media(min-width: 768px) {
+      width: auto;
+      font-size: 1.125rem;
+    }
+  }
+}
+
+.row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
 details > summary {
   display: block;
   list-style: none !important;

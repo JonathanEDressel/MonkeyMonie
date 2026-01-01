@@ -1,5 +1,5 @@
 from models.EventModel import data_to_model, EventModel
-from .ErrorController import log_error_to_db
+from helper.ErrorHandler import log_error_to_db
 from datetime import datetime, timezone
 from flask import Flask, request
 import helper.Helper as DBHelper
@@ -20,7 +20,19 @@ def get_all_events(dte):
         
 def add_event(username, eventText, eventType):
     try:
-        source = str(request.remote_addr)
+        # Check for IP from proxies first (X-Forwarded-For, X-Real-IP)
+        if request.headers.get('X-Forwarded-For'):
+            # X-Forwarded-For can contain multiple IPs, get the first one (client IP)
+            source = request.headers.get('X-Forwarded-For').split(',')[0].strip()
+        elif request.headers.get('X-Real-IP'):
+            source = request.headers.get('X-Real-IP')
+        elif request.headers.get('CF-Connecting-IP'):
+            # Cloudflare IP
+            source = request.headers.get('CF-Connecting-IP')
+        else:
+            # Fall back to remote_addr if no proxy headers
+            source = request.remote_addr
+        
         dte = datetime.now(timezone.utc)
         sql = f"INSERT INTO EventLog (EventTimeStamp, EventText, Source, EventType, EventUser) " \
             "VALUES (%s, %s, %s, %s, %s)"
